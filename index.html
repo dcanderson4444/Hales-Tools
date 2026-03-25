@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hale's Tools</title>
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    /* ====== RESET & BASE ====== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+
+    /* ====== SITE HEADER ====== */
+    .site-header {
+      background: #0D3F75;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      border-bottom: 3px solid #F5A623;
+    }
+    .logo-area { display: flex; align-items: center; gap: 14px; }
+    .logo-icon { height: 44px; display: flex; align-items: center; }
+    .logo-icon img { height: 44px; width: auto; display: block; }
+    .logo-text { font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: #fff; letter-spacing: 0.02em; line-height: 1.1; }
+    .logo-text span { display: block; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 0.1em; text-transform: uppercase; }
+    .site-title { font-family: 'Barlow', sans-serif; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ====== TAB NAV ====== */
+    .tab-nav {
+      background: #0a2d55;
+      display: flex;
+      padding: 0 2rem;
+    }
+    .tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: rgba(255,255,255,0.6);
+      font-family: 'Barlow', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .tab-btn:hover { color: rgba(255,255,255,0.85); }
+    .tab-btn.active { color: #fff; border-bottom-color: #F5A623; }
+
+    /* ====== TAB CONTENT ====== */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* ====== NOTES TAB ====== */
+    #tab-notes {
+      background: #111827;
+      color: #e5e7eb;
+      min-height: calc(100vh - 107px);
+      padding: 20px;
+    }
+    #tab-notes h1 {
+      text-align: center;
+      color: #4A90D9;
+      margin-bottom: 24px;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    #tab-notes .sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto 20px;
+    }
+    @media (max-width: 700px) {
+      #tab-notes .sections { grid-template-columns: 1fr; }
+    }
+    #tab-notes .section {
+      background: #1f2937;
+      border-radius: 10px;
+      padding: 18px;
+      border: 1px solid #1a3a5c;
+    }
+    #tab-notes .section h2 {
+      color: #4A90D9;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1a3a5c;
+    }
+    #tab-notes .field { margin-bottom: 12px; }
+    #tab-notes .field label {
+      display: block;
+      font-size: 0.72rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    #tab-notes input[type="text"], #tab-notes select {
+      width: 100%;
+      padding: 7px 10px;
+      background: #111827;
+      border: 1px solid #1a3a5c;
+      color: #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    #tab-notes input[type="text"]:focus, #tab-notes select:focus {
+      outline: none;
+      border-color: #4A90D9;
+    }
+    #tab-notes select option { background: #1f2937; }
+    #tab-notes .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    #tab-notes .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+    }
+    #tab-notes .toggle-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      accent-color: #4A90D9;
+    }
+    #tab-notes .toggle-row label {
+      font-size: 0.85rem;
+      color: #d1d5db;
+      cursor: pointer;
+    }
+    #tab-notes .output-wrap {
+      max-width: 1000px;
+      margin: 0 auto 16px;
+      background: #1f2937;
+      border-radius: 10px;
+      padding: 18px;
+      border: 1px solid #1a3a5c;
+    }
+    #tab-notes .output-wrap h2 {
+      color: #4A90D9;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    #tab-notes #noteOutput {
+      background: #0f172a;
+      border: 1px solid #1a3a5c;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      min-height: 100px;
+    }
+    #tab-notes .buttons {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      gap: 12px;
+    }
+    #tab-notes button {
+      padding: 11px 28px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    #tab-notes .btn-copy { background: #CC0000; color: #ffffff; }
+    #tab-notes .btn-copy:hover { background: #E53935; }
+    #tab-notes .btn-copy.copied { background: #4ade80; color: #0f172a; }
+    #tab-notes .btn-reset { background: #1a3a5c; color: #e5e7eb; }
+    #tab-notes .btn-reset:hover { background: #4b5563; }
+
+    /* ====== QUOTES TAB ====== */
+    #tab-quotes {
+      font-family: 'Barlow', sans-serif;
+      background: #F4F6F9;
+      color: #1A2030;
+      min-height: calc(100vh - 107px);
+    }
+    #tab-quotes main { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    #tab-quotes .page-title { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: #0D3F75; letter-spacing: 0.01em; margin-bottom: 4px; }
+    #tab-quotes .page-sub { font-size: 14px; color: #6B7691; margin-bottom: 1.75rem; }
+    #tab-quotes .card { background: #FFFFFF; border: 1px solid #D8DEE8; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 14px; }
+    #tab-quotes .card-title { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #1B5EA8; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    #tab-quotes .card-title::after { content: ''; flex: 1; height: 1px; background: #D8DEE8; }
+    #tab-quotes .part-row { display: grid; grid-template-columns: 1fr 130px 32px; gap: 8px; align-items: center; margin-bottom: 8px; }
+    #tab-quotes .col-header { font-size: 11px; font-weight: 600; color: #6B7691; text-transform: uppercase; letter-spacing: 0.06em; }
+    #tab-quotes input[type="text"], #tab-quotes input[type="number"], #tab-quotes select { height: 38px; padding: 0 10px; border: 1px solid #D8DEE8; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 14px; color: #1A2030; background: #fff; width: 100%; transition: border-color 0.15s; }
+    #tab-quotes input[type="text"]:focus, #tab-quotes input[type="number"]:focus, #tab-quotes select:focus { outline: none; border-color: #3A7FCC; box-shadow: 0 0 0 3px rgba(27,94,168,0.1); }
+    #tab-quotes .rm-btn { width: 32px; height: 32px; border: 1px solid #D8DEE8; border-radius: 6px; background: #fff; color: #6B7691; font-size: 18px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.1s, color 0.1s; }
+    #tab-quotes .rm-btn:hover { background: #fef2f2; color: #c0392b; border-color: #f5c6c6; }
+    #tab-quotes .add-btn { background: none; border: 1px dashed #3A7FCC; border-radius: 8px; color: #1B5EA8; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600; padding: 7px 16px; cursor: pointer; margin-top: 4px; transition: background 0.15s; }
+    #tab-quotes .add-btn:hover { background: #E8F1FB; }
+    #tab-quotes .inline-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    #tab-quotes .inline-row label { font-size: 13px; color: #6B7691; font-weight: 500; min-width: 160px; }
+    #tab-quotes .inline-row input[type="number"] { width: 110px; }
+    #tab-quotes .inline-row .unit { font-size: 13px; color: #6B7691; white-space: nowrap; }
+    #tab-quotes .formula-steps { display: flex; flex-direction: column; }
+    #tab-quotes .fstep { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border: 1px solid #D8DEE8; background: #F4F6F9; font-size: 14px; }
+    #tab-quotes .fstep:first-child { border-radius: 10px 10px 0 0; }
+    #tab-quotes .fstep:last-child  { border-radius: 0 0 10px 10px; }
+    #tab-quotes .fstep + .fstep    { border-top: none; }
+    #tab-quotes .fstep .label { color: #6B7691; font-size: 13px; }
+    #tab-quotes .fstep .val   { font-weight: 600; color: #1A2030; font-size: 14px; }
+    #tab-quotes .fstep.highlight { background: #E8F1FB; border-color: #3A7FCC; }
+    #tab-quotes .fstep.highlight .label { color: #1B5EA8; font-weight: 600; }
+    #tab-quotes .fstep.highlight .val   { color: #0D3F75; font-size: 15px; }
+    #tab-quotes .result-card { background: #0D3F75; border-radius: 14px; padding: 1.5rem; color: #fff; margin-top: 6px; }
+    #tab-quotes .result-center { text-align: center; padding: 0.5rem 0 1rem; }
+    #tab-quotes .result-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+    #tab-quotes .result-total { font-family: 'Barlow Condensed', sans-serif; font-size: 52px; font-weight: 700; color: #F5A623; letter-spacing: 0.01em; line-height: 1; }
+    #tab-quotes .actions { display: flex; gap: 10px; margin-top: 1rem; }
+    #tab-quotes .btn-copy, #tab-quotes .btn-reset, #tab-quotes .btn-drive { flex: 1; padding: 10px; border-radius: 8px; font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; border: none; }
+    #tab-quotes .btn-copy  { background: #fff; color: #0D3F75; }
+    #tab-quotes .btn-copy:hover  { background: #f0f4ff; }
+    #tab-quotes .btn-reset { background: #fff; color: #0D3F75; }
+    #tab-quotes .btn-reset:hover { background: #f0f4ff; }
+    #tab-quotes .btn-drive { background: #fff; color: #0D3F75; }
+    #tab-quotes .btn-drive:hover { background: #f0f4ff; }
+    #tab-quotes .btn-copy:active, #tab-quotes .btn-reset:active, #tab-quotes .btn-drive:active { transform: scale(0.98); }
+    #tab-quotes .copied-msg { display: none; text-align: center; font-size: 13px; font-weight: 600; color: #F5A623; margin-top: 8px; }
+    #tab-quotes .status-msg { display: none; text-align: center; font-size: 13px; font-weight: 600; margin-top: 8px; }
+    #tab-quotes .status-msg.success { color: #4ade80; }
+    #tab-quotes .status-msg.error   { color: #f87171; }
+    #tab-quotes footer { text-align: center; font-size: 12px; color: #6B7691; padding: 2rem; border-top: 1px solid #D8DEE8; margin-top: 2rem; }
+    @media (max-width: 560px) {
+      #tab-quotes .part-row { grid-template-columns: 1fr; }
+      #tab-quotes .part-row input[type="number"] { width: 100%; }
+      #tab-quotes .inline-row { flex-wrap: wrap; }
+      #tab-quotes .inline-row label { min-width: 100%; margin-bottom: 2px; }
+      #tab-quotes .inline-row input[type="number"] { width: 100px; }
+      #tab-quotes .result-total { font-size: 40px; }
+    }
+    @media (max-width: 480px) {
+      #tab-quotes .part-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #D8DEE8; }
+      #tab-quotes .part-row:last-of-type { border-bottom: none; }
+    }
+    /* ====== ON-CALL TAB ====== */
+    #tab-oncall {
+      background: #111827;
+      color: #e5e7eb;
+      min-height: calc(100vh - 107px);
+      padding: 20px;
+    }
+    #tab-oncall .oc-wrap { max-width: 700px; margin: 0 auto; }
+    #tab-oncall .oc-hero {
+      background: #0D3F75;
+      border: 2px solid #F5A623;
+      border-radius: 14px;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    #tab-oncall .oc-hero-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 8px;
+    }
+    #tab-oncall .oc-hero-name {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #F5A623;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    #tab-oncall .oc-hero-dates { font-size: 0.95rem; color: rgba(255,255,255,0.65); }
+    #tab-oncall .oc-section-title {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    #tab-oncall .oc-list {
+      background: #1f2937;
+      border-radius: 10px;
+      border: 1px solid #1a3a5c;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    #tab-oncall .oc-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #1a3a5c;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #tab-oncall .oc-row:last-child { border-bottom: none; }
+    #tab-oncall .oc-row.is-current { background: #1a3a5c; }
+    #tab-oncall .oc-row.is-past { opacity: 0.4; }
+    #tab-oncall .oc-dates { font-size: 0.85rem; color: #9ca3af; min-width: 175px; }
+    #tab-oncall .oc-person { font-size: 1rem; font-weight: 600; color: #e5e7eb; flex: 1; }
+    #tab-oncall .oc-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 2px 10px;
+      white-space: nowrap;
+    }
+    #tab-oncall .oc-badge-swap { background: #f59e0b18; color: #F5A623; border: 1px solid #f59e0b33; }
+    #tab-oncall .oc-badge-current { background: #4A90D918; color: #4A90D9; border: 1px solid #4A90D933; }
+    #tab-oncall .oc-form-card {
+      background: #1f2937;
+      border-radius: 10px;
+      border: 1px solid #1a3a5c;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+    #tab-oncall .oc-form-card h3 {
+      color: #4A90D9;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #1a3a5c;
+    }
+    #tab-oncall .oc-field { margin-bottom: 12px; }
+    #tab-oncall .oc-field label {
+      display: block;
+      font-size: 0.72rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    #tab-oncall input[type="text"], #tab-oncall select {
+      width: 100%;
+      padding: 7px 10px;
+      background: #111827;
+      border: 1px solid #1a3a5c;
+      color: #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    #tab-oncall input[type="text"]:focus, #tab-oncall select:focus {
+      outline: none;
+      border-color: #4A90D9;
+    }
+    #tab-oncall select option { background: #1f2937; }
+    #tab-oncall .oc-submit-btn {
+      background: #CC0000;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      width: 100%;
+      margin-top: 4px;
+    }
+    #tab-oncall .oc-submit-btn:hover { background: #E53935; }
+    #tab-oncall .oc-submit-btn:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
+    #tab-oncall .oc-status {
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 10px;
+      display: none;
+    }
+    #tab-oncall .oc-status.success { color: #4ade80; display: block; }
+    #tab-oncall .oc-status.error { color: #f87171; display: block; }
+    #tab-oncall .oc-log {
+      background: #1f2937;
+      border-radius: 10px;
+      border: 1px solid #1a3a5c;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    #tab-oncall .oc-log-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1a3a5c;
+      font-size: 0.85rem;
+    }
+    #tab-oncall .oc-log-item:last-child { border-bottom: none; }
+    #tab-oncall .oc-log-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+    #tab-oncall .oc-log-who { color: #4A90D9; font-weight: 600; }
+    #tab-oncall .oc-log-when { color: #6b7280; font-size: 0.75rem; }
+    #tab-oncall .oc-log-detail { color: #9ca3af; }
+    #tab-oncall .oc-log-detail strong { color: #e5e7eb; }
+    #tab-oncall .oc-log-note { color: #6b7280; font-size: 0.78rem; margin-top: 2px; font-style: italic; }
+    #tab-oncall .oc-empty { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
+    #tab-oncall .oc-loading { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
+    #tab-oncall .oc-setup-notice {
+      background: #1f2937;
+      border: 1px solid #f59e0b44;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 24px;
+      color: #F5A623;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ====== SITE HEADER ====== -->
+<header class="site-header">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <img src="https://lirp.cdn-website.com/6d4013e5/dms3rep/multi/opt/image001-1920w.jpg" alt="Hale's Heating &amp; Cooling" />
+    </div>
+    <div class="logo-text">
+      Hale's Heating &amp; Cooling
+      <span>Internal Tools</span>
+    </div>
+  </div>
+  <div class="site-title">Hale's Tools</div>
+</header>
+
+<!-- ====== TAB NAV ====== -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="showTab('notes', this)">Service Call Notes</button>
+  <button class="tab-btn" onclick="showTab('quotes', this)">Quote Builder</button>
+  <button class="tab-btn" onclick="showTab('oncall', this)">On-Call Schedule</button>
+</nav>
+
+<!-- ====== SERVICE CALL NOTES TAB ====== -->
+<div id="tab-notes" class="tab-content active">
+
+<h1>HVAC Service Call Notes</h1>
+
+<div class="sections">
+
+  <!-- INDOOR -->
+  <div class="section">
+    <h2>Indoor Unit</h2>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Year</label>
+        <input type="text" id="in_year" placeholder="2024" maxlength="4">
+      </div>
+      <div class="field">
+        <label>Brand</label>
+        <select id="in_brand">
+          <option>Carrier</option>
+          <option>Trane</option>
+          <option>Lennox</option>
+          <option>Goodman</option>
+          <option>Rheem</option>
+          <option>York</option>
+          <option>American Standard</option>
+          <option>Bryant</option>
+          <option>Heil</option>
+          <option>Ruud</option>
+          <option>Amana</option>
+          <option>Daikin</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field" id="in_tons_field">
+        <label>Tonnage</label>
+        <select id="in_tons">
+          <option>1</option>
+          <option>1.5</option>
+          <option selected>2</option>
+          <option>2.5</option>
+          <option>3</option>
+          <option>3.5</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+      <div class="field" id="in_btu_field" style="display:none;">
+        <label>BTU</label>
+        <select id="in_btu">
+          <option value="40,000">40,000 BTU</option>
+          <option value="60,000">60,000 BTU</option>
+          <option value="80,000" selected>80,000 BTU</option>
+          <option value="100,000">100,000 BTU</option>
+          <option value="120,000">120,000 BTU</option>
+          <option value="140,000">140,000 BTU</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Unit Type</label>
+        <select id="in_type">
+          <option value="air handler">Air Handler</option>
+          <option value="furnace">Furnace</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="in_coil_fields" style="display:none;">
+      <div class="field-row">
+        <div class="field">
+          <label>Indoor Coil Year</label>
+          <input type="text" id="in_coil_year" placeholder="2024" maxlength="4">
+        </div>
+        <div class="field">
+          <label>Indoor Coil Brand</label>
+          <select id="in_coil_brand">
+            <option>Carrier</option>
+            <option>Trane</option>
+            <option>Lennox</option>
+            <option>Goodman</option>
+            <option>Rheem</option>
+            <option>York</option>
+            <option>American Standard</option>
+            <option>Bryant</option>
+            <option>Heil</option>
+            <option>Ruud</option>
+            <option>Amana</option>
+            <option>Daikin</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Indoor Coil Tonnage</label>
+        <select id="in_coil_tons">
+          <option>1</option>
+          <option>1.5</option>
+          <option selected>2</option>
+          <option>2.5</option>
+          <option>3</option>
+          <option>3.5</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Configuration</label>
+      <select id="in_config">
+        <option value="upflow">Upflow</option>
+        <option value="downflow">Downflow</option>
+        <option value="horizontal left">Horizontal Left</option>
+        <option value="horizontal right">Horizontal Right</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Unit Location</label>
+      <select id="in_location">
+        <option value="attic">Attic</option>
+        <option value="crawlspace">Crawlspace</option>
+        <option value="basement">Basement</option>
+        <option value="garage">Garage</option>
+        <option value="closet">Closet</option>
+        <option value="utility room">Utility Room</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Filter Location</label>
+      <select id="in_filter_loc">
+        <option value="at unit">At Unit</option>
+        <option value="at the return grille">At Return Grille</option>
+        <option value="in the base">In Base</option>
+        <option value="in the ceiling">In Ceiling</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Filter Size</label>
+        <input type="text" id="in_filter_size" placeholder="20x20x1">
+      </div>
+      <div class="field">
+        <label>Filter Condition</label>
+        <select id="in_filter_cond">
+          <option value="clean">Clean</option>
+          <option value="slightly dirty" selected>Slightly Dirty</option>
+          <option value="dirty">Dirty</option>
+          <option value="very dirty">Very Dirty</option>
+          <option value="clogged">Clogged</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Filter Action</label>
+      <select id="in_filter_action">
+        <option value="replaced">Replaced</option>
+        <option value="left in place - within service life">Left in Place</option>
+        <option value="customer to replace">Customer to Replace</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Indoor Coil Condition</label>
+      <select id="in_coil">
+        <option value="clean">Clean</option>
+        <option value="slightly dirty">Slightly Dirty</option>
+        <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+        <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Blower Wheel Condition</label>
+      <select id="in_blower">
+        <option value="clean">Clean</option>
+        <option value="slightly dirty">Slightly Dirty</option>
+        <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+        <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+      </select>
+    </div>
+
+    <div class="toggle-row">
+      <input type="checkbox" id="in_has_blower_cap" checked>
+      <label for="in_has_blower_cap">Unit has blower capacitor</label>
+    </div>
+
+    <div id="in_blower_cap_fields">
+      <div class="field-row">
+        <div class="field">
+          <label>Blower Cap. Spec (MFD)</label>
+          <input type="text" id="in_cap_spec" placeholder="10">
+        </div>
+        <div class="field">
+          <label>Blower Cap. Measured</label>
+          <input type="text" id="in_cap_actual" placeholder="9.5">
+        </div>
+      </div>
+      <div class="field">
+        <label>Blower Cap. Status</label>
+        <select id="in_cap_status">
+          <option value="in">In Spec</option>
+          <option value="out">Not In Spec</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Condensate Drain Type</label>
+      <select id="in_drain">
+        <option value="pvc">PVC Drain Line</option>
+        <option value="pump">Condensate Pump</option>
+      </select>
+    </div>
+
+    <div class="toggle-row" id="in_heatstrips_toggle">
+      <input type="checkbox" id="in_heatstrips" checked>
+      <label for="in_heatstrips">Were heat strips checked?</label>
+    </div>
+
+    <div class="field" id="in_heatstrips_field">
+      <label>Heat Strips Status</label>
+      <select id="in_heat_status">
+        <option value="properly">Operating Properly</option>
+        <option value="not properly">Not Operating Properly</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Temp Split Return (F)</label>
+        <input type="text" id="in_temp_return" placeholder="78">
+      </div>
+      <div class="field">
+        <label>Temp Split Supply (F)</label>
+        <input type="text" id="in_temp_supply" placeholder="56">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Temp Split Status</label>
+      <select id="in_temp_status">
+        <option value="within">Within Specs</option>
+        <option value="not within">Not Within Specs</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Additional Indoor Notes</label>
+      <input type="text" id="in_notes" placeholder="Optional...">
+    </div>
+  </div>
+
+  <!-- OUTDOOR -->
+  <div class="section">
+    <h2>Outdoor Unit</h2>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Year</label>
+        <input type="text" id="out_year" placeholder="2024" maxlength="4">
+      </div>
+      <div class="field">
+        <label>Brand</label>
+        <select id="out_brand">
+          <option>Carrier</option>
+          <option>Trane</option>
+          <option>Lennox</option>
+          <option>Goodman</option>
+          <option>Rheem</option>
+          <option>York</option>
+          <option>American Standard</option>
+          <option>Bryant</option>
+          <option>Heil</option>
+          <option>Ruud</option>
+          <option>Amana</option>
+          <option>Daikin</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Tonnage</label>
+        <select id="out_tons">
+          <option>1</option>
+          <option>1.5</option>
+          <option selected>2</option>
+          <option>2.5</option>
+          <option>3</option>
+          <option>3.5</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Unit Type</label>
+        <select id="out_type">
+          <option value="heat pump">Heat Pump</option>
+          <option value="straight AC">Straight AC</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Outdoor Coil Condition</label>
+      <select id="out_coil">
+        <option value="clean">Clean</option>
+        <option value="slightly dirty">Slightly Dirty</option>
+        <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+        <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Contactor Status</label>
+      <select id="out_contactor">
+        <option value="properly">Operating Properly</option>
+        <option value="not properly">Not Operating Properly</option>
+        <option value="pitted">Pitted - Should Be Replaced</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Capacitor Spec (MFD)</label>
+        <input type="text" id="out_cap_spec" placeholder="35/5">
+      </div>
+      <div class="field">
+        <label>Capacitor Measured</label>
+        <input type="text" id="out_cap_actual" placeholder="34.1/4.9">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Capacitor Status</label>
+      <select id="out_cap_status">
+        <option value="in">In Spec</option>
+        <option value="out">Not In Spec</option>
+      </select>
+    </div>
+
+    <div class="toggle-row" id="out_defrost_toggle">
+      <input type="checkbox" id="out_defrost" checked>
+      <label for="out_defrost">Was defrost checked?</label>
+    </div>
+
+    <div class="field" id="out_defrost_field">
+      <label>Defrost Status</label>
+      <select id="out_defrost_status">
+        <option value="properly">Operating Properly</option>
+        <option value="not properly">Not Operating Properly</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Refrigerant Test Mode</label>
+      <select id="out_ref_mode">
+        <option value="cooling">Cooling</option>
+        <option value="heating">Heating</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Refrigerant Status</label>
+      <select id="out_ref_status">
+        <option value="within">Within Manufacturer Specifications</option>
+        <option value="low">Low - System Needs Refrigerant</option>
+        <option value="high">High - System is Overcharged</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Additional Outdoor Notes</label>
+      <input type="text" id="out_notes" placeholder="Optional...">
+    </div>
+  </div>
+
+</div>
+
+<div class="output-wrap">
+  <h2>Generated Note</h2>
+  <div id="noteOutput"></div>
+</div>
+
+<div class="buttons">
+  <button class="btn-copy" id="copyBtn" onclick="copyNote()">Copy to Clipboard</button>
+  <button class="btn-reset" onclick="resetForm()">Clear Form</button>
+</div>
+
+</div>
+<!-- ====== END NOTES TAB ====== -->
+
+<!-- ====== QUOTE BUILDER TAB ====== -->
+<div id="tab-quotes" class="tab-content">
+
+<main>
+  <div class="page-title">Quote Builder</div>
+
+  <!-- JOB INFO -->
+  <div class="card">
+    <div class="card-title">Job Info</div>
+    <div class="inline-row">
+      <label>Technician name</label>
+      <input type="text" id="tech-name" placeholder="e.g. Justin" style="flex:1;" />
+    </div>
+    <div class="inline-row">
+      <label>Job address</label>
+      <input type="text" id="job-address" placeholder="e.g. 123 Main St, Athens, GA" style="flex:1;" />
+    </div>
+    <div class="inline-row">
+      <label>PO Number / Supplier</label>
+      <input type="text" id="po-number" placeholder="e.g. PO-1234 / Ferguson" style="flex:1;" />
+    </div>
+  </div>
+
+  <!-- MATERIALS -->
+  <div class="card">
+    <div class="card-title">Materials</div>
+    <div class="part-row" style="margin-bottom:6px;">
+      <div class="col-header">Description</div>
+      <div class="col-header">Cost</div>
+      <div></div>
+    </div>
+    <div id="parts-list"></div>
+    <button class="add-btn" onclick="addPart()">+ Add material</button>
+  </div>
+
+  <!-- LABOR -->
+  <div class="card">
+    <div class="card-title">Labor</div>
+    <div class="inline-row">
+      <label>Number of techs</label>
+      <input type="number" id="techs" value="1" min="1" step="1" oninput="calc()" />
+    </div>
+    <div class="inline-row">
+      <label>Hours on job</label>
+      <input type="number" id="labor-hrs" value="1" min="0" step="0.25" oninput="calc()" />
+      <span class="unit">hrs &times; $270/hr per tech</span>
+    </div>
+  </div>
+
+  <!-- REFRIGERANT -->
+  <div class="card">
+    <div class="card-title">Refrigerant</div>
+    <div class="inline-row">
+      <label>Type</label>
+      <select id="ref-type" onchange="toggleRefLbs()">
+        <option value="0">None</option>
+        <option value="110">R-407C &mdash; $110 / lb</option>
+        <option value="98">R-410A &mdash; $98 / lb</option>
+        <option value="135">R-454B &mdash; $135 / lb</option>
+      </select>
+    </div>
+    <div class="inline-row" id="ref-lbs-row" style="display:none;">
+      <label>Pounds</label>
+      <input type="number" id="ref-lbs" value="1" min="0" step="0.5" oninput="calc()" />
+      <span class="unit" id="ref-rate-label"></span>
+    </div>
+  </div>
+
+  <!-- BREAKDOWN -->
+  <div class="card">
+    <div class="card-title">Breakdown</div>
+    <div class="formula-steps">
+      <div class="fstep"><span class="label">Material cost</span><span class="val" id="b-material">$0.00</span></div>
+      <div class="fstep"><span class="label">+ Tax (&times; 1.08)</span><span class="val" id="b-tax">$0.00</span></div>
+      <div class="fstep"><span class="label">Materials with margin (&divide; 0.70)</span><span class="val" id="b-subtotal">$0.00</span></div>
+      <div class="fstep"><span class="label" id="b-labor-label">+ Labor (1 tech &times; 1 hr &times; $270)</span><span class="val" id="b-labor">$0.00</span></div>
+      <div class="fstep" id="b-ref-row" style="display:none;"><span class="label" id="b-ref-label">+ Refrigerant</span><span class="val" id="b-ref">$0.00</span></div>
+      <div class="fstep highlight"><span class="label">Total</span><span class="val" id="b-final">$0.00</span></div>
+    </div>
+  </div>
+
+  <!-- CONFIRM DIALOG -->
+  <div id="confirm-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:14px;padding:2rem;max-width:340px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#0D3F75;margin-bottom:8px;">Ready to submit?</div>
+      <div style="font-size:14px;color:#6B7691;margin-bottom:1.5rem;">This will save the quote as a PDF to Google Drive.</div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="confirmSave(false)" style="flex:1;padding:10px;border-radius:8px;border:1px solid #D8DEE8;background:#fff;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;color:#6B7691;cursor:pointer;">No, go back</button>
+        <button onclick="confirmSave(true)"  style="flex:1;padding:10px;border-radius:8px;border:none;background:#1B5EA8;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;">Yes, submit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card">
+    <div class="result-center">
+      <div class="result-label">Customer Quote</div>
+      <div class="result-total" id="r-total">$0</div>
+    </div>
+    <div class="actions">
+      <button class="btn-copy"  onclick="copyQuote()">Copy Summary</button>
+      <button class="btn-drive" onclick="saveToDrive()">&#9650; Save to Drive</button>
+      <button class="btn-reset" onclick="resetQuote()">Reset</button>
+    </div>
+    <div class="copied-msg" id="copied-msg">Copied to clipboard!</div>
+    <div class="status-msg"  id="status-msg"></div>
+  </div>
+</main>
+
+<footer>
+  Hale's Heating &amp; Cooling &mdash; Internal Use Only &mdash; 706-765-7219 &mdash; Watkinsville, GA
+</footer>
+
+</div>
+<!-- ====== END QUOTES TAB ====== -->
+
+<!-- ====== ON-CALL SCHEDULE TAB ====== -->
+<div id="tab-oncall" class="tab-content">
+<div class="oc-wrap">
+
+  <div id="oc-setup-notice" class="oc-setup-notice" style="display:none;">
+    Add your Apps Script URL to the On-Call widget to enable live data across all devices.
+  </div>
+
+  <!-- Hero: This Weekend -->
+  <div class="oc-hero">
+    <div class="oc-hero-label">On Call This Weekend</div>
+    <div class="oc-hero-name" id="oc-hero-name">—</div>
+    <div class="oc-hero-dates" id="oc-hero-dates"></div>
+  </div>
+
+  <!-- Upcoming Schedule -->
+  <div class="oc-section-title">Upcoming Schedule</div>
+  <div class="oc-list" id="oc-schedule-list">
+    <div class="oc-loading">Loading schedule...</div>
+  </div>
+
+  <!-- Make a Change -->
+  <div class="oc-form-card">
+    <h3>Make a Change</h3>
+    <div class="oc-field">
+      <label>Your Name</label>
+      <input type="text" id="oc-your-name" placeholder="e.g. Taylor">
+    </div>
+    <div class="oc-field">
+      <label>Weekend</label>
+      <select id="oc-weekend-select"></select>
+    </div>
+    <div class="oc-field">
+      <label>Assign To</label>
+      <select id="oc-assign-to">
+        <option value="Chris">Chris</option>
+        <option value="Robert">Robert</option>
+        <option value="Justin">Justin</option>
+      </select>
+    </div>
+    <div class="oc-field">
+      <label>Note (optional)</label>
+      <input type="text" id="oc-note" placeholder="e.g. Justin switched with Chris">
+    </div>
+    <button class="oc-submit-btn" id="oc-submit-btn" onclick="ocSubmitChange()">Save Change</button>
+    <div class="oc-status" id="oc-status"></div>
+  </div>
+
+  <!-- Change Log -->
+  <div class="oc-section-title">Change Log</div>
+  <div class="oc-log" id="oc-changelog">
+    <div class="oc-empty">No changes recorded yet.</div>
+  </div>
+
+</div>
+</div>
+<!-- ====== END ON-CALL TAB ====== -->
+
+<!-- ====== TAB SWITCHING ====== -->
+<script>
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-content').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+<!-- ====== SERVICE CALL NOTES SCRIPT ====== -->
+<script>
+    function v(id) { return document.getElementById(id).value.trim(); }
+    function chk(id) { return document.getElementById(id).checked; }
+
+    // Wire only notes inputs to regenerate note live
+    document.querySelectorAll('#tab-notes input, #tab-notes select').forEach(function(el) {
+        el.addEventListener('change', generateNote);
+        el.addEventListener('input', generateNote);
+    });
+
+    document.getElementById('in_type').addEventListener('change', function () {
+        const isFurnace = this.value === 'furnace';
+        document.getElementById('in_tons_field').style.display = isFurnace ? 'none' : '';
+        document.getElementById('in_btu_field').style.display = isFurnace ? '' : 'none';
+        document.getElementById('in_coil_fields').style.display = isFurnace ? '' : 'none';
+        document.getElementById('in_heatstrips_toggle').style.display = isFurnace ? 'none' : '';
+        document.getElementById('in_heatstrips_field').style.display = isFurnace ? 'none' : '';
+        if (isFurnace) {
+            document.getElementById('in_heatstrips').checked = false;
+        }
+        generateNote();
+    });
+
+    document.getElementById('in_has_blower_cap').addEventListener('change', function () {
+        document.getElementById('in_blower_cap_fields').style.display = this.checked ? '' : 'none';
+        generateNote();
+    });
+
+    document.getElementById('in_heatstrips').addEventListener('change', function () {
+        document.getElementById('in_heatstrips_field').style.display = this.checked ? '' : 'none';
+        generateNote();
+    });
+
+    document.getElementById('out_defrost').addEventListener('change', function () {
+        document.getElementById('out_defrost_field').style.display = this.checked ? '' : 'none';
+        generateNote();
+    });
+
+    document.getElementById('out_type').addEventListener('change', function () {
+        const isHP = this.value === 'heat pump';
+        document.getElementById('out_defrost').checked = isHP;
+        document.getElementById('out_defrost_field').style.display = isHP ? '' : 'none';
+        document.getElementById('out_defrost_toggle').style.display = isHP ? '' : 'none';
+        generateNote();
+    });
+
+    function generateNote() {
+        const inYear        = v('in_year')          || 'XXXX';
+        const inBrand       = v('in_brand');
+        const inTons        = v('in_tons');
+        const inType        = v('in_type');
+        const inConfig      = v('in_config');
+        const inLocation    = v('in_location');
+        const inFilterLoc   = v('in_filter_loc');
+        const inFilterSize  = v('in_filter_size')   || '[FILTER SIZE]';
+        const inFilterCond  = v('in_filter_cond');
+        const inFilterAct   = v('in_filter_action');
+        const inCoil        = v('in_coil');
+        const inBlower      = v('in_blower');
+        const inCapSpec     = v('in_cap_spec')       || '[SPEC]';
+        const inCapActual   = v('in_cap_actual')     || '[ACTUAL]';
+        const inCapStatus   = v('in_cap_status');
+        const hasBlowerCap  = chk('in_has_blower_cap');
+        const inDrain       = v('in_drain');
+        const hasHeat       = chk('in_heatstrips');
+        const inHeatSt      = v('in_heat_status');
+        const inTempSup     = v('in_temp_supply')    || '[SUPPLY]';
+        const inTempRet     = v('in_temp_return')    || '[RETURN]';
+        const inTempSt      = v('in_temp_status');
+        const inNotes       = v('in_notes');
+
+        const isFurnace = inType === 'furnace';
+        const inBtu = v('in_btu');
+        const inCoilYear  = v('in_coil_year')  || 'XXXX';
+        const inCoilBrand = v('in_coil_brand');
+        const inCoilTons  = v('in_coil_tons');
+        const inSize = isFurnace ? `${inBtu} BTU` : `${inTons} ton`;
+
+        let indoor = '';
+        if (isFurnace) {
+            indoor += `${inYear} ${inBrand} ${inSize} ${inType} and ${inCoilYear} ${inCoilBrand} ${inCoilTons} ton indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
+        } else {
+            indoor += `${inYear} ${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
+        }
+        indoor += `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond} and was ${inFilterAct}. `;
+        indoor += inCoil === 'chemically cleaned'
+            ? `Indoor coil was inspected, found dirty, and was chemically cleaned. `
+            : `Indoor coil was inspected and is ${inCoil}. `;
+        indoor += inBlower === 'chemically cleaned'
+            ? `Blower wheel was inspected, found dirty, and was chemically cleaned. `
+            : `Blower wheel was inspected and is ${inBlower}. `;
+
+        if (hasBlowerCap) {
+            if (inCapStatus === 'in') {
+                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is in spec. `;
+            } else {
+                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec and should be replaced for continuous operation. `;
+            }
+        }
+
+        indoor += inDrain === 'pump'
+            ? `Condensate pump was cleaned out, tested for operation, and treated with drain tablets. `
+            : `PVC condensate drain line was flushed and treated with drain tablets. `;
+
+        if (hasHeat) {
+            indoor += inHeatSt === 'properly'
+                ? `Electric heat strips were tested for operation and are operating properly. `
+                : `Electric heat strips were tested for operation and are not operating properly. `;
+        }
+
+        indoor += `System has a ${inTempRet}-${inTempSup} temperature split and is ${inTempSt} specs.`;
+
+        if (inNotes) indoor += ` ${inNotes}`;
+
+        const outYear       = v('out_year')         || 'XXXX';
+        const outBrand      = v('out_brand');
+        const outTons       = v('out_tons');
+        const outType       = v('out_type');
+        const outCoil       = v('out_coil');
+        const outContactor  = v('out_contactor');
+        const outCapSpec    = v('out_cap_spec')      || '[SPEC]';
+        const outCapActual  = v('out_cap_actual')    || '[ACTUAL]';
+        const outCapStatus  = v('out_cap_status');
+        const hasDefrost    = chk('out_defrost');
+        const outDefrostSt  = v('out_defrost_status');
+        const outRefMode    = v('out_ref_mode');
+        const outRefStatus  = v('out_ref_status');
+        const outNotes      = v('out_notes');
+
+        let outdoor = '';
+        outdoor += `${outYear} ${outBrand} ${outTons} ton ${outType}. `;
+        outdoor += outCoil === 'chemically cleaned'
+            ? `Outdoor coil was inspected, found dirty, and was chemically cleaned. `
+            : `Outdoor coil was inspected and is ${outCoil}. `;
+
+        if (outContactor === 'properly') {
+            outdoor += `Contactor was tested for operation and is operating properly. `;
+        } else if (outContactor === 'not properly') {
+            outdoor += `Contactor was tested for operation and is not operating properly. `;
+        } else {
+            outdoor += `Contactor was inspected and is pitted and should be replaced. `;
+        }
+
+        if (outCapStatus === 'in') {
+            outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is in spec. `;
+        } else {
+            outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec and should be replaced. `;
+        }
+
+        if (hasDefrost) {
+            outdoor += outDefrostSt === 'properly'
+                ? `Defrost was tested and is operating properly. `
+                : `Defrost was tested and is not operating properly. `;
+        }
+
+        if (outRefStatus === 'within') {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are within manufacturer specifications.`;
+        } else if (outRefStatus === 'low') {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
+        } else {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is overcharged.`;
+        }
+
+        if (outNotes) outdoor += ` ${outNotes}`;
+
+        document.getElementById('noteOutput').textContent =
+            `Indoor\n\n${indoor}\n\nOutdoor\n\n${outdoor}`;
+    }
+
+    function copyNote() {
+        const text = document.getElementById('noteOutput').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.getElementById('copyBtn');
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = 'Copy to Clipboard';
+                btn.classList.remove('copied');
+            }, 2000);
+        });
+    }
+
+    function resetForm() {
+        document.querySelectorAll('#tab-notes input[type="text"]').forEach(function(el) { el.value = ''; });
+        document.getElementById('in_heatstrips').checked = true;
+        document.getElementById('in_heatstrips_field').style.display = '';
+        document.getElementById('out_defrost').checked = true;
+        document.getElementById('out_defrost_field').style.display = '';
+        document.getElementById('out_defrost_toggle').style.display = '';
+        generateNote();
+    }
+
+    generateNote();
+</script>
+
+<!-- ====== QUOTE BUILDER SCRIPT ====== -->
+<script>
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4ucCFSjaQRAoINySoe7z4ICFT6eHqLq1FQMansELJnULXjcHqO1BUdKOQsrfQoo3T/exec';
+
+  var parts = [{ name: '', cost: '' }];
+
+  function fmt(n)      { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function fmtRound(n) { return '$' + Math.round(n).toLocaleString(); }
+
+  function renderParts() {
+    var list = document.getElementById('parts-list');
+    list.innerHTML = parts.map(function(p, i) {
+      return '<div class="part-row">'
+        + '<input type="text" placeholder="Part / material description" value="' + p.name + '" oninput="parts[' + i + '].name=this.value;" />'
+        + '<input type="number" placeholder="$0.00" value="' + p.cost + '" min="0" step="0.01" oninput="parts[' + i + '].cost=this.value;calc();" />'
+        + (parts.length > 1 ? '<button class="rm-btn" onclick="removePart(' + i + ')">×</button>' : '<div></div>')
+        + '</div>';
+    }).join('');
+    calc();
+  }
+
+  function addPart()     { parts.push({ name: '', cost: '' }); renderParts(); }
+  function removePart(i) { parts.splice(i, 1); renderParts(); }
+
+  function toggleRefLbs() {
+    var rate = parseFloat(document.getElementById('ref-type').value) || 0;
+    document.getElementById('ref-lbs-row').style.display = rate > 0 ? 'flex' : 'none';
+    var sel = document.getElementById('ref-type');
+    var txt = sel.options[sel.selectedIndex].text.split('—');
+    document.getElementById('ref-rate-label').textContent = txt.length > 1 ? txt[1].trim() : '';
+    calc();
+  }
+
+  function calc() {
+    var techs    = parseFloat(document.getElementById('techs').value) || 1;
+    var laborHrs = parseFloat(document.getElementById('labor-hrs').value) || 0;
+    var refRate  = parseFloat(document.getElementById('ref-type').value) || 0;
+    var refLbs   = parseFloat(document.getElementById('ref-lbs').value) || 0;
+
+    var rawMaterial = 0;
+    parts.forEach(function(p) { rawMaterial += parseFloat(p.cost) || 0; });
+
+    var materialWithTax    = rawMaterial * 1.08;
+    var materialWithMargin = materialWithTax / 0.7;
+    var laborCost          = techs * laborHrs * 270;
+    var refCost            = refRate * refLbs;
+    var finalPrice         = materialWithMargin + laborCost + refCost;
+
+    document.getElementById('b-material').textContent  = fmt(rawMaterial);
+    document.getElementById('b-tax').textContent       = fmt(materialWithTax);
+    document.getElementById('b-subtotal').textContent  = fmt(materialWithMargin);
+    document.getElementById('b-labor-label').textContent = '+ Labor (' + techs + ' tech' + (techs !== 1 ? 's' : '') + ' \u00d7 ' + laborHrs + ' hr' + (laborHrs !== 1 ? 's' : '') + ' \u00d7 $270)';
+    document.getElementById('b-labor').textContent     = fmt(laborCost);
+    document.getElementById('b-final').textContent     = fmt(finalPrice);
+    document.getElementById('r-total').textContent     = fmtRound(finalPrice);
+
+    var refRow = document.getElementById('b-ref-row');
+    if (refCost > 0) {
+      var sel = document.getElementById('ref-type');
+      var typeLabel = sel.options[sel.selectedIndex].text.split('—')[0].trim();
+      document.getElementById('b-ref-label').textContent = '+ Refrigerant (' + typeLabel + ' \u2014 ' + refLbs + ' lb' + (refLbs !== 1 ? 's' : '') + ' \u00d7 $' + refRate + ')';
+      document.getElementById('b-ref').textContent = fmt(refCost);
+      refRow.style.display = 'flex';
+    } else {
+      refRow.style.display = 'none';
+    }
+  }
+
+  function copyQuote() {
+    var techs      = parseFloat(document.getElementById('techs').value) || 1;
+    var laborHrs   = parseFloat(document.getElementById('labor-hrs').value) || 0;
+    var refRate    = parseFloat(document.getElementById('ref-type').value) || 0;
+    var refLbs     = parseFloat(document.getElementById('ref-lbs').value) || 0;
+    var techName   = document.getElementById('tech-name').value.trim();
+    var jobAddress = document.getElementById('job-address').value.trim();
+    var poNumber   = document.getElementById('po-number').value.trim();
+    var sel        = document.getElementById('ref-type');
+    var dateStr    = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    var rawMaterial        = 0;
+    parts.forEach(function(p) { rawMaterial += parseFloat(p.cost) || 0; });
+    var materialWithTax    = rawMaterial * 1.08;
+    var materialWithMargin = materialWithTax / 0.7;
+    var laborCost          = techs * laborHrs * 270;
+    var refCost            = refRate * refLbs;
+    var finalPrice         = materialWithMargin + laborCost + refCost;
+
+    var txt = "HALE'S HEATING & COOLING — SERVICE QUOTE\nDate: " + dateStr + "\n" + '─'.repeat(40) + "\n";
+    if (techName)   txt += "Technician: " + techName + "\n";
+    if (jobAddress) txt += "Address: " + jobAddress + "\n";
+    if (poNumber)   txt += "PO / Supplier: " + poNumber + "\n";
+    if (techName || jobAddress || poNumber) txt += "\n";
+
+    parts.forEach(function(p) {
+      var c = parseFloat(p.cost) || 0;
+      if (c > 0) txt += (p.name || 'Material') + ': $' + c.toFixed(2) + "\n";
+    });
+
+    txt += "\nMaterial cost:               $" + rawMaterial.toFixed(2) + "\n";
+    txt += "Material + tax (\u00d71.08):      $" + materialWithTax.toFixed(2) + "\n";
+    txt += "Materials with margin (\u00f70.70): $" + materialWithMargin.toFixed(2) + "\n";
+    txt += "Labor (" + techs + " tech" + (techs!==1?'s':'') + " \u00d7 " + laborHrs + " hr" + (laborHrs!==1?'s':'') + " \u00d7 $270): $" + laborCost.toFixed(2) + "\n";
+    if (refCost > 0) txt += "Refrigerant (" + sel.options[sel.selectedIndex].text.split('—')[0].trim() + "): $" + refCost.toFixed(2) + "\n";
+    txt += '─'.repeat(40) + "\nTOTAL: " + fmtRound(finalPrice) + "\n\nHale's Heating & Cooling | 706-765-7219 | Watkinsville, GA\nThis estimate is subject to final diagnosis.\n";
+
+    navigator.clipboard.writeText(txt).then(function() {
+      var el = document.getElementById('copied-msg');
+      el.style.display = 'block';
+      setTimeout(function() { el.style.display = 'none'; }, 2000);
+    });
+  }
+
+  function saveToDrive() {
+    var overlay = document.getElementById('confirm-overlay');
+    overlay.style.display = 'flex';
+  }
+
+  function confirmSave(yes) {
+    var overlay = document.getElementById('confirm-overlay');
+    overlay.style.display = 'none';
+    if (!yes) return;
+    doSaveToDrive();
+  }
+
+  function doSaveToDrive() {
+    var techName   = document.getElementById('tech-name').value.trim();
+    var jobAddress = document.getElementById('job-address').value.trim();
+    var poNumber   = document.getElementById('po-number').value.trim();
+    var total      = document.getElementById('r-total').textContent;
+
+    var now = new Date();
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var dd   = String(now.getDate()).padStart(2, '0');
+    var mmm  = months[now.getMonth()];
+    var yyyy = now.getFullYear();
+    var datePart = dd + mmm + yyyy;
+
+    var fileparts = [datePart];
+    if (techName)   fileparts.push(techName.replace(/[^a-zA-Z0-9]/g, '_'));
+    if (jobAddress) fileparts.push(jobAddress.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 40));
+    var filename = fileparts.join('_') + '.pdf';
+
+    var statusEl = document.getElementById('status-msg');
+    statusEl.className = 'status-msg';
+    statusEl.style.display = 'block';
+    statusEl.textContent = 'Generating PDF...';
+
+    try {
+      var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'letter' });
+      var pageW  = doc.internal.pageSize.getWidth();
+      var margin = 48;
+      var y      = 48;
+
+      doc.setFillColor(13, 63, 117);
+      doc.rect(0, 0, pageW, 80, 'F');
+      doc.setFillColor(245, 166, 35);
+      doc.rect(0, 77, pageW, 3, 'F');
+
+      function finishPDF(logoBase64) {
+        if (logoBase64) {
+          try { doc.addImage(logoBase64, 'JPEG', margin, 8, 130, 60); } catch(e) {
+            doc.setFontSize(16); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+            doc.text("Hale's Heating & Cooling", margin, 32);
+            doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(180, 200, 230);
+            doc.text('HVAC EXPERTS — WATKINSVILLE, GA', margin, 46);
+          }
+        } else {
+          doc.setFontSize(16); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+          doc.text("Hale's Heating & Cooling", margin, 32);
+          doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(180, 200, 230);
+          doc.text('HVAC EXPERTS — WATKINSVILLE, GA', margin, 46);
+        }
+
+        doc.setTextColor(180, 200, 230);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.text('SERVICE QUOTE  —  ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }), pageW - margin, 50, { align: 'right' });
+
+        y = 100;
+
+        var infoLines = [];
+        if (techName)   infoLines.push({ label: 'Technician:', value: techName });
+        if (jobAddress) infoLines.push({ label: 'Job Address:', value: jobAddress });
+        if (poNumber)   infoLines.push({ label: 'PO / Supplier:', value: poNumber });
+
+        if (infoLines.length > 0) {
+          infoLines.forEach(function(row) {
+            doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(107, 118, 145);
+            doc.text(row.label, margin, y);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(26, 32, 48);
+            doc.text(row.value, margin + 90, y);
+            y += 18;
+          });
+          y += 10;
+        }
+
+        function sectionHead(label) {
+          doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(27, 94, 168);
+          doc.text(label.toUpperCase(), margin, y);
+          doc.setDrawColor(216, 222, 232);
+          doc.line(margin + doc.getTextWidth(label.toUpperCase()) + 6, y - 1, pageW - margin, y - 1);
+          y += 14;
+        }
+
+        function tableRow(left, right, muted) {
+          doc.setFontSize(11);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(muted ? 107 : 26, muted ? 118 : 32, muted ? 145 : 48);
+          doc.text(left, margin, y);
+          doc.setFont('helvetica', 'bold');
+          doc.setTextColor(26, 32, 48);
+          doc.text(right, pageW - margin, y, { align: 'right' });
+          y += 18;
+        }
+
+        var hasMaterials = parts.some(function(p) { return parseFloat(p.cost) > 0; });
+        if (hasMaterials) {
+          sectionHead('Materials');
+          parts.forEach(function(p) {
+            var c = parseFloat(p.cost) || 0;
+            if (c > 0) tableRow(p.name || 'Material', '$' + c.toFixed(2), false);
+          });
+          y += 8;
+        }
+
+        sectionHead('Breakdown');
+        tableRow('Material cost', document.getElementById('b-material').textContent, true);
+        tableRow('+ Tax (\u00d7 1.08)', document.getElementById('b-tax').textContent, true);
+        tableRow('Materials with margin (\u00f7 0.70)', document.getElementById('b-subtotal').textContent, true);
+        tableRow(document.getElementById('b-labor-label').textContent, document.getElementById('b-labor').textContent, true);
+
+        var refRow = document.getElementById('b-ref-row');
+        if (refRow.style.display !== 'none') {
+          tableRow(document.getElementById('b-ref-label').textContent, document.getElementById('b-ref').textContent, true);
+        }
+
+        y += 8;
+
+        doc.setFillColor(13, 63, 117);
+        doc.roundedRect(margin, y, pageW - margin * 2, 56, 8, 8, 'F');
+        doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(180, 200, 230);
+        doc.text('TOTAL QUOTE', margin + 20, y + 22);
+        doc.setFontSize(28); doc.setFont('helvetica', 'bold'); doc.setTextColor(245, 166, 35);
+        doc.text(total, pageW - margin - 20, y + 38, { align: 'right' });
+        y += 72;
+
+        doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(150, 150, 150);
+        doc.text("Hale's Heating & Cooling  \u2022  706-765-7219  \u2022  Watkinsville, GA  \u2022  This estimate is subject to final diagnosis.", pageW / 2, y, { align: 'center' });
+
+        var base64 = doc.output('datauristring').split(',')[1];
+
+        if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+          statusEl.className = 'status-msg error';
+          statusEl.textContent = 'Add your Apps Script URL to the widget first.';
+          return;
+        }
+
+        statusEl.textContent = 'Uploading to Drive...';
+
+        var techs2    = parseFloat(document.getElementById('techs').value) || 1;
+        var laborHrs2 = parseFloat(document.getElementById('labor-hrs').value) || 0;
+        var refRate2  = parseFloat(document.getElementById('ref-type').value) || 0;
+        var refLbs2   = parseFloat(document.getElementById('ref-lbs').value) || 0;
+        var sel2      = document.getElementById('ref-type');
+        var refType2  = refRate2 > 0 ? sel2.options[sel2.selectedIndex].text.split('—')[0].trim() : '';
+        var rawMat2   = 0;
+        parts.forEach(function(p) { rawMat2 += parseFloat(p.cost) || 0; });
+        var matTax2   = rawMat2 * 1.08;
+        var matMarg2  = matTax2 / 0.7;
+        var labor2    = techs2 * laborHrs2 * 270;
+        var ref2      = refRate2 * refLbs2;
+        var finalPrice2 = matMarg2 + labor2 + ref2;
+        var partsSummary = parts.filter(function(p){ return parseFloat(p.cost) > 0; })
+          .map(function(p){ return (p.name || 'Material') + ' ($' + parseFloat(p.cost).toFixed(2) + ')'; })
+          .join(', ');
+
+        var sheetRow = {
+          date:               new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          technician:         techName,
+          address:            jobAddress,
+          po:                 poNumber,
+          parts:              partsSummary,
+          materialCost:       rawMat2.toFixed(2),
+          materialWithTax:    matTax2.toFixed(2),
+          materialWithMargin: matMarg2.toFixed(2),
+          laborTechs:         techs2,
+          laborHrs:           laborHrs2,
+          laborCost:          labor2.toFixed(2),
+          refrigerantType:    refType2,
+          refrigerantLbs:     refLbs2,
+          refrigerantCost:    ref2.toFixed(2),
+          total:              Math.round(finalPrice2),
+          filename:           filename
+        };
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ filename: filename, pdf: base64, sheetRow: sheetRow })
+        })
+        .then(function(resp) { return resp.json(); })
+        .then(function(result) {
+          if (result.status === 'ok') {
+            statusEl.className = 'status-msg success';
+            statusEl.textContent = 'Saved to Google Drive!';
+          } else {
+            throw new Error(result.message || 'Unknown error');
+          }
+          setTimeout(function() { statusEl.style.display = 'none'; }, 4000);
+        })
+        .catch(function(err) {
+          console.error('Upload error:', err);
+          statusEl.className = 'status-msg error';
+          statusEl.textContent = 'Upload failed. Check your Apps Script URL.';
+          setTimeout(function() { statusEl.style.display = 'none'; }, 4000);
+        });
+      }
+
+      var pageLogoImg = document.querySelector('.site-header img');
+      if (pageLogoImg && pageLogoImg.complete && pageLogoImg.naturalWidth > 0) {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width  = pageLogoImg.naturalWidth;
+          canvas.height = pageLogoImg.naturalHeight;
+          canvas.getContext('2d').drawImage(pageLogoImg, 0, 0);
+          finishPDF(canvas.toDataURL('image/jpeg'));
+        } catch(e) {
+          finishPDF(null);
+        }
+      } else {
+        finishPDF(null);
+      }
+
+    } catch(e) {
+      statusEl.className = 'status-msg error';
+      statusEl.textContent = 'PDF generation failed: ' + e.message;
+      setTimeout(function() { statusEl.style.display = 'none'; }, 5000);
+    }
+  }
+
+  function resetQuote() {
+    parts = [{ name: '', cost: '' }];
+    document.getElementById('tech-name').value   = '';
+    document.getElementById('job-address').value = '';
+    document.getElementById('po-number').value   = '';
+    document.getElementById('techs').value       = 1;
+    document.getElementById('labor-hrs').value   = 1;
+    document.getElementById('ref-type').value    = 0;
+    document.getElementById('ref-lbs').value     = 1;
+    document.getElementById('ref-lbs-row').style.display = 'none';
+    renderParts();
+  }
+
+  renderParts();
+</script>
+
+<!-- ====== ON-CALL SCHEDULE SCRIPT ====== -->
+<script>
+  var OC_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiOnz8Kx4Hdj_L2L3ncjMH9GNLkoR2HTw0Q4CczZa0sPc1V-5MvSo4glX1xdVOPu0/exec';
+
+  // Rotation: Chris=0, Robert=1, Justin=2
+  // Starting Saturday March 28 2026 = Robert (index 1)
+  var OC_TECHS      = ['Chris', 'Robert', 'Justin'];
+  var OC_START_SAT  = new Date('2026-03-28T12:00:00');
+  var OC_START_IDX  = 1;
+  var OC_WEEKS      = 12; // how many weeks to show
+
+  var ocOverrides  = {};
+  var ocChangelog  = [];
+
+  // ── Helpers ──────────────────────────────────────────────
+
+  function ocKey(sat) {
+    var y = sat.getFullYear();
+    var m = String(sat.getMonth() + 1).padStart(2, '0');
+    var d = String(sat.getDate()).padStart(2, '0');
+    return y + '_' + m + '_' + d;
+  }
+
+  function ocFmt(d) {
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function ocFmtLabel(sat, sun) {
+    return 'Sat ' + ocFmt(sat) + ' \u2013 Sun ' + ocFmt(sun);
+  }
+
+  function ocFmtTimestamp(ts) {
+    var d = new Date(ts);
+    if (isNaN(d)) return ts;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      + ' ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function ocGetWeekends() {
+    var weeks = [];
+    for (var i = 0; i < OC_WEEKS; i++) {
+      var sat = new Date(OC_START_SAT);
+      sat.setDate(sat.getDate() + i * 7);
+      var sun = new Date(sat);
+      sun.setDate(sun.getDate() + 1);
+      var key        = ocKey(sat);
+      var basePerson = OC_TECHS[(OC_START_IDX + i) % 3];
+      weeks.push({ sat: sat, sun: sun, key: key, basePerson: basePerson });
+    }
+    return weeks;
+  }
+
+  function ocCurrentWeekendKey() {
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    var weeks = ocGetWeekends();
+    for (var i = 0; i < weeks.length; i++) {
+      var sat = new Date(weeks[i].sat); sat.setHours(0, 0, 0, 0);
+      var sun = new Date(weeks[i].sun); sun.setHours(23, 59, 59, 0);
+      // "This weekend" = today is Fri/Sat/Sun of that weekend
+      var fri = new Date(sat); fri.setDate(fri.getDate() - 1);
+      if (today >= fri && today <= sun) return weeks[i].key;
+    }
+    // Fallback: first future Saturday
+    for (var j = 0; j < weeks.length; j++) {
+      var s = new Date(weeks[j].sat); s.setHours(0, 0, 0, 0);
+      if (s >= today) return weeks[j].key;
+    }
+    return weeks[0].key;
+  }
+
+  // ── Render ───────────────────────────────────────────────
+
+  function ocRender() {
+    var weeks       = ocGetWeekends();
+    var currentKey  = ocCurrentWeekendKey();
+    var today       = new Date(); today.setHours(0, 0, 0, 0);
+
+    // Hero
+    var heroWeek = weeks.find(function(w) { return w.key === currentKey; }) || weeks[0];
+    var heroPerson = (ocOverrides[heroWeek.key] && ocOverrides[heroWeek.key].person)
+      ? ocOverrides[heroWeek.key].person
+      : heroWeek.basePerson;
+    document.getElementById('oc-hero-name').textContent  = heroPerson;
+    document.getElementById('oc-hero-dates').textContent = ocFmtLabel(heroWeek.sat, heroWeek.sun);
+
+    // Schedule list
+    var listEl = document.getElementById('oc-schedule-list');
+    var html = '';
+    weeks.forEach(function(w) {
+      var sun = new Date(w.sun); sun.setHours(23, 59, 59, 0);
+      var isPast    = sun < today;
+      var isCurrent = w.key === currentKey;
+      var override  = ocOverrides[w.key];
+      var person    = override ? override.person : w.basePerson;
+      var isSwap    = override && override.person !== w.basePerson;
+
+      var rowClass = 'oc-row' + (isCurrent ? ' is-current' : '') + (isPast ? ' is-past' : '');
+      html += '<div class="' + rowClass + '">';
+      html += '<span class="oc-dates">' + ocFmtLabel(w.sat, w.sun) + '</span>';
+      html += '<span class="oc-person">' + person + '</span>';
+      if (isCurrent) html += '<span class="oc-badge oc-badge-current">This Weekend</span>';
+      if (isSwap)    html += '<span class="oc-badge oc-badge-swap">Swap (was ' + w.basePerson + ')</span>';
+      html += '</div>';
+    });
+    listEl.innerHTML = html || '<div class="oc-empty">No upcoming weekends found.</div>';
+
+    // Weekend dropdown (current + future only)
+    var selEl = document.getElementById('oc-weekend-select');
+    var selHtml = '';
+    weeks.forEach(function(w) {
+      var sun = new Date(w.sun); sun.setHours(23, 59, 59, 0);
+      if (sun >= today) {
+        selHtml += '<option value="' + w.key + '">' + ocFmtLabel(w.sat, w.sun) + '</option>';
+      }
+    });
+    selEl.innerHTML = selHtml;
+
+    // Changelog
+    var logEl = document.getElementById('oc-changelog');
+    if (!ocChangelog || ocChangelog.length === 0) {
+      logEl.innerHTML = '<div class="oc-empty">No changes recorded yet.</div>';
+    } else {
+      var logHtml = '';
+      var sorted = ocChangelog.slice().reverse();
+      sorted.forEach(function(entry) {
+        logHtml += '<div class="oc-log-item">';
+        logHtml += '<div class="oc-log-top">';
+        logHtml += '<span class="oc-log-who">' + (entry.by || 'Unknown') + '</span>';
+        logHtml += '<span class="oc-log-when">' + ocFmtTimestamp(entry.timestamp) + '</span>';
+        logHtml += '</div>';
+        logHtml += '<div class="oc-log-detail">';
+        logHtml += entry.weekendLabel + ': <strong>' + entry.from + '</strong> &rarr; <strong>' + entry.to + '</strong>';
+        logHtml += '</div>';
+        if (entry.note) logHtml += '<div class="oc-log-note">' + entry.note + '</div>';
+        logHtml += '</div>';
+      });
+      logEl.innerHTML = logHtml;
+    }
+  }
+
+  // ── Load from Apps Script ────────────────────────────────
+
+  function ocLoad() {
+    if (!OC_SCRIPT_URL || OC_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+      document.getElementById('oc-setup-notice').style.display = 'block';
+      ocRender();
+      return;
+    }
+    fetch(OC_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'get' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok') {
+        ocOverrides = data.overrides || {};
+        ocChangelog = data.changelog || [];
+      }
+      ocRender();
+    })
+    .catch(function() {
+      ocRender(); // Render with base rotation if fetch fails
+    });
+  }
+
+  // ── Submit Change ────────────────────────────────────────
+
+  function ocSubmitChange() {
+    var yourName = document.getElementById('oc-your-name').value.trim();
+    var weekendKey = document.getElementById('oc-weekend-select').value;
+    var assignTo = document.getElementById('oc-assign-to').value;
+    var note = document.getElementById('oc-note').value.trim();
+    var statusEl = document.getElementById('oc-status');
+    var submitBtn = document.getElementById('oc-submit-btn');
+
+    if (!yourName) {
+      statusEl.className = 'oc-status error';
+      statusEl.textContent = 'Please enter your name.';
+      return;
+    }
+    if (!weekendKey || !assignTo) {
+      statusEl.className = 'oc-status error';
+      statusEl.textContent = 'Please select a weekend and a tech.';
+      return;
+    }
+
+    var weeks = ocGetWeekends();
+    var week = weeks.find(function(w) { return w.key === weekendKey; });
+    var weekendLabel = week ? ocFmtLabel(week.sat, week.sun) : weekendKey;
+    var fromPerson = (ocOverrides[weekendKey] && ocOverrides[weekendKey].person)
+      ? ocOverrides[weekendKey].person
+      : (week ? week.basePerson : '?');
+
+    if (fromPerson === assignTo) {
+      statusEl.className = 'oc-status error';
+      statusEl.textContent = assignTo + ' is already on call that weekend.';
+      return;
+    }
+
+    if (!OC_SCRIPT_URL || OC_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+      statusEl.className = 'oc-status error';
+      statusEl.textContent = 'Apps Script URL not configured yet.';
+      return;
+    }
+
+    submitBtn.disabled = true;
+    statusEl.className = 'oc-status';
+    statusEl.textContent = 'Saving...';
+    statusEl.style.display = 'block';
+
+    fetch(OC_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action:        'update',
+        by:            yourName,
+        weekendKey:    weekendKey,
+        weekendLabel:  weekendLabel,
+        from:          fromPerson,
+        to:            assignTo,
+        note:          note
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.status === 'ok') {
+        statusEl.className = 'oc-status success';
+        statusEl.textContent = 'Saved!';
+        document.getElementById('oc-your-name').value = '';
+        document.getElementById('oc-note').value = '';
+        ocLoad();
+      } else {
+        throw new Error(result.message || 'Unknown error');
+      }
+      submitBtn.disabled = false;
+    })
+    .catch(function(err) {
+      statusEl.className = 'oc-status error';
+      statusEl.textContent = 'Save failed. Check your Apps Script URL.';
+      submitBtn.disabled = false;
+    });
+  }
+
+  ocLoad();
+</script>
+
+</body>
+</html>
