@@ -550,7 +550,11 @@
     </div>
     <div class="ins-step">
       <div class="ins-num">5</div>
-      <div class="ins-text">Use <strong>Copy Summary</strong> to copy a text breakdown to your clipboard, or <strong>Save to Drive</strong> to generate a PDF and save it to Google Drive.</div>
+      <div class="ins-text">Use <strong>Copy Summary</strong> to copy a plain text breakdown to your clipboard to paste into a text or email.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">6</div>
+      <div class="ins-text">Tap <strong>Save to Drive</strong> to submit the quote. This does two things automatically: it generates a <strong>PDF of the quote</strong> and saves it to Google Drive so the office or anyone on the team can pull it up later, and it logs a row to a <strong>Google Sheet</strong> with all the job details — date, tech, address, materials, labor, and total — so there's a running record of every quote ever submitted.</div>
     </div>
     <div class="ins-note">
       <strong>Formula:</strong> Material cost &rarr; add 8% tax &rarr; divide by 0.70 for margin &rarr; add labor &rarr; add refrigerant = customer quote.
@@ -579,6 +583,10 @@
     <div class="ins-note">
       <strong>Note:</strong> The schedule follows a rotating order of Chris &rarr; Robert &rarr; Justin. Swaps only affect the specific weekend selected — the base rotation stays the same for all other weekends.
     </div>
+  </div>
+
+  <div class="ins-note" style="margin-top:4px;">
+    These tools are meant to help systemize our work and make things easier for everyone on the team. Any widget can be updated or changed at any time — we are always looking to improve. If you have a suggestion for an edit to an existing tool or an idea for a new one, reach out to <strong style="color:#e5e7eb;">Chris</strong>.
   </div>
 
 </div>
@@ -799,6 +807,7 @@
     <div class="field">
       <label>Condensate Drain Type</label>
       <select id="in_drain">
+        <option value="none">Not Checked</option>
         <option value="pvc">PVC Drain Line</option>
         <option value="pump">Condensate Pump</option>
       </select>
@@ -1267,9 +1276,11 @@
             }
         }
 
-        indoor += inDrain === 'pump'
-            ? `Condensate pump was cleaned out, tested for operation, and treated with drain tablets. `
-            : `PVC condensate drain line was flushed and treated with drain tablets. `;
+        if (inDrain === 'pump') {
+            indoor += `Condensate pump was cleaned out, tested for operation, and treated with drain tablets. `;
+        } else if (inDrain === 'pvc') {
+            indoor += `PVC condensate drain line was flushed and treated with drain tablets. `;
+        }
 
         if (hasHeat) {
             indoor += inHeatSt === 'properly'
