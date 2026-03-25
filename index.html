@@ -405,6 +405,66 @@
     #tab-oncall .oc-log-note { color: #6b7280; font-size: 0.78rem; margin-top: 2px; font-style: italic; }
     #tab-oncall .oc-empty { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
     #tab-oncall .oc-loading { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
+
+    /* ====== INSTRUCTIONS TAB ====== */
+    #tab-instructions {
+      background: #111827;
+      color: #e5e7eb;
+      min-height: calc(100vh - 107px);
+      padding: 20px;
+    }
+    #tab-instructions .ins-wrap { max-width: 700px; margin: 0 auto; }
+    #tab-instructions .ins-tool {
+      background: #1f2937;
+      border: 1px solid #1a3a5c;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    #tab-instructions .ins-tool-title {
+      color: #4A90D9;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1a3a5c;
+    }
+    #tab-instructions .ins-step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+    #tab-instructions .ins-step:last-child { margin-bottom: 0; }
+    #tab-instructions .ins-num {
+      background: #0D3F75;
+      color: #F5A623;
+      font-weight: 700;
+      font-size: 0.8rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    #tab-instructions .ins-text { font-size: 0.9rem; color: #d1d5db; line-height: 1.5; }
+    #tab-instructions .ins-text strong { color: #e5e7eb; }
+    #tab-instructions .ins-note {
+      background: #0f172a;
+      border-left: 3px solid #F5A623;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+      margin-top: 14px;
+      font-size: 0.82rem;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+    #tab-instructions .ins-note strong { color: #F5A623; }
     #tab-oncall .oc-setup-notice {
       background: #1f2937;
       border: 1px solid #f59e0b44;
@@ -435,10 +495,95 @@
 
 <!-- ====== TAB NAV ====== -->
 <nav class="tab-nav">
+  <button class="tab-btn" onclick="showTab('instructions', this)">Instructions</button>
   <button class="tab-btn active" onclick="showTab('notes', this)">Service Call Notes</button>
   <button class="tab-btn" onclick="showTab('quotes', this)">Quote Builder</button>
   <button class="tab-btn" onclick="showTab('oncall', this)">On-Call Schedule</button>
 </nav>
+
+<!-- ====== INSTRUCTIONS TAB ====== -->
+<div id="tab-instructions" class="tab-content">
+<div class="ins-wrap">
+
+  <!-- Service Call Notes -->
+  <div class="ins-tool">
+    <div class="ins-tool-title">Service Call Notes</div>
+    <div class="ins-step">
+      <div class="ins-num">1</div>
+      <div class="ins-text">Fill out the <strong>Indoor Unit</strong> section — year, brand, tonnage, unit type, location, filter info, coil and blower condition, capacitor readings, drain type, and temperature split.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">2</div>
+      <div class="ins-text">Fill out the <strong>Outdoor Unit</strong> section — year, brand, tonnage, unit type, coil condition, contactor, capacitor readings, and refrigerant status.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">3</div>
+      <div class="ins-text">The <strong>Generated Note</strong> at the bottom updates in real time as you fill in fields. When done, tap <strong>Copy to Clipboard</strong> and paste it wherever you need it.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">4</div>
+      <div class="ins-text">Tap <strong>Clear Form</strong> to reset everything for the next call.</div>
+    </div>
+    <div class="ins-note">
+      <strong>Tips:</strong> Selecting <strong>Furnace</strong> as the unit type hides tonnage and shows BTU instead, and adds an indoor coil section. Selecting <strong>Straight AC</strong> as the outdoor type hides the defrost field. The blower capacitor and heat strips sections can be toggled on or off with the checkboxes.
+    </div>
+  </div>
+
+  <!-- Quote Builder -->
+  <div class="ins-tool">
+    <div class="ins-tool-title">Quote Builder</div>
+    <div class="ins-step">
+      <div class="ins-num">1</div>
+      <div class="ins-text">Enter the <strong>Job Info</strong> — technician name, job address, and PO number or supplier. These show up on the PDF and copied summary.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">2</div>
+      <div class="ins-text">Add each <strong>Material</strong> with a description and cost. Use <strong>+ Add material</strong> for multiple items. The formula automatically applies tax and margin on top of material costs.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">3</div>
+      <div class="ins-text">Enter the number of <strong>techs</strong> and <strong>hours on the job</strong>. Labor is calculated at $270 per tech per hour.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">4</div>
+      <div class="ins-text">If refrigerant was added, select the <strong>type</strong> and enter the <strong>pounds</strong>. The cost is added to the total automatically.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">5</div>
+      <div class="ins-text">Use <strong>Copy Summary</strong> to copy a text breakdown to your clipboard, or <strong>Save to Drive</strong> to generate a PDF and save it to Google Drive.</div>
+    </div>
+    <div class="ins-note">
+      <strong>Formula:</strong> Material cost &rarr; add 8% tax &rarr; divide by 0.70 for margin &rarr; add labor &rarr; add refrigerant = customer quote.
+    </div>
+  </div>
+
+  <!-- On-Call Schedule -->
+  <div class="ins-tool">
+    <div class="ins-tool-title">On-Call Schedule</div>
+    <div class="ins-step">
+      <div class="ins-num">1</div>
+      <div class="ins-text">The <strong>top card</strong> always shows who is on call the current weekend at a glance.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">2</div>
+      <div class="ins-text">The <strong>schedule list</strong> shows the next 12 weekends. Weekends where someone switched are marked with an orange <strong>Swap</strong> badge showing who was originally scheduled.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">3</div>
+      <div class="ins-text">To make a change, scroll to <strong>Make a Change</strong>, enter your name, select the weekend, pick who should be on call, and add an optional note explaining the reason. Tap <strong>Save Change</strong>.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">4</div>
+      <div class="ins-text">All changes are saved live and visible to everyone on the team instantly. The <strong>Change Log</strong> at the bottom keeps a full record of every change made and who made it.</div>
+    </div>
+    <div class="ins-note">
+      <strong>Note:</strong> The schedule follows a rotating order of Chris &rarr; Robert &rarr; Justin. Swaps only affect the specific weekend selected — the base rotation stays the same for all other weekends.
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- ====== END INSTRUCTIONS TAB ====== -->
 
 <!-- ====== SERVICE CALL NOTES TAB ====== -->
 <div id="tab-notes" class="tab-content active">
