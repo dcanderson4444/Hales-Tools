@@ -630,7 +630,9 @@
           <option>Ruud</option>
           <option>Amana</option>
           <option>Daikin</option>
+          <option value="Other">Other</option>
         </select>
+        <input type="text" id="in_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;">
       </div>
     </div>
 
@@ -689,7 +691,9 @@
             <option>Ruud</option>
             <option>Amana</option>
             <option>Daikin</option>
+            <option value="Other">Other</option>
           </select>
+          <input type="text" id="in_coil_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;">
         </div>
       </div>
       <div class="field">
@@ -881,7 +885,9 @@
           <option>Ruud</option>
           <option>Amana</option>
           <option>Daikin</option>
+          <option value="Other">Other</option>
         </select>
+        <input type="text" id="out_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;">
       </div>
     </div>
 
@@ -1192,6 +1198,20 @@
         el.addEventListener('input', generateNote);
     });
 
+    // Show/hide Other brand text inputs
+    document.getElementById('in_brand').addEventListener('change', function() {
+        document.getElementById('in_brand_other').style.display = this.value === 'Other' ? '' : 'none';
+        generateNote();
+    });
+    document.getElementById('in_coil_brand').addEventListener('change', function() {
+        document.getElementById('in_coil_brand_other').style.display = this.value === 'Other' ? '' : 'none';
+        generateNote();
+    });
+    document.getElementById('out_brand').addEventListener('change', function() {
+        document.getElementById('out_brand_other').style.display = this.value === 'Other' ? '' : 'none';
+        generateNote();
+    });
+
     document.getElementById('in_type').addEventListener('change', function () {
         const isFurnace = this.value === 'furnace';
         document.getElementById('in_tons_field').style.display = isFurnace ? 'none' : '';
@@ -1230,7 +1250,7 @@
 
     function generateNote() {
         const inYear        = v('in_year')          || 'XXXX';
-        const inBrand       = v('in_brand');
+        const inBrand       = v('in_brand') === 'Other' ? (v('in_brand_other') || 'Other') : v('in_brand');
         const inTons        = v('in_tons');
         const inType        = v('in_type');
         const inConfig      = v('in_config');
@@ -1256,7 +1276,7 @@
         const isFurnace = inType === 'furnace';
         const inBtu = v('in_btu');
         const inCoilYear  = v('in_coil_year')  || 'XXXX';
-        const inCoilBrand = v('in_coil_brand');
+        const inCoilBrand = v('in_coil_brand') === 'Other' ? (v('in_coil_brand_other') || 'Other') : v('in_coil_brand');
         const inCoilTons  = v('in_coil_tons');
         const inSize = isFurnace ? `${inBtu} BTU` : `${inTons} ton`;
 
@@ -1299,7 +1319,7 @@
         if (inNotes) indoor += ` ${inNotes}`;
 
         const outYear       = v('out_year')         || 'XXXX';
-        const outBrand      = v('out_brand');
+        const outBrand      = v('out_brand') === 'Other' ? (v('out_brand_other') || 'Other') : v('out_brand');
         const outTons       = v('out_tons');
         const outType       = v('out_type');
         const outCoil       = v('out_coil');
