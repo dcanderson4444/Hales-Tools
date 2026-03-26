@@ -56,6 +56,10 @@
     }
     .tab-btn:hover { color: rgba(255,255,255,0.85); }
     .tab-btn.active { color: #fff; border-bottom-color: #F5A623; }
+    @media (max-width: 600px) {
+      .tab-nav { flex-wrap: wrap; }
+      .tab-btn { flex: 1 1 50%; text-align: center; }
+    }
 
     /* ====== TAB CONTENT ====== */
     .tab-content { display: none; }
