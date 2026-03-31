@@ -419,6 +419,54 @@
     #tab-oncall .oc-empty { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
     #tab-oncall .oc-loading { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
 
+    /* ====== INSTALL CLOSEOUT TAB ====== */
+    #tab-install { background: #111827; color: #e5e7eb; min-height: calc(100vh - 107px); }
+    #tab-install .ic-wrap { max-width: 700px; margin: 0 auto; padding: 20px; }
+    #tab-install h1.ic-title { text-align: center; color: #4A90D9; margin-bottom: 24px; font-size: 1.5rem; letter-spacing: 1px; }
+    #tab-install .ic-card { background: #1f2937; border-radius: 10px; padding: 18px; border: 1px solid #1a3a5c; margin-bottom: 20px; }
+    #tab-install .ic-card h2 { color: #4A90D9; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #1a3a5c; }
+    #tab-install .ic-field { margin-bottom: 14px; }
+    #tab-install .ic-field label { display: block; font-size: 0.78rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    #tab-install .ic-field input[type="text"], #tab-install .ic-field select, #tab-install .ic-field textarea { width: 100%; padding: 8px 10px; background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 6px; font-size: 0.95rem; }
+    #tab-install .ic-field input[type="text"]:focus, #tab-install .ic-field select:focus, #tab-install .ic-field textarea:focus { outline: none; border-color: #4A90D9; }
+    #tab-install .ic-field textarea { min-height: 90px; resize: vertical; font-family: inherit; }
+    #tab-install .ic-check-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #1a3a5c; cursor: pointer; }
+    #tab-install .ic-check-item:last-child { border-bottom: none; }
+    #tab-install .ic-check-item input[type="checkbox"] { display: none; }
+    #tab-install .ic-check-box { width: 22px; height: 22px; border: 2px solid #374151; border-radius: 5px; flex-shrink: 0; margin-top: 1px; transition: background 0.15s, border-color 0.15s; }
+    #tab-install .ic-check-box::after { content: ''; display: none; width: 6px; height: 10px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); margin: 3px auto; }
+    #tab-install .ic-check-item.checked .ic-check-box { background: #22c55e; border-color: #22c55e; }
+    #tab-install .ic-check-item.checked .ic-check-box::after { display: block; }
+    #tab-install .ic-check-item.checked .ic-check-label { color: #9ca3af; text-decoration: line-through; }
+    #tab-install .ic-check-label { font-size: 0.95rem; color: #e5e7eb; line-height: 1.4; flex: 1; }
+    #tab-install .ic-drain-toggle { display: flex; gap: 10px; margin-bottom: 14px; }
+    #tab-install .ic-drain-btn { flex: 1; padding: 9px; border: 2px solid #374151; border-radius: 8px; background: #111827; color: #9ca3af; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.15s; }
+    #tab-install .ic-drain-btn.active { border-color: #4A90D9; color: #4A90D9; background: #1a3a5c; }
+    #tab-install .ic-pump-fields { display: none; }
+    #tab-install .ic-pump-fields.show { display: block; }
+    #tab-install .ic-pvc-fields { display: block; }
+    #tab-install .ic-output-box { background: #111827; border: 1px solid #374151; border-radius: 8px; padding: 14px; font-size: 0.9rem; line-height: 1.7; color: #d1d5db; white-space: pre-wrap; min-height: 80px; }
+    #tab-install .ic-progress-wrap { margin-bottom: 16px; }
+    #tab-install .ic-progress-label { font-size: 0.78rem; color: #9ca3af; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    #tab-install .ic-progress-bar { height: 6px; background: #374151; border-radius: 3px; overflow: hidden; }
+    #tab-install .ic-progress-fill { height: 100%; background: #22c55e; border-radius: 3px; transition: width 0.3s; }
+    #tab-install .ic-btn-row { display: flex; gap: 10px; margin-top: 16px; }
+    #tab-install .ic-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+    #tab-install .ic-btn:hover { opacity: 0.85; }
+    #tab-install .ic-btn-copy { background: #4A90D9; color: #fff; }
+    #tab-install .ic-btn-clear { background: #374151; color: #e5e7eb; }
+    #tab-install .ic-photo-item { padding: 12px 0; border-bottom: 1px solid #1a3a5c; }
+    #tab-install .ic-photo-item:last-child { border-bottom: none; }
+    #tab-install .ic-photo-label { font-size: 0.85rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    #tab-install .ic-photo-upload-btn { display: block; background: #111827; border: 2px dashed #374151; border-radius: 8px; padding: 14px; text-align: center; color: #4A90D9; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s; }
+    #tab-install .ic-photo-upload-btn:hover { border-color: #4A90D9; }
+    #tab-install .ic-photo-upload-btn.uploaded { border-color: #22c55e; color: #22c55e; border-style: solid; }
+    #tab-install .ic-photo-upload-btn input[type="file"] { display: none; }
+    #tab-install .ic-photo-preview { margin-top: 8px; }
+    #tab-install .ic-photo-preview img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; display: block; margin-bottom: 4px; }
+    #tab-install .ic-complete-banner { display: none; background: #14532d; border: 1px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; color: #86efac; font-weight: 600; font-size: 0.95rem; margin-bottom: 16px; }
+    #tab-install .ic-complete-banner.show { display: block; }
+
     /* ====== INSTRUCTIONS TAB ====== */
     #tab-instructions {
       background: #111827;
@@ -512,6 +560,7 @@
   <button class="tab-btn active" onclick="showTab('notes', this)">Service Call Notes</button>
   <button class="tab-btn" onclick="showTab('quotes', this)">Quote Builder</button>
   <button class="tab-btn" onclick="showTab('oncall', this)">On-Call Schedule</button>
+  <button class="tab-btn" onclick="showTab('install', this)">Install Close Out</button>
 </nav>
 
 <!-- ====== INSTRUCTIONS TAB ====== -->
@@ -1192,6 +1241,130 @@
 </div>
 </div>
 <!-- ====== END ON-CALL TAB ====== -->
+
+<!-- ====== INSTALL CLOSE OUT TAB ====== -->
+<div id="tab-install" class="tab-content">
+<div class="ic-wrap">
+  <h1 class="ic-title">Install Close Out</h1>
+
+  <div class="ic-card">
+    <h2>Job Info</h2>
+    <div class="ic-field"><label>Installer Name</label><input type="text" id="ic_installer_name" placeholder="Your name" oninput="icUpdateOutput()"></div>
+    <div class="ic-field"><label>Customer Address</label><input type="text" id="ic_job_address" placeholder="123 Main St" oninput="icUpdateOutput()"></div>
+    <div class="ic-field">
+      <label>Unit Location</label>
+      <select id="ic_unit_location" onchange="icUpdateOutput()">
+        <option value="attic">Attic</option>
+        <option value="closet">Closet</option>
+        <option value="garage">Garage</option>
+        <option value="basement">Basement</option>
+        <option value="crawl space">Crawl Space</option>
+        <option value="utility room">Utility Room</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="ic-field"><label>Part of Home Served</label><input type="text" id="ic_home_area" placeholder="e.g. Upstairs, Downstairs, Whole Home" oninput="icUpdateOutput()"></div>
+  </div>
+
+  <div class="ic-progress-wrap">
+    <div class="ic-progress-label"><span>Checklist Progress</span><span id="ic-progress-text">0 of 0 complete</span></div>
+    <div class="ic-progress-bar"><div class="ic-progress-fill" id="ic-progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div class="ic-complete-banner" id="ic-complete-banner">All items verified — ready to close out.</div>
+
+  <div class="ic-card">
+    <h2>Indoor Unit</h2>
+    <div class="ic-field">
+      <label>Unit Type</label>
+      <select id="ic_unit_type" onchange="icOnUnitTypeChange()">
+        <option value="heat pump">Heat Pump</option>
+        <option value="straight ac">Straight AC</option>
+        <option value="furnace">Furnace</option>
+      </select>
+    </div>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Unit verified level</span></div>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Primary drain connected to correct port</span></div>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Pan float switch tested — unit shuts off</span></div>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">SS2 switch tested — unit shuts off</span></div>
+    <div class="ic-check-item" id="ic-ptrap-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">P-trap insulated</span></div>
+  </div>
+
+  <div class="ic-card">
+    <h2>Condensate Drain</h2>
+    <div class="ic-drain-toggle">
+      <div class="ic-drain-btn active" id="ic-drain-pvc" onclick="icSetDrain('pvc')">PVC Drain</div>
+      <div class="ic-drain-btn" id="ic-drain-pump" onclick="icSetDrain('pump')">Condensate Pump</div>
+    </div>
+    <div class="ic-pump-fields" id="ic-pump-fields">
+      <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Loop present in Beckett hose</span></div>
+      <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Cardboard removed from condensate pump</span></div>
+    </div>
+    <div class="ic-pvc-fields" id="ic-pvc-fields">
+      <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">PVC drain verified draining properly</span></div>
+    </div>
+  </div>
+
+  <div class="ic-card">
+    <h2>Electrical</h2>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Breaker size sufficient for heat kit</span></div>
+  </div>
+
+  <div class="ic-card">
+    <h2>Thermostat & Filter</h2>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Thermostat programmed and customer shown how to use it</span></div>
+    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Filter installed</span></div>
+    <div class="ic-field" style="margin-top:14px;"><label>Filter Size</label><input type="text" id="ic_filter_size" placeholder="e.g. 20x20x1" oninput="icUpdateOutput()"></div>
+  </div>
+
+  <div class="ic-card">
+    <h2>Additional Notes <span style="color:#6b7280;font-size:0.75rem;font-weight:400;text-transform:none;letter-spacing:0;">(Optional)</span></h2>
+    <div class="ic-field"><textarea id="ic_additional_notes" placeholder="Any notes about the install..." oninput="icUpdateOutput()"></textarea></div>
+  </div>
+
+  <div class="ic-card">
+    <h2>Required Photos</h2>
+    <div class="ic-photo-item" id="ic-photo-indoor">
+      <div class="ic-photo-label">Indoor Unit Installed</div>
+      <label class="ic-photo-upload-btn" for="ic_photo_indoor"><span id="ic-photo-indoor-text">Tap to upload photo</span><input type="file" id="ic_photo_indoor" accept="image/*" capture="environment" onchange="icPhotoSelected(this, 'indoor')"></label>
+      <div class="ic-photo-preview" id="ic-preview-indoor"></div>
+    </div>
+    <div class="ic-photo-item" id="ic-photo-outdoor">
+      <div class="ic-photo-label">Outdoor Unit Installed</div>
+      <label class="ic-photo-upload-btn" for="ic_photo_outdoor"><span id="ic-photo-outdoor-text">Tap to upload photo</span><input type="file" id="ic_photo_outdoor" accept="image/*" capture="environment" onchange="icPhotoSelected(this, 'outdoor')"></label>
+      <div class="ic-photo-preview" id="ic-preview-outdoor"></div>
+    </div>
+    <div class="ic-photo-item" id="ic-photo-dataplate">
+      <div class="ic-photo-label">Data Plates (Indoor & Outdoor)</div>
+      <label class="ic-photo-upload-btn" for="ic_photo_dataplate"><span id="ic-photo-dataplate-text">Tap to upload photo</span><input type="file" id="ic_photo_dataplate" accept="image/*" multiple onchange="icPhotoSelected(this, 'dataplate')"></label>
+      <div class="ic-photo-preview" id="ic-preview-dataplate"></div>
+    </div>
+    <div class="ic-photo-item" style="border-bottom:none;">
+      <div class="ic-photo-label">Miscellaneous <span style="color:#6b7280;font-size:0.75rem;text-transform:none;letter-spacing:0;">(Optional)</span></div>
+      <label class="ic-photo-upload-btn" for="ic_photo_misc"><span id="ic-photo-misc-text">Tap to upload photos</span><input type="file" id="ic_photo_misc" accept="image/*" multiple onchange="icPhotoSelectedOptional(this)"></label>
+      <div class="ic-photo-preview" id="ic-preview-misc"></div>
+    </div>
+  </div>
+
+  <div class="ic-card">
+    <h2>Close Out Summary</h2>
+    <div class="ic-output-box" id="ic-output">Fill out the form above to generate a summary.</div>
+    <div class="ic-btn-row">
+      <button class="ic-btn ic-btn-copy" onclick="icCopyOutput()">Copy Summary</button>
+      <button class="ic-btn ic-btn-clear" onclick="icClearAll()">Clear Form</button>
+    </div>
+  </div>
+
+  <div class="ic-card" style="border-left-color:#22c55e;">
+    <h2 style="color:#22c55e;">Submit Close Out</h2>
+    <p style="font-size:0.88rem;color:#9ca3af;margin-bottom:16px;">Generates a PDF with all info and photos and saves it to Google Drive.</p>
+    <button class="ic-btn" id="ic-submit-btn" onclick="icSubmitCloseout()" style="background:#22c55e;color:#fff;width:100%;font-size:1rem;">Submit & Save to Drive</button>
+    <div id="ic-submit-status" style="margin-top:12px;text-align:center;font-size:0.9rem;font-weight:600;display:none;"></div>
+  </div>
+
+</div>
+</div>
+<!-- ====== END INSTALL CLOSE OUT TAB ====== -->
 
 <!-- ====== TAB SWITCHING ====== -->
 <script>
@@ -2025,6 +2198,356 @@
   }
 
   ocLoad();
+</script>
+
+<!-- ====== INSTALL CLOSE OUT SCRIPT ====== -->
+<script>
+  var icDrainType = 'pvc';
+  var icPhotosDone = { indoor: false, outdoor: false, dataplate: false };
+  var IC_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxZ01uSTcjCiB906Z--zhSFqRpbVAyeBC4TJK7ORZV1lFMhXEAz3W8YlcTe5aFoGbC6/exec';
+
+  function icOnUnitTypeChange() {
+    var isHP = document.getElementById('ic_unit_type').value === 'heat pump';
+    var ptrap = document.getElementById('ic-ptrap-item');
+    ptrap.style.display = isHP ? '' : 'none';
+    if (!isHP) ptrap.classList.remove('checked');
+    icUpdateProgress();
+    icUpdateOutput();
+  }
+
+  document.addEventListener('DOMContentLoaded', function() { icOnUnitTypeChange(); });
+
+  function icSetDrain(type) {
+    icDrainType = type;
+    document.getElementById('ic-drain-pvc').classList.toggle('active', type === 'pvc');
+    document.getElementById('ic-drain-pump').classList.toggle('active', type === 'pump');
+    document.getElementById('ic-pump-fields').classList.toggle('show', type === 'pump');
+    document.getElementById('ic-pvc-fields').style.display = type === 'pvc' ? '' : 'none';
+    var toHide = type === 'pvc'
+      ? document.querySelectorAll('#ic-pump-fields .ic-check-item')
+      : document.querySelectorAll('#ic-pvc-fields .ic-check-item');
+    toHide.forEach(function(item) { item.classList.remove('checked'); });
+    icUpdateProgress();
+    icUpdateOutput();
+  }
+
+  function icToggleCheck(el) {
+    el.classList.toggle('checked');
+    icUpdateProgress();
+    icUpdateOutput();
+  }
+
+  function icPhotoSelected(input, key) {
+    if (!input.files || !input.files.length) return;
+    icPhotosDone[key] = true;
+    var btn = input.closest('.ic-photo-upload-btn');
+    var span = btn.querySelector('span');
+    btn.classList.add('uploaded');
+    var count = input.files.length;
+    span.textContent = '\u2713 ' + count + ' photo' + (count > 1 ? 's' : '') + ' selected';
+    var preview = document.getElementById('ic-preview-' + key);
+    preview.innerHTML = '';
+    Array.from(input.files).forEach(function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border-radius:6px;display:block;margin-bottom:6px;';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    icUpdateProgress();
+    icUpdateOutput();
+  }
+
+  function icPhotoSelectedOptional(input) {
+    if (!input.files || !input.files.length) return;
+    var btn = input.closest('.ic-photo-upload-btn');
+    var span = btn.querySelector('span');
+    btn.classList.add('uploaded');
+    var count = input.files.length;
+    span.textContent = '\u2713 ' + count + ' photo' + (count > 1 ? 's' : '') + ' selected';
+    var preview = document.getElementById('ic-preview-misc');
+    preview.innerHTML = '';
+    Array.from(input.files).forEach(function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        img.style.cssText = 'width:100%;max-height:180px;object-fit:cover;border-radius:6px;display:block;margin-bottom:6px;';
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function icGetAllCheckItems() {
+    var tab = document.getElementById('tab-install');
+    var items = Array.from(tab.querySelectorAll('.ic-check-item'));
+    items = items.filter(function(item) {
+      if (icDrainType === 'pvc' && item.closest('#ic-pump-fields')) return false;
+      if (icDrainType === 'pump' && item.closest('#ic-pvc-fields')) return false;
+      return true;
+    });
+    return items;
+  }
+
+  function icUpdateProgress() {
+    var items = icGetAllCheckItems();
+    var checked = items.filter(function(i) { return i.classList.contains('checked'); }).length;
+    var photosTotal = Object.keys(icPhotosDone).length;
+    var photosDoneCount = Object.values(icPhotosDone).filter(Boolean).length;
+    var total = items.length + photosTotal;
+    var done = checked + photosDoneCount;
+    var pct = total === 0 ? 0 : Math.round((done / total) * 100);
+    document.getElementById('ic-progress-fill').style.width = pct + '%';
+    document.getElementById('ic-progress-text').textContent = done + ' of ' + total + ' complete';
+    document.getElementById('ic-complete-banner').classList.toggle('show', done === total && total > 0);
+  }
+
+  function icUpdateOutput() {
+    var installer = document.getElementById('ic_installer_name').value.trim();
+    var address = document.getElementById('ic_job_address').value.trim();
+    var filterSize = document.getElementById('ic_filter_size').value.trim();
+    var items = icGetAllCheckItems();
+    var checked = items.filter(function(i) { return i.classList.contains('checked'); });
+    var unchecked = items.filter(function(i) { return !i.classList.contains('checked'); });
+
+    if (!installer && checked.length === 0) {
+      document.getElementById('ic-output').textContent = 'Fill out the form above to generate a summary.';
+      return;
+    }
+
+    var lines = [];
+    var unitType = document.getElementById('ic_unit_type').value;
+    var unitLocation = document.getElementById('ic_unit_location').value;
+    var homeArea = document.getElementById('ic_home_area').value.trim();
+    if (installer) lines.push('Installer: ' + installer);
+    if (address) lines.push('Address: ' + address);
+    lines.push('Unit Type: ' + unitType.charAt(0).toUpperCase() + unitType.slice(1));
+    lines.push('Unit Location: ' + unitLocation.charAt(0).toUpperCase() + unitLocation.slice(1));
+    if (homeArea) lines.push('Area Served: ' + homeArea);
+    lines.push('Drain Type: ' + (icDrainType === 'pvc' ? 'PVC' : 'Condensate Pump'));
+    if (filterSize) lines.push('Filter Size: ' + filterSize);
+    var photosUploaded = Object.values(icPhotosDone).filter(Boolean).length;
+    lines.push('Photos: ' + photosUploaded + ' of 3 uploaded');
+    var notes = document.getElementById('ic_additional_notes').value.trim();
+    if (notes) { lines.push(''); lines.push('Notes: ' + notes); }
+    lines.push('');
+
+    if (checked.length > 0) {
+      lines.push('Verified:');
+      checked.forEach(function(item) {
+        lines.push('  \u2713 ' + item.querySelector('.ic-check-label').textContent.trim());
+      });
+    }
+    if (unchecked.length > 0) {
+      lines.push('');
+      lines.push('Pending:');
+      unchecked.forEach(function(item) {
+        lines.push('  \u25cb ' + item.querySelector('.ic-check-label').textContent.trim());
+      });
+    }
+
+    document.getElementById('ic-output').textContent = lines.join('\n');
+  }
+
+  function icCopyOutput() {
+    var text = document.getElementById('ic-output').textContent;
+    navigator.clipboard.writeText(text).then(function() {
+      var btn = document.querySelector('#tab-install .ic-btn-copy');
+      btn.textContent = 'Copied!';
+      btn.style.background = '#22c55e';
+      setTimeout(function() {
+        btn.textContent = 'Copy Summary';
+        btn.style.background = '';
+      }, 2000);
+    });
+  }
+
+  function icClearAll() {
+    document.querySelectorAll('#tab-install .ic-check-item').forEach(function(item) {
+      item.classList.remove('checked');
+    });
+    document.getElementById('ic_installer_name').value = '';
+    document.getElementById('ic_job_address').value = '';
+    document.getElementById('ic_unit_location').value = 'attic';
+    document.getElementById('ic_home_area').value = '';
+    document.getElementById('ic_filter_size').value = '';
+    document.getElementById('ic_additional_notes').value = '';
+    ['indoor', 'outdoor', 'dataplate'].forEach(function(p) {
+      icPhotosDone[p] = false;
+      document.getElementById('ic_photo_' + p).value = '';
+      var btn = document.querySelector('#ic-photo-' + p + ' .ic-photo-upload-btn');
+      btn.classList.remove('uploaded');
+      btn.querySelector('span').textContent = 'Tap to upload photo';
+      document.getElementById('ic-preview-' + p).innerHTML = '';
+    });
+    var miscInput = document.getElementById('ic_photo_misc');
+    miscInput.value = '';
+    var miscBtn = document.querySelector('#tab-install label[for="ic_photo_misc"]');
+    if (miscBtn) { miscBtn.classList.remove('uploaded'); miscBtn.querySelector('span').textContent = 'Tap to upload photos'; }
+    document.getElementById('ic-preview-misc').innerHTML = '';
+    icSetDrain('pvc');
+    icUpdateProgress();
+    icUpdateOutput();
+  }
+
+  async function icSubmitCloseout() {
+    var btn = document.getElementById('ic-submit-btn');
+    var status = document.getElementById('ic-submit-status');
+    var address = document.getElementById('ic_job_address').value.trim() || 'Unknown Address';
+    var installer = document.getElementById('ic_installer_name').value.trim() || 'Unknown';
+
+    btn.disabled = true;
+    btn.textContent = 'Generating PDF...';
+    status.style.display = 'none';
+
+    try {
+      var { jsPDF } = window.jspdf;
+      var doc = new jsPDF({ unit: 'pt', format: 'letter' });
+      var pageW = doc.internal.pageSize.getWidth();
+      var margin = 40;
+      var y = margin;
+      var lineH = 18;
+
+      // Header
+      doc.setFillColor(13, 63, 117);
+      doc.rect(0, 0, pageW, 50, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.text("Hale's Heating & Cooling \u2014 Install Close Out", margin, 33);
+      y = 70;
+
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(11);
+
+      // Job info
+      var now = new Date();
+      var dateStr = (now.getMonth()+1) + '/' + now.getDate() + '/' + now.getFullYear();
+      var fields = [
+        ['Date', dateStr],
+        ['Installer', installer],
+        ['Address', address],
+        ['Unit Type', document.getElementById('ic_unit_type').value],
+        ['Unit Location', document.getElementById('ic_unit_location').value],
+        ['Area Served', document.getElementById('ic_home_area').value.trim() || '\u2014'],
+        ['Drain Type', icDrainType === 'pvc' ? 'PVC' : 'Condensate Pump'],
+        ['Filter Size', document.getElementById('ic_filter_size').value.trim() || '\u2014'],
+      ];
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.text('Job Information', margin, y); y += lineH + 4;
+      doc.setFontSize(10);
+      fields.forEach(function(f) {
+        doc.setFont('helvetica', 'bold');
+        doc.text(f[0] + ':', margin, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(String(f[1]), margin + 110, y);
+        y += lineH;
+      });
+      y += 10;
+
+      // Checklist
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(13);
+      doc.text('Checklist', margin, y); y += lineH + 4;
+      doc.setFontSize(10);
+      icGetAllCheckItems().forEach(function(item) {
+        var isDone = item.classList.contains('checked');
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(isDone ? 34 : 200, isDone ? 197 : 50, isDone ? 94 : 50);
+        doc.text((isDone ? '\u2713 ' : '\u25cb ') + item.querySelector('.ic-check-label').textContent.trim(), margin, y);
+        y += lineH;
+        if (y > 720) { doc.addPage(); y = margin; }
+      });
+      doc.setTextColor(30, 30, 30);
+      y += 6;
+
+      // Notes
+      var notes = document.getElementById('ic_additional_notes').value.trim();
+      if (notes) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.text('Notes', margin, y); y += lineH + 2;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        var noteLines = doc.splitTextToSize(notes, pageW - margin * 2);
+        doc.text(noteLines, margin, y);
+        y += noteLines.length * lineH + 10;
+      }
+
+      // Photos
+      var photoInputs = [
+        { id: 'ic_photo_indoor', label: 'Indoor Unit' },
+        { id: 'ic_photo_outdoor', label: 'Outdoor Unit' },
+        { id: 'ic_photo_dataplate', label: 'Data Plates' },
+        { id: 'ic_photo_misc', label: 'Miscellaneous' }
+      ];
+
+      for (var pi = 0; pi < photoInputs.length; pi++) {
+        var inp = document.getElementById(photoInputs[pi].id);
+        if (!inp || !inp.files || !inp.files.length) continue;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(30, 30, 30);
+        if (y > 650) { doc.addPage(); y = margin; }
+        doc.text(photoInputs[pi].label, margin, y); y += lineH + 4;
+        for (var fi = 0; fi < inp.files.length; fi++) {
+          var dataUrl = await new Promise(function(resolve) {
+            var reader = new FileReader();
+            var file = inp.files[fi];
+            reader.onload = function(e) { resolve(e.target.result); };
+            reader.readAsDataURL(file);
+          });
+          var imgProps = doc.getImageProperties(dataUrl);
+          var imgW = pageW - margin * 2;
+          var imgH = (imgProps.height * imgW) / imgProps.width;
+          if (imgH > 400) { imgH = 400; imgW = (imgProps.width * imgH) / imgProps.height; }
+          if (y + imgH > 720) { doc.addPage(); y = margin; }
+          doc.addImage(dataUrl, imgProps.fileType || 'JPEG', margin, y, imgW, imgH);
+          y += imgH + 12;
+        }
+        y += 6;
+      }
+
+      // Build filename
+      var safeAddress = address.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+      var filename = dateStr.replace(/\//g, '-') + ' - ' + safeAddress + '.pdf';
+
+      btn.textContent = 'Uploading to Drive...';
+      var pdfBase64 = doc.output('datauristring').split(',')[1];
+
+      var response = await fetch(IC_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ pdf: pdfBase64, filename: filename })
+      });
+      var result = await response.json();
+
+      if (result.status === 'ok') {
+        status.style.display = 'block';
+        status.style.color = '#22c55e';
+        status.textContent = 'Saved to Drive successfully!';
+        btn.textContent = 'Submitted!';
+        btn.style.background = '#15803d';
+      } else {
+        throw new Error(result.message);
+      }
+
+    } catch(err) {
+      status.style.display = 'block';
+      status.style.color = '#f87171';
+      status.textContent = 'Error: ' + err.message;
+      btn.disabled = false;
+      btn.textContent = 'Submit & Save to Drive';
+      btn.style.background = '#22c55e';
+    }
+  }
+
+  icUpdateProgress();
 </script>
 
 </body>
