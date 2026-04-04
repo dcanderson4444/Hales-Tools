@@ -1279,7 +1279,6 @@
       <label>Unit Type</label>
       <select id="ic_unit_type" onchange="icOnUnitTypeChange()">
         <option value="heat pump">Heat Pump</option>
-        <option value="straight ac">Straight AC</option>
         <option value="furnace">Furnace</option>
       </select>
     </div>
@@ -1288,6 +1287,11 @@
     <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Pan float switch tested — unit shuts off</span></div>
     <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">SS2 switch tested — unit shuts off</span></div>
     <div class="ic-check-item" id="ic-ptrap-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">P-trap insulated</span></div>
+    <div id="ic-furnace-items">
+      <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Gas line tested for leaks</span></div>
+      <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Gas shutoff and drip leg installed</span></div>
+      <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Flue pipes sloped correctly</span></div>
+    </div>
   </div>
 
   <div class="ic-card">
@@ -2207,10 +2211,22 @@
   var IC_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkxcBvH4zXqo-OZpifWQwM8v1vXhfcvKTVk6UxkeYCnlYnpnimoYh7hRxXKEWbvrZM/exec';
 
   function icOnUnitTypeChange() {
-    var isHP = document.getElementById('ic_unit_type').value === 'heat pump';
+    var val = document.getElementById('ic_unit_type').value;
+    var isHP = val === 'heat pump';
+    var isFurnace = val === 'furnace';
+
     var ptrap = document.getElementById('ic-ptrap-item');
     ptrap.style.display = isHP ? '' : 'none';
     if (!isHP) ptrap.classList.remove('checked');
+
+    var furnaceItems = document.getElementById('ic-furnace-items');
+    furnaceItems.style.display = isFurnace ? '' : 'none';
+    if (!isFurnace) {
+      furnaceItems.querySelectorAll('.ic-check-item').forEach(function(item) {
+        item.classList.remove('checked');
+      });
+    }
+
     icUpdateProgress();
     icUpdateOutput();
   }
@@ -2284,10 +2300,13 @@
 
   function icGetAllCheckItems() {
     var tab = document.getElementById('tab-install');
+    var val = document.getElementById('ic_unit_type').value;
     var items = Array.from(tab.querySelectorAll('.ic-check-item'));
     items = items.filter(function(item) {
       if (icDrainType === 'pvc' && item.closest('#ic-pump-fields')) return false;
       if (icDrainType === 'pump' && item.closest('#ic-pvc-fields')) return false;
+      if (val !== 'heat pump' && item.id === 'ic-ptrap-item') return false;
+      if (val !== 'furnace' && item.closest('#ic-furnace-items')) return false;
       return true;
     });
     return items;
