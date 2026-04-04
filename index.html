@@ -1311,7 +1311,7 @@
 
   <div class="ic-card">
     <h2>Electrical</h2>
-    <div class="ic-check-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Breaker size sufficient for heat kit</span></div>
+    <div class="ic-check-item" id="ic-heat-kit-item" onclick="icToggleCheck(this)"><input type="checkbox"><div class="ic-check-box"></div><span class="ic-check-label">Breaker size sufficient for heat kit</span></div>
   </div>
 
   <div class="ic-card">
@@ -2227,6 +2227,10 @@
       });
     }
 
+    var heatKit = document.getElementById('ic-heat-kit-item');
+    heatKit.style.display = isFurnace ? 'none' : '';
+    if (isFurnace) heatKit.classList.remove('checked');
+
     icUpdateProgress();
     icUpdateOutput();
   }
@@ -2307,6 +2311,7 @@
       if (icDrainType === 'pump' && item.closest('#ic-pvc-fields')) return false;
       if (val !== 'heat pump' && item.id === 'ic-ptrap-item') return false;
       if (val !== 'furnace' && item.closest('#ic-furnace-items')) return false;
+      if (val === 'furnace' && item.id === 'ic-heat-kit-item') return false;
       return true;
     });
     return items;
