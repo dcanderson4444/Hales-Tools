@@ -2104,14 +2104,27 @@
 
   function ocGetWeekends() {
     var weeks = [];
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Find the most recent Saturday at or before today
+    var d = today.getDay();
+    var daysSinceSat = d === 6 ? 0 : d + 1;
+    var startSat = new Date(today);
+    startSat.setDate(startSat.getDate() - daysSinceSat);
+    startSat.setHours(12, 0, 0, 0);
+
     for (var i = 0; i < OC_WEEKS; i++) {
-      var sat = new Date(OC_START_SAT);
+      var sat = new Date(startSat);
       sat.setDate(sat.getDate() + i * 7);
       var sun = new Date(sat);
       sun.setDate(sun.getDate() + 1);
-      var key        = ocKey(sat);
-      var basePerson = OC_TECHS[(OC_START_IDX + i) % 3];
-      weeks.push({ sat: sat, sun: sun, key: key, basePerson: basePerson });
+
+      // Calculate rotation index relative to anchor date
+      var weeksSinceAnchor = Math.round((sat - OC_START_SAT) / (7 * 24 * 60 * 60 * 1000));
+      var rotIdx = ((OC_START_IDX + weeksSinceAnchor) % OC_TECHS.length + OC_TECHS.length) % OC_TECHS.length;
+
+      weeks.push({ sat: sat, sun: sun, key: ocKey(sat), basePerson: OC_TECHS[rotIdx] });
     }
     return weeks;
   }
@@ -2155,13 +2168,13 @@
     var html = '';
     weeks.forEach(function(w) {
       var sun = new Date(w.sun); sun.setHours(23, 59, 59, 0);
-      var isPast    = sun < today;
+      if (sun < today) return; // hide past weekends
       var isCurrent = w.key === currentKey;
       var override  = ocOverrides[w.key];
       var person    = override ? override.person : w.basePerson;
       var isSwap    = override && override.person !== w.basePerson;
 
-      var rowClass = 'oc-row' + (isCurrent ? ' is-current' : '') + (isPast ? ' is-past' : '');
+      var rowClass = 'oc-row' + (isCurrent ? ' is-current' : '');
       html += '<div class="' + rowClass + '">';
       html += '<span class="oc-dates">' + ocFmtLabel(w.sat, w.sun) + '</span>';
       html += '<span class="oc-person">' + person + '</span>';
