@@ -2207,7 +2207,15 @@
       logEl.innerHTML = '<div class="oc-empty">No changes recorded yet.</div>';
     } else {
       var logHtml = '';
-      var sorted = ocChangelog.slice().reverse();
+      var todayLog = new Date(); todayLog.setHours(0, 0, 0, 0);
+      var sorted = ocChangelog.slice().reverse().filter(function(entry) {
+        // weekendKey format: 2026_03_28 — parse the Sunday and check if it's passed
+        var parts = entry.weekendKey.split('_');
+        if (parts.length < 3) return true;
+        var sun = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]) + 1);
+        sun.setHours(23, 59, 59, 0);
+        return sun >= todayLog;
+      });
       sorted.forEach(function(entry) {
         logHtml += '<div class="oc-log-item">';
         logHtml += '<div class="oc-log-top">';
@@ -2220,7 +2228,7 @@
         if (entry.note) logHtml += '<div class="oc-log-note">' + entry.note + '</div>';
         logHtml += '</div>';
       });
-      logEl.innerHTML = logHtml;
+      logEl.innerHTML = logHtml || '<div class="oc-empty">No changes recorded yet.</div>';
     }
   }
 
