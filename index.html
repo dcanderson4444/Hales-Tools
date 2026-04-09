@@ -418,6 +418,101 @@
     #tab-oncall .oc-log-note { color: #6b7280; font-size: 0.78rem; margin-top: 2px; font-style: italic; }
     #tab-oncall .oc-empty { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
     #tab-oncall .oc-loading { text-align: center; color: #6b7280; font-size: 0.85rem; padding: 20px; }
+    #tab-oncall .oc-roster-toggle {
+      background: none;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #6b7280;
+      font-size: 0.8rem;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      padding: 8px 14px;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 12px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    #tab-oncall .oc-roster-toggle:hover { color: #e5e7eb; border-color: #6b7280; }
+    #tab-oncall .oc-roster-panel { display: none; }
+    #tab-oncall .oc-roster-panel.open { display: block; }
+    #tab-oncall .oc-roster-list {
+      background: #1f2937;
+      border: 1px solid #1a3a5c;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    #tab-oncall .oc-roster-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid #1a3a5c;
+      gap: 10px;
+    }
+    #tab-oncall .oc-roster-row:last-child { border-bottom: none; }
+    #tab-oncall .oc-roster-name { flex: 1; font-size: 0.95rem; color: #e5e7eb; font-weight: 600; }
+    #tab-oncall .oc-roster-arrow {
+      background: none;
+      border: 1px solid #374151;
+      border-radius: 5px;
+      color: #9ca3af;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    #tab-oncall .oc-roster-arrow:hover { color: #e5e7eb; border-color: #9ca3af; }
+    #tab-oncall .oc-roster-remove {
+      background: none;
+      border: 1px solid #374151;
+      border-radius: 5px;
+      color: #f87171;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s;
+    }
+    #tab-oncall .oc-roster-remove:hover { border-color: #f87171; }
+    #tab-oncall .oc-roster-add-row { display: flex; gap: 8px; margin-bottom: 12px; }
+    #tab-oncall .oc-roster-add-row input { flex: 1; }
+    #tab-oncall .oc-roster-add-btn {
+      background: #0D3F75;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Barlow', sans-serif;
+    }
+    #tab-oncall .oc-roster-add-btn:hover { background: #1a5ca8; }
+    #tab-oncall .oc-roster-save-btn {
+      background: #22c55e;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px;
+      cursor: pointer;
+      width: 100%;
+      font-family: 'Barlow', sans-serif;
+      margin-bottom: 6px;
+    }
+    #tab-oncall .oc-roster-save-btn:hover { background: #16a34a; }
+    #tab-oncall .oc-roster-status { text-align: center; font-size: 0.85rem; font-weight: 600; min-height: 20px; }
+    #tab-oncall .oc-roster-status.success { color: #4ade80; }
+    #tab-oncall .oc-roster-status.error { color: #f87171; }
 
     /* ====== INSTALL CLOSEOUT TAB ====== */
     #tab-install { background: #111827; color: #e5e7eb; min-height: calc(100vh - 107px); }
@@ -1218,11 +1313,7 @@
     </div>
     <div class="oc-field">
       <label>Assign To</label>
-      <select id="oc-assign-to">
-        <option value="Chris">Chris</option>
-        <option value="Robert">Robert</option>
-        <option value="Justin">Justin</option>
-      </select>
+      <select id="oc-assign-to"></select>
     </div>
     <div class="oc-field">
       <label>Note (optional)</label>
@@ -1236,6 +1327,21 @@
   <div class="oc-section-title">Change Log</div>
   <div class="oc-log" id="oc-changelog">
     <div class="oc-empty">No changes recorded yet.</div>
+  </div>
+
+  <!-- Manage Roster -->
+  <button class="oc-roster-toggle" onclick="ocToggleRoster()">&#9881; Manage Roster</button>
+  <div class="oc-roster-panel" id="oc-roster-panel">
+    <div class="oc-form-card" style="margin-bottom:0;">
+      <h3>Rotation Roster</h3>
+      <div class="oc-roster-list" id="oc-roster-list"></div>
+      <div class="oc-roster-add-row">
+        <input type="text" id="oc-new-name" placeholder="New technician name">
+        <button class="oc-roster-add-btn" onclick="ocAddToRoster()">Add</button>
+      </div>
+      <button class="oc-roster-save-btn" onclick="ocSaveRoster()">Save Roster</button>
+      <div class="oc-roster-status" id="oc-roster-status"></div>
+    </div>
   </div>
 
 </div>
@@ -1960,13 +2066,13 @@
 
 <!-- ====== ON-CALL SCHEDULE SCRIPT ====== -->
 <script>
-  var OC_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiOnz8Kx4Hdj_L2L3ncjMH9GNLkoR2HTw0Q4CczZa0sPc1V-5MvSo4glX1xdVOPu0/exec';
+  var OC_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4grx4KJqhrgWnuS0w5TMIU9XjIk6NAi48lRdXb2zBHGbCRDS4OYfy63AyLNa18JQ/exec';
 
   // Rotation: Chris=0, Robert=1, Justin=2
   // Starting Saturday March 28 2026 = Robert (index 1)
-  var OC_TECHS      = ['Chris', 'Robert', 'Justin'];
-  var OC_START_SAT  = new Date('2026-03-28T12:00:00');
-  var OC_START_IDX  = 1;
+  var OC_TECHS      = ['Chris', 'Robert', 'Justin']; // overridden by sheet
+  var OC_START_SAT  = new Date('2026-03-28T12:00:00'); // anchor date — do not change
+  var OC_START_IDX  = 1; // overridden by sheet
   var OC_WEEKS      = 12; // how many weeks to show
 
   var ocOverrides  = {};
@@ -2065,6 +2171,12 @@
     });
     listEl.innerHTML = html || '<div class="oc-empty">No upcoming weekends found.</div>';
 
+    // Assign To dropdown
+    var assignEl = document.getElementById('oc-assign-to');
+    var assignHtml = '';
+    OC_TECHS.forEach(function(t) { assignHtml += '<option value="' + t + '">' + t + '</option>'; });
+    assignEl.innerHTML = assignHtml;
+
     // Weekend dropdown (current + future only)
     var selEl = document.getElementById('oc-weekend-select');
     var selHtml = '';
@@ -2116,6 +2228,10 @@
       if (data.status === 'ok') {
         ocOverrides = data.overrides || {};
         ocChangelog = data.changelog || [];
+        if (data.roster && data.roster.names && data.roster.names.length > 0) {
+          OC_TECHS     = data.roster.names;
+          OC_START_IDX = data.roster.anchorIdx || 0;
+        }
       }
       ocRender();
     })
@@ -2198,6 +2314,82 @@
       statusEl.className = 'oc-status error';
       statusEl.textContent = 'Save failed. Check your Apps Script URL.';
       submitBtn.disabled = false;
+    });
+  }
+
+  // ── Roster Management ────────────────────────────────────
+
+  function ocToggleRoster() {
+    var panel = document.getElementById('oc-roster-panel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) ocRenderRosterEditor();
+  }
+
+  function ocRenderRosterEditor() {
+    var list = document.getElementById('oc-roster-list');
+    if (!OC_TECHS.length) { list.innerHTML = '<div class="oc-empty">No techs in rotation.</div>'; return; }
+    var html = '';
+    OC_TECHS.forEach(function(name, i) {
+      html += '<div class="oc-roster-row">';
+      html += '<span class="oc-roster-name">' + name + (i === OC_START_IDX ? ' <span style="color:#F5A623;font-size:0.72rem;">&#9679; anchor</span>' : '') + '</span>';
+      html += '<button class="oc-roster-arrow" onclick="ocMoveRoster(' + i + ',-1)" title="Move up">&#9650;</button>';
+      html += '<button class="oc-roster-arrow" onclick="ocMoveRoster(' + i + ',1)" title="Move down">&#9660;</button>';
+      html += '<button class="oc-roster-remove" onclick="ocRemoveFromRoster(' + i + ')" title="Remove">&times;</button>';
+      html += '</div>';
+    });
+    list.innerHTML = html;
+  }
+
+  function ocMoveRoster(idx, dir) {
+    var newIdx = idx + dir;
+    if (newIdx < 0 || newIdx >= OC_TECHS.length) return;
+    var tmp = OC_TECHS[idx];
+    OC_TECHS[idx] = OC_TECHS[newIdx];
+    OC_TECHS[newIdx] = tmp;
+    if (OC_START_IDX === idx) OC_START_IDX = newIdx;
+    else if (OC_START_IDX === newIdx) OC_START_IDX = idx;
+    ocRenderRosterEditor();
+  }
+
+  function ocRemoveFromRoster(idx) {
+    if (OC_TECHS.length <= 1) return;
+    OC_TECHS.splice(idx, 1);
+    if (OC_START_IDX >= OC_TECHS.length) OC_START_IDX = OC_TECHS.length - 1;
+    ocRenderRosterEditor();
+  }
+
+  function ocAddToRoster() {
+    var input = document.getElementById('oc-new-name');
+    var name = input.value.trim();
+    if (!name) return;
+    OC_TECHS.push(name);
+    input.value = '';
+    ocRenderRosterEditor();
+  }
+
+  function ocSaveRoster() {
+    var statusEl = document.getElementById('oc-roster-status');
+    statusEl.className = 'oc-roster-status';
+    statusEl.textContent = 'Saving...';
+
+    fetch(OC_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'saveRoster', names: OC_TECHS, anchorIdx: OC_START_IDX })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.status === 'ok') {
+        statusEl.className = 'oc-roster-status success';
+        statusEl.textContent = 'Roster saved!';
+        ocRender();
+        setTimeout(function() { statusEl.textContent = ''; }, 3000);
+      } else {
+        throw new Error(result.message || 'Error');
+      }
+    })
+    .catch(function(err) {
+      statusEl.className = 'oc-roster-status error';
+      statusEl.textContent = 'Save failed.';
     });
   }
 
