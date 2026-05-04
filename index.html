@@ -481,6 +481,21 @@
       transition: border-color 0.15s;
     }
     #tab-oncall .oc-roster-remove:hover { border-color: #f87171; }
+    #tab-oncall .oc-roster-set-anchor {
+      background: none;
+      border: 1px solid #374151;
+      border-radius: 5px;
+      color: #F5A623;
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s;
+    }
+    #tab-oncall .oc-roster-set-anchor:hover { border-color: #F5A623; }
     #tab-oncall .oc-roster-add-row { display: flex; gap: 8px; margin-bottom: 12px; }
     #tab-oncall .oc-roster-add-row input { flex: 1; }
     #tab-oncall .oc-roster-add-btn {
@@ -2071,7 +2086,7 @@
   // Rotation: Chris=0, Robert=1, Justin=2
   // Starting Saturday March 28 2026 = Robert (index 1)
   var OC_TECHS      = ['Robert', 'Justin', 'Chris']; // overridden by sheet
-  var OC_START_SAT  = new Date('2026-03-28T12:00:00'); // anchor date — do not change
+  var OC_START_SAT  = new Date('2026-05-09T12:00:00'); // anchor date — update when roster changes
   var OC_START_IDX  = 0; // overridden by sheet
   var OC_WEEKS      = 12; // how many weeks to show
 
@@ -2355,10 +2370,18 @@
       html += '<span class="oc-roster-name">' + name + (i === OC_START_IDX ? ' <span style="color:#F5A623;font-size:0.72rem;">&#9679; anchor</span>' : '') + '</span>';
       html += '<button class="oc-roster-arrow" onclick="ocMoveRoster(' + i + ',-1)" title="Move up">&#9650;</button>';
       html += '<button class="oc-roster-arrow" onclick="ocMoveRoster(' + i + ',1)" title="Move down">&#9660;</button>';
+      if (i !== OC_START_IDX) {
+        html += '<button class="oc-roster-set-anchor" onclick="ocSetAnchor(' + i + ')" title="Set as anchor">&#9679;</button>';
+      }
       html += '<button class="oc-roster-remove" onclick="ocRemoveFromRoster(' + i + ')" title="Remove">&times;</button>';
       html += '</div>';
     });
     list.innerHTML = html;
+  }
+
+  function ocSetAnchor(idx) {
+    OC_START_IDX = idx;
+    ocRenderRosterEditor();
   }
 
   function ocMoveRoster(idx, dir) {
