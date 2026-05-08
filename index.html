@@ -253,6 +253,21 @@
     #tab-quotes .status-msg.success { color: #4ade80; }
     #tab-quotes .status-msg.error   { color: #f87171; }
     #tab-quotes footer { text-align: center; font-size: 12px; color: #6B7691; padding: 2rem; border-top: 1px solid #D8DEE8; margin-top: 2rem; }
+    #tab-quotes .rates-toggle { background: none; border: 1px solid #D8DEE8; border-radius: 8px; color: #6B7691; font-family: 'Barlow', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 8px 14px; cursor: pointer; width: 100%; margin-top: 1.5rem; margin-bottom: 12px; transition: color 0.15s, border-color 0.15s; }
+    #tab-quotes .rates-toggle:hover { color: #1A2030; border-color: #9ca3af; }
+    #tab-quotes .rates-panel { display: none; }
+    #tab-quotes .rates-panel.open { display: block; }
+    #tab-quotes .rates-list { background: #F4F6F9; border: 1px solid #D8DEE8; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+    #tab-quotes .rates-row { display: flex; align-items: center; padding: 10px 14px; border-bottom: 1px solid #D8DEE8; gap: 10px; }
+    #tab-quotes .rates-row:last-child { border-bottom: none; }
+    #tab-quotes .rates-row label { flex: 1; font-size: 0.9rem; color: #1A2030; font-weight: 600; }
+    #tab-quotes .rates-row input { width: 90px; height: 32px; padding: 0 8px; border: 1px solid #D8DEE8; border-radius: 6px; font-family: 'Barlow', sans-serif; font-size: 14px; color: #1A2030; background: #fff; }
+    #tab-quotes .rates-row .rates-unit { font-size: 0.8rem; color: #6B7691; white-space: nowrap; }
+    #tab-quotes .rates-save-btn { background: #0D3F75; border: none; border-radius: 8px; color: #fff; font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 600; padding: 9px 22px; cursor: pointer; margin-bottom: 8px; transition: background 0.15s; }
+    #tab-quotes .rates-save-btn:hover { background: #1B5EA8; }
+    #tab-quotes .rates-status { font-size: 13px; font-weight: 600; margin-bottom: 8px; min-height: 18px; }
+    #tab-quotes .rates-status.success { color: #16a34a; }
+    #tab-quotes .rates-status.error { color: #c0392b; }
     @media (max-width: 560px) {
       #tab-quotes .part-row { grid-template-columns: 1fr; }
       #tab-quotes .part-row input[type="number"] { width: 100%; }
@@ -1234,9 +1249,9 @@
       <label>Type</label>
       <select id="ref-type" onchange="toggleRefLbs()">
         <option value="0">None</option>
-        <option value="110">R-407C &mdash; $110 / lb</option>
-        <option value="98">R-410A &mdash; $98 / lb</option>
-        <option value="135">R-454B &mdash; $135 / lb</option>
+        <option id="ref-opt-407c" value="110">R-407C &mdash; $110 / lb</option>
+        <option id="ref-opt-410a" value="98">R-410A &mdash; $98 / lb</option>
+        <option id="ref-opt-454b" value="135">R-454B &mdash; $135 / lb</option>
       </select>
     </div>
     <div class="inline-row" id="ref-lbs-row" style="display:none;">
@@ -1251,8 +1266,8 @@
     <div class="card-title">Breakdown</div>
     <div class="formula-steps">
       <div class="fstep"><span class="label">Material cost</span><span class="val" id="b-material">$0.00</span></div>
-      <div class="fstep"><span class="label">+ Tax (&times; 1.08)</span><span class="val" id="b-tax">$0.00</span></div>
-      <div class="fstep"><span class="label">Materials with margin (&divide; 0.70)</span><span class="val" id="b-subtotal">$0.00</span></div>
+      <div class="fstep"><span class="label" id="b-tax-label">+ Tax (&times; 1.08)</span><span class="val" id="b-tax">$0.00</span></div>
+      <div class="fstep"><span class="label" id="b-subtotal-label">Materials with margin (&divide; 0.70)</span><span class="val" id="b-subtotal">$0.00</span></div>
       <div class="fstep"><span class="label" id="b-labor-label">+ Labor (1 tech &times; 1 hr &times; $270)</span><span class="val" id="b-labor">$0.00</span></div>
       <div class="fstep" id="b-ref-row" style="display:none;"><span class="label" id="b-ref-label">+ Refrigerant</span><span class="val" id="b-ref">$0.00</span></div>
       <div class="fstep highlight"><span class="label">Total</span><span class="val" id="b-final">$0.00</span></div>
@@ -1284,6 +1299,35 @@
     </div>
     <div class="copied-msg" id="copied-msg">Copied to clipboard!</div>
     <div class="status-msg"  id="status-msg"></div>
+  </div>
+
+  <!-- PRICING RATES (OFFICE) -->
+  <button class="rates-toggle" onclick="qbToggleRates()">Manage Pricing Rates</button>
+  <div class="rates-panel" id="rates-panel">
+    <div class="rates-list">
+      <div class="rates-row">
+        <label>Labor Rate</label>
+        <input type="number" id="r-labor" step="1" min="1" value="270" />
+        <span class="rates-unit">$/tech/hr</span>
+      </div>
+      <div class="rates-row">
+        <label>R-407C</label>
+        <input type="number" id="r-407c" step="1" min="1" value="110" />
+        <span class="rates-unit">$/lb</span>
+      </div>
+      <div class="rates-row">
+        <label>R-410A</label>
+        <input type="number" id="r-410a" step="1" min="1" value="98" />
+        <span class="rates-unit">$/lb</span>
+      </div>
+      <div class="rates-row">
+        <label>R-454B</label>
+        <input type="number" id="r-454b" step="1" min="1" value="135" />
+        <span class="rates-unit">$/lb</span>
+      </div>
+    </div>
+    <button class="rates-save-btn" onclick="qbSaveRates()">Save Rates</button>
+    <div class="rates-status" id="rates-status"></div>
   </div>
 </main>
 
@@ -1728,6 +1772,13 @@
 <script>
   var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4ucCFSjaQRAoINySoe7z4ICFT6eHqLq1FQMansELJnULXjcHqO1BUdKOQsrfQoo3T/exec';
 
+  var QB_TAX      = 1.08;
+  var QB_MARGIN   = 0.70;
+  var QB_LABOR    = 270;  // overridden by sheet
+  var QB_REF_407C = 110;  // overridden by sheet
+  var QB_REF_410A = 98;   // overridden by sheet
+  var QB_REF_454B = 135;  // overridden by sheet
+
   var parts = [{ name: '', cost: '' }];
 
   function fmt(n)      { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -1766,16 +1817,18 @@
     var rawMaterial = 0;
     parts.forEach(function(p) { rawMaterial += parseFloat(p.cost) || 0; });
 
-    var materialWithTax    = rawMaterial * 1.08;
-    var materialWithMargin = materialWithTax / 0.7;
-    var laborCost          = techs * laborHrs * 270;
+    var materialWithTax    = rawMaterial * QB_TAX;
+    var materialWithMargin = materialWithTax / QB_MARGIN;
+    var laborCost          = techs * laborHrs * QB_LABOR;
     var refCost            = refRate * refLbs;
     var finalPrice         = materialWithMargin + laborCost + refCost;
 
     document.getElementById('b-material').textContent  = fmt(rawMaterial);
     document.getElementById('b-tax').textContent       = fmt(materialWithTax);
+    document.getElementById('b-tax-label').textContent = '+ Tax (\u00d7 ' + QB_TAX.toFixed(2) + ')';
     document.getElementById('b-subtotal').textContent  = fmt(materialWithMargin);
-    document.getElementById('b-labor-label').textContent = '+ Labor (' + techs + ' tech' + (techs !== 1 ? 's' : '') + ' \u00d7 ' + laborHrs + ' hr' + (laborHrs !== 1 ? 's' : '') + ' \u00d7 $270)';
+    document.getElementById('b-subtotal-label').textContent = 'Materials with margin (\u00f7 ' + QB_MARGIN.toFixed(2) + ')';
+    document.getElementById('b-labor-label').textContent = '+ Labor (' + techs + ' tech' + (techs !== 1 ? 's' : '') + ' \u00d7 ' + laborHrs + ' hr' + (laborHrs !== 1 ? 's' : '') + ' \u00d7 $' + QB_LABOR + ')';
     document.getElementById('b-labor').textContent     = fmt(laborCost);
     document.getElementById('b-final').textContent     = fmt(finalPrice);
     document.getElementById('r-total').textContent     = fmtRound(finalPrice);
@@ -1805,9 +1858,9 @@
 
     var rawMaterial        = 0;
     parts.forEach(function(p) { rawMaterial += parseFloat(p.cost) || 0; });
-    var materialWithTax    = rawMaterial * 1.08;
-    var materialWithMargin = materialWithTax / 0.7;
-    var laborCost          = techs * laborHrs * 270;
+    var materialWithTax    = rawMaterial * QB_TAX;
+    var materialWithMargin = materialWithTax / QB_MARGIN;
+    var laborCost          = techs * laborHrs * QB_LABOR;
     var refCost            = refRate * refLbs;
     var finalPrice         = materialWithMargin + laborCost + refCost;
 
@@ -1823,9 +1876,9 @@
     });
 
     txt += "\nMaterial cost:               $" + rawMaterial.toFixed(2) + "\n";
-    txt += "Material + tax (\u00d71.08):      $" + materialWithTax.toFixed(2) + "\n";
-    txt += "Materials with margin (\u00f70.70): $" + materialWithMargin.toFixed(2) + "\n";
-    txt += "Labor (" + techs + " tech" + (techs!==1?'s':'') + " \u00d7 " + laborHrs + " hr" + (laborHrs!==1?'s':'') + " \u00d7 $270): $" + laborCost.toFixed(2) + "\n";
+    txt += "Material + tax (\u00d7" + QB_TAX.toFixed(2) + "):      $" + materialWithTax.toFixed(2) + "\n";
+    txt += "Materials with margin (\u00f7" + QB_MARGIN.toFixed(2) + "): $" + materialWithMargin.toFixed(2) + "\n";
+    txt += "Labor (" + techs + " tech" + (techs!==1?'s':'') + " \u00d7 " + laborHrs + " hr" + (laborHrs!==1?'s':'') + " \u00d7 $" + QB_LABOR + "): $" + laborCost.toFixed(2) + "\n";
     if (refCost > 0) txt += "Refrigerant (" + sel.options[sel.selectedIndex].text.split('—')[0].trim() + "): $" + refCost.toFixed(2) + "\n";
     txt += '─'.repeat(40) + "\nTOTAL: " + fmtRound(finalPrice) + "\n\nHale's Heating & Cooling | 706-765-7219 | Watkinsville, GA\nThis estimate is subject to final diagnosis.\n";
 
@@ -1951,8 +2004,8 @@
 
         sectionHead('Breakdown');
         tableRow('Material cost', document.getElementById('b-material').textContent, true);
-        tableRow('+ Tax (\u00d7 1.08)', document.getElementById('b-tax').textContent, true);
-        tableRow('Materials with margin (\u00f7 0.70)', document.getElementById('b-subtotal').textContent, true);
+        tableRow(document.getElementById('b-tax-label').textContent, document.getElementById('b-tax').textContent, true);
+        tableRow(document.getElementById('b-subtotal-label').textContent, document.getElementById('b-subtotal').textContent, true);
         tableRow(document.getElementById('b-labor-label').textContent, document.getElementById('b-labor').textContent, true);
 
         var refRow = document.getElementById('b-ref-row');
@@ -1991,9 +2044,9 @@
         var refType2  = refRate2 > 0 ? sel2.options[sel2.selectedIndex].text.split('—')[0].trim() : '';
         var rawMat2   = 0;
         parts.forEach(function(p) { rawMat2 += parseFloat(p.cost) || 0; });
-        var matTax2   = rawMat2 * 1.08;
-        var matMarg2  = matTax2 / 0.7;
-        var labor2    = techs2 * laborHrs2 * 270;
+        var matTax2   = rawMat2 * QB_TAX;
+        var matMarg2  = matTax2 / QB_MARGIN;
+        var labor2    = techs2 * laborHrs2 * QB_LABOR;
         var ref2      = refRate2 * refLbs2;
         var finalPrice2 = matMarg2 + labor2 + ref2;
         var partsSummary = parts.filter(function(p){ return parseFloat(p.cost) > 0; })
@@ -2076,7 +2129,91 @@
     renderParts();
   }
 
+  function qbToggleRates() {
+    document.getElementById('rates-panel').classList.toggle('open');
+  }
+
+  function qbUpdateDropdown() {
+    var opt407c = document.getElementById('ref-opt-407c');
+    var opt410a = document.getElementById('ref-opt-410a');
+    var opt454b = document.getElementById('ref-opt-454b');
+    opt407c.value = QB_REF_407C; opt407c.textContent = 'R-407C \u2014 $' + QB_REF_407C + ' / lb';
+    opt410a.value = QB_REF_410A; opt410a.textContent = 'R-410A \u2014 $' + QB_REF_410A + ' / lb';
+    opt454b.value = QB_REF_454B; opt454b.textContent = 'R-454B \u2014 $' + QB_REF_454B + ' / lb';
+  }
+
+  function qbApplyRates(labor, ref407c, ref410a, ref454b) {
+    QB_LABOR    = labor;
+    QB_REF_407C = ref407c;
+    QB_REF_410A = ref410a;
+    QB_REF_454B = ref454b;
+    document.getElementById('r-labor').value = labor;
+    document.getElementById('r-407c').value  = ref407c;
+    document.getElementById('r-410a').value  = ref410a;
+    document.getElementById('r-454b').value  = ref454b;
+    qbUpdateDropdown();
+    calc();
+  }
+
+  function qbLoadRates() {
+    if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'getRates' })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === 'ok' && data.rates) {
+        qbApplyRates(
+          parseFloat(data.rates.laborRate)  || QB_LABOR,
+          parseFloat(data.rates.ref407c)    || QB_REF_407C,
+          parseFloat(data.rates.ref410a)    || QB_REF_410A,
+          parseFloat(data.rates.ref454b)    || QB_REF_454B
+        );
+      }
+    })
+    .catch(function() {});
+  }
+
+  function qbSaveRates() {
+    var labor  = parseFloat(document.getElementById('r-labor').value);
+    var ref407c = parseFloat(document.getElementById('r-407c').value);
+    var ref410a = parseFloat(document.getElementById('r-410a').value);
+    var ref454b = parseFloat(document.getElementById('r-454b').value);
+    var statusEl = document.getElementById('rates-status');
+
+    if (!labor || !ref407c || !ref410a || !ref454b) {
+      statusEl.className = 'rates-status error';
+      statusEl.textContent = 'Please fill in all fields.';
+      return;
+    }
+
+    statusEl.className = 'rates-status';
+    statusEl.textContent = 'Saving...';
+
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'saveRates', laborRate: labor, ref407c: ref407c, ref410a: ref410a, ref454b: ref454b })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(result) {
+      if (result.status === 'ok') {
+        qbApplyRates(labor, ref407c, ref410a, ref454b);
+        statusEl.className = 'rates-status success';
+        statusEl.textContent = 'Rates saved!';
+        setTimeout(function() { statusEl.textContent = ''; }, 3000);
+      } else {
+        throw new Error(result.message || 'Error');
+      }
+    })
+    .catch(function() {
+      statusEl.className = 'rates-status error';
+      statusEl.textContent = 'Save failed. Check connection.';
+    });
+  }
+
   renderParts();
+  qbLoadRates();
 </script>
 
 <!-- ====== ON-CALL SCHEDULE SCRIPT ====== -->
