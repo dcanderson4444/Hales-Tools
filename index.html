@@ -2053,11 +2053,10 @@
 
         if (outRefStatus === 'within') {
             outdoor += `Refrigerant pressures were tested in ${outRefMode} and are within manufacturer specifications.`;
+        } else if (refAmount) {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and were not within manufacturer specifications. System was found to be low on refrigerant. ${refAmount} lbs of refrigerant was added to bring the system back to manufacturer specifications.`;
         } else {
             outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
-            if (refAmount) {
-                outdoor += ` ${refAmount} lbs of refrigerant was added to bring the system back to manufacturer specifications.`;
-            }
         }
 
         const count = parseInt(v('ms_indoor_count'), 10) || 1;
@@ -2257,11 +2256,10 @@
 
         if (outRefStatus === 'within') {
             outdoor += `Refrigerant pressures were tested in ${outRefMode} and are within manufacturer specifications.`;
+        } else if (refAmount) {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and were not within manufacturer specifications. System was found to be low on refrigerant. ${refAmount} lbs of refrigerant was added to bring the system back to manufacturer specifications.`;
         } else {
             outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
-            if (refAmount) {
-                outdoor += ` ${refAmount} lbs of refrigerant was added to bring the system back to manufacturer specifications.`;
-            }
         }
 
         if (outNotes) outdoor += ` ${outNotes}`;
