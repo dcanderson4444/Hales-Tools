@@ -801,9 +801,19 @@
       <input type="text" id="area_of_home_other" placeholder="Enter location...">
     </div>
   </div>
+  <div class="field-row">
+    <div class="field">
+      <label>System Type</label>
+      <select id="system_type">
+        <option value="split" selected>Split System</option>
+        <option value="mini split">Mini Split</option>
+        <option value="package unit">Package Unit</option>
+      </select>
+    </div>
+  </div>
 </div>
 
-<div class="sections">
+<div class="sections" id="split_system_sections">
 
   <!-- INDOOR -->
   <div class="section">
@@ -1192,6 +1202,219 @@
 
 </div>
 
+<div class="sections" id="minisplit_sections" style="display:none;">
+
+  <!-- OUTDOOR (Mini Split) -->
+  <div class="section">
+    <h2>Outdoor Unit</h2>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Year</label>
+        <input type="text" id="ms_out_year" placeholder="2024" maxlength="4">
+      </div>
+      <div class="field">
+        <label>Brand</label>
+        <select id="ms_out_brand">
+          <option>Carrier</option>
+          <option>Trane</option>
+          <option>Lennox</option>
+          <option>Goodman</option>
+          <option>Rheem</option>
+          <option>American Standard</option>
+          <option>Bryant</option>
+          <option>Nordyne</option>
+          <option>Daikin</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="ms_out_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Tonnage</label>
+        <select id="ms_out_tons">
+          <option>1</option>
+          <option>1.5</option>
+          <option selected>2</option>
+          <option>2.5</option>
+          <option>3</option>
+          <option>3.5</option>
+          <option>4</option>
+          <option>5</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Outdoor Coil Condition</label>
+        <select id="ms_out_coil">
+          <option value="clean">Clean</option>
+          <option value="slightly dirty">Slightly Dirty</option>
+          <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+          <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Refrigerant Test Mode</label>
+        <select id="ms_out_ref_mode">
+          <option value="cooling">Cooling</option>
+          <option value="heating">Heating</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Refrigerant Status</label>
+        <select id="ms_out_ref_status">
+          <option value="within">Within Manufacturer Specifications</option>
+          <option value="low">Low - System Needs Refrigerant</option>
+          <option value="high">High - System is Overcharged</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- INDOOR UNITS (Mini Split) -->
+  <div class="section">
+    <h2>Indoor Units</h2>
+
+    <div class="field">
+      <label>Number of Indoor Units</label>
+      <select id="ms_indoor_count">
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+      </select>
+    </div>
+
+    <div id="ms_indoor_units_container">
+      <div class="ms-indoor-unit" id="ms_unit_1" data-index="1" style="border-top:1px solid #1a3a5c; padding-top:14px; margin-top:14px;">
+        <h3 style="color:#4A90D9; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Indoor Unit 1</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>Type</label>
+            <select id="ms1_type">
+              <option value="High Wall">High Wall</option>
+              <option value="Ducted">Ducted</option>
+              <option value="Ceiling Cassette">Ceiling Cassette</option>
+              <option value="Air Handler">Air Handler</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Location</label>
+            <input type="text" id="ms1_location" placeholder="Living Room">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Year</label>
+            <input type="text" id="ms1_year" placeholder="2024" maxlength="4">
+          </div>
+          <div class="field">
+            <label>Brand</label>
+            <select id="ms1_brand">
+              <option>Carrier</option>
+              <option>Trane</option>
+              <option>Lennox</option>
+              <option>Goodman</option>
+              <option>Rheem</option>
+              <option>American Standard</option>
+              <option>Bryant</option>
+              <option>Nordyne</option>
+              <option>Daikin</option>
+              <option value="Other">Other</option>
+            </select>
+            <input type="text" id="ms1_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Tonnage</label>
+            <select id="ms1_tons">
+              <option>1</option>
+              <option>1.5</option>
+              <option selected>2</option>
+              <option>2.5</option>
+              <option>3</option>
+              <option>3.5</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Washable Filter Status</label>
+            <select id="ms1_filter">
+              <option value="clean">Clean</option>
+              <option value="slightly dirty" selected>Slightly Dirty</option>
+              <option value="dirty">Dirty</option>
+              <option value="very dirty">Very Dirty</option>
+              <option value="clogged">Clogged</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Indoor Coil Condition</label>
+            <select id="ms1_coil">
+              <option value="clean">Clean</option>
+              <option value="slightly dirty">Slightly Dirty</option>
+              <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+              <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+              <option value="not checked">Not Checked</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Blower Wheel Condition</label>
+            <select id="ms1_blower">
+              <option value="clean">Clean</option>
+              <option value="slightly dirty">Slightly Dirty</option>
+              <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+              <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Condensate Drain Type</label>
+          <select id="ms1_drain">
+            <option value="none">Not Checked</option>
+            <option value="pvc">PVC Drain Line</option>
+            <option value="pump">Condensate Pump</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Temp Split Return (F)</label>
+            <input type="text" id="ms1_temp_return" placeholder="78">
+          </div>
+          <div class="field">
+            <label>Temp Split Supply (F)</label>
+            <input type="text" id="ms1_temp_supply" placeholder="56">
+          </div>
+        </div>
+        <div class="field">
+          <label>Temp Split Status</label>
+          <select id="ms1_temp_status">
+            <option value="within">Within Specs</option>
+            <option value="not within">Not Within Specs</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="sections" id="packageunit_sections" style="display:none;">
+  <div class="section">
+    <h2>Package Unit</h2>
+    <p style="color:#9ca3af; font-size:0.85rem;">Package Unit fields are coming soon.</p>
+  </div>
+</div>
+
 <div class="output-wrap">
   <h2>Generated Note</h2>
   <div id="noteOutput"></div>
@@ -1559,7 +1782,7 @@
 
 <!-- ====== SERVICE CALL NOTES SCRIPT ====== -->
 <script>
-    function v(id) { return document.getElementById(id).value.trim(); }
+    function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
     function chk(id) { return document.getElementById(id).checked; }
 
     // Snapshot every field's starting value so "Clear Form" can restore it exactly
@@ -1577,6 +1800,164 @@
     document.getElementById('area_of_home').addEventListener('change', function() {
         document.getElementById('area_of_home_other_field').style.display = this.value === 'Other' ? '' : 'none';
     });
+
+    document.getElementById('system_type').addEventListener('change', function() {
+        document.getElementById('split_system_sections').style.display = this.value === 'split' ? '' : 'none';
+        document.getElementById('minisplit_sections').style.display = this.value === 'mini split' ? '' : 'none';
+        document.getElementById('packageunit_sections').style.display = this.value === 'package unit' ? '' : 'none';
+    });
+
+    document.getElementById('ms_out_brand').addEventListener('change', function() {
+        document.getElementById('ms_out_brand_other').style.display = this.value === 'Other' ? '' : 'none';
+    });
+
+    function miniSplitUnitHTML(i) {
+        return `
+      <div class="ms-indoor-unit" id="ms_unit_${i}" data-index="${i}" style="border-top:1px solid #1a3a5c; padding-top:14px; margin-top:14px;">
+        <h3 style="color:#4A90D9; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Indoor Unit ${i}</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>Type</label>
+            <select id="ms${i}_type">
+              <option value="High Wall">High Wall</option>
+              <option value="Ducted">Ducted</option>
+              <option value="Ceiling Cassette">Ceiling Cassette</option>
+              <option value="Air Handler">Air Handler</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Location</label>
+            <input type="text" id="ms${i}_location" placeholder="Living Room">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Year</label>
+            <input type="text" id="ms${i}_year" placeholder="2024" maxlength="4">
+          </div>
+          <div class="field">
+            <label>Brand</label>
+            <select id="ms${i}_brand">
+              <option>Carrier</option>
+              <option>Trane</option>
+              <option>Lennox</option>
+              <option>Goodman</option>
+              <option>Rheem</option>
+              <option>American Standard</option>
+              <option>Bryant</option>
+              <option>Nordyne</option>
+              <option>Daikin</option>
+              <option value="Other">Other</option>
+            </select>
+            <input type="text" id="ms${i}_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Tonnage</label>
+            <select id="ms${i}_tons">
+              <option>1</option>
+              <option>1.5</option>
+              <option selected>2</option>
+              <option>2.5</option>
+              <option>3</option>
+              <option>3.5</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Washable Filter Status</label>
+            <select id="ms${i}_filter">
+              <option value="clean">Clean</option>
+              <option value="slightly dirty" selected>Slightly Dirty</option>
+              <option value="dirty">Dirty</option>
+              <option value="very dirty">Very Dirty</option>
+              <option value="clogged">Clogged</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Indoor Coil Condition</label>
+            <select id="ms${i}_coil">
+              <option value="clean">Clean</option>
+              <option value="slightly dirty">Slightly Dirty</option>
+              <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+              <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+              <option value="not checked">Not Checked</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Blower Wheel Condition</label>
+            <select id="ms${i}_blower">
+              <option value="clean">Clean</option>
+              <option value="slightly dirty">Slightly Dirty</option>
+              <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
+              <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Condensate Drain Type</label>
+          <select id="ms${i}_drain">
+            <option value="none">Not Checked</option>
+            <option value="pvc">PVC Drain Line</option>
+            <option value="pump">Condensate Pump</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Temp Split Return (F)</label>
+            <input type="text" id="ms${i}_temp_return" placeholder="78">
+          </div>
+          <div class="field">
+            <label>Temp Split Supply (F)</label>
+            <input type="text" id="ms${i}_temp_supply" placeholder="56">
+          </div>
+        </div>
+        <div class="field">
+          <label>Temp Split Status</label>
+          <select id="ms${i}_temp_status">
+            <option value="within">Within Specs</option>
+            <option value="not within">Not Within Specs</option>
+          </select>
+        </div>
+      </div>`;
+    }
+
+    function wireMiniSplitUnit(i) {
+        document.querySelectorAll(`#ms_unit_${i} input, #ms_unit_${i} select`).forEach(function(el) {
+            el.addEventListener('change', generateNote);
+            el.addEventListener('input', generateNote);
+        });
+        document.getElementById(`ms${i}_brand`).addEventListener('change', function() {
+            document.getElementById(`ms${i}_brand_other`).style.display = this.value === 'Other' ? '' : 'none';
+        });
+    }
+
+    function renderMiniSplitUnits() {
+        const count = parseInt(v('ms_indoor_count'), 10) || 1;
+        const container = document.getElementById('ms_indoor_units_container');
+        let existing = container.querySelectorAll('.ms-indoor-unit').length;
+        while (existing < count) {
+            existing++;
+            container.insertAdjacentHTML('beforeend', miniSplitUnitHTML(existing));
+            wireMiniSplitUnit(existing);
+        }
+        while (existing > count) {
+            const el = document.getElementById('ms_unit_' + existing);
+            if (el) el.remove();
+            existing--;
+        }
+        generateNote();
+    }
+
+    document.getElementById('ms1_brand').addEventListener('change', function() {
+        document.getElementById('ms1_brand_other').style.display = this.value === 'Other' ? '' : 'none';
+    });
+
+    document.getElementById('ms_indoor_count').addEventListener('change', renderMiniSplitUnits);
 
     // Show/hide Other brand text inputs
     document.getElementById('in_brand').addEventListener('change', function() {
@@ -1634,9 +2015,90 @@
         generateNote();
     });
 
+    function buildMiniSplitNote(locationLine) {
+        const outYear      = v('ms_out_year');
+        const outBrand     = v('ms_out_brand') === 'Other' ? (v('ms_out_brand_other') || 'Other') : v('ms_out_brand');
+        const outTons      = v('ms_out_tons');
+        const outCoil      = v('ms_out_coil');
+        const outRefMode   = v('ms_out_ref_mode');
+        const outRefStatus = v('ms_out_ref_status');
+        const outYearPart  = outYear ? `${outYear} ` : '';
+
+        let outdoor = `${outYearPart}${outBrand} ${outTons} ton heat pump. `;
+        outdoor += outCoil === 'chemically cleaned'
+            ? `Outdoor coil was inspected, found dirty, and was chemically cleaned. `
+            : outCoil === 'dirty and needs to be cleaned'
+            ? `Outdoor coil was inspected, found dirty, and needs to be chemically cleaned. `
+            : `Outdoor coil was inspected and is ${outCoil}. `;
+
+        if (outRefStatus === 'within') {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are within manufacturer specifications.`;
+        } else if (outRefStatus === 'low') {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
+        } else {
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is overcharged.`;
+        }
+
+        const count = parseInt(v('ms_indoor_count'), 10) || 1;
+        let unitsText = '';
+        for (let i = 1; i <= count; i++) {
+            const type     = v(`ms${i}_type`);
+            const location = v(`ms${i}_location`);
+            const year     = v(`ms${i}_year`);
+            const brand    = v(`ms${i}_brand`) === 'Other' ? (v(`ms${i}_brand_other`) || 'Other') : v(`ms${i}_brand`);
+            const tons     = v(`ms${i}_tons`);
+            const filter   = v(`ms${i}_filter`);
+            const coil     = v(`ms${i}_coil`);
+            const blower   = v(`ms${i}_blower`);
+            const drain    = v(`ms${i}_drain`);
+            const tempRet  = v(`ms${i}_temp_return`);
+            const tempSup  = v(`ms${i}_temp_supply`);
+            const tempSt   = v(`ms${i}_temp_status`);
+
+            const yearPart     = year ? `${year} ` : '';
+            const locationPart = location ? ` located in ${location}` : '';
+
+            let unit = `${yearPart}${brand} ${tons} ton ${type} unit${locationPart}. `;
+            unit += `Washable filter was inspected and is ${filter}. `;
+            if (coil === 'chemically cleaned') {
+                unit += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
+            } else if (coil !== 'not checked') {
+                unit += `Indoor coil was inspected and is ${coil}. `;
+            }
+            unit += blower === 'chemically cleaned'
+                ? `Blower wheel was inspected, found dirty, and was chemically cleaned. `
+                : `Blower wheel was inspected and is ${blower}. `;
+            if (drain === 'pump') {
+                unit += `Condensate pump was cleaned out, tested for operation, and treated with drain tablets. `;
+            } else if (drain === 'pvc') {
+                unit += `PVC condensate drain line was flushed and treated with drain tablets. `;
+            }
+            if (tempRet && tempSup) {
+                unit += `System has a ${tempRet}-${tempSup} temperature split and is ${tempSt} specs.`;
+            }
+            unit = unit.trim();
+
+            unitsText += `\n\nIndoor Unit ${i}\n${unit}`;
+        }
+
+        return `${locationLine}Outdoor\n${outdoor}${unitsText}`;
+    }
+
     function generateNote() {
         const areaOfHomeMap  = { upstairs: 'Upstairs', 'main level': 'Main Level', basement: 'Basement' };
         const areaOfHome    = v('area_of_home') === 'Other' ? v('area_of_home_other') : areaOfHomeMap[v('area_of_home')];
+        const locationLine  = areaOfHome ? `${areaOfHome}\n\n` : '';
+        const systemType    = v('system_type');
+
+        if (systemType === 'mini split') {
+            document.getElementById('noteOutput').textContent = buildMiniSplitNote(locationLine);
+            return;
+        }
+        if (systemType === 'package unit') {
+            document.getElementById('noteOutput').textContent = `${locationLine}Package Unit fields are coming soon.`;
+            return;
+        }
+
         const inYear        = v('in_year');
         const inBrand       = v('in_brand') === 'Other' ? (v('in_brand_other') || 'Other') : v('in_brand');
         const inTons        = v('in_tons');
@@ -1778,7 +2240,6 @@
 
         if (outNotes) outdoor += ` ${outNotes}`;
 
-        const locationLine = areaOfHome ? `${areaOfHome}\n\n` : '';
         document.getElementById('noteOutput').textContent =
             `${locationLine}Indoor\n${indoor}\n\nOutdoor\n${outdoor}`;
     }
@@ -1797,6 +2258,12 @@
     }
 
     function resetForm() {
+        // Mini split indoor units beyond the first are dynamically added and have
+        // no snapshot entry, so they're removed entirely rather than reset.
+        document.querySelectorAll('.ms-indoor-unit').forEach(function(el) {
+            if (el.dataset.index !== '1') el.remove();
+        });
+
         document.querySelectorAll('#tab-notes input, #tab-notes select').forEach(function(el) {
             if (el.type === 'checkbox') {
                 el.checked = notesDefaults[el.id];
@@ -1821,8 +2288,8 @@
         // Everything else just toggles its own dependent field off of its own
         // value/checked state, so replaying "change" is safe and keeps this in
         // sync with those handlers automatically.
-        ['area_of_home', 'in_brand', 'in_coil_brand', 'out_brand', 'in_btu',
-         'in_has_blower_cap', 'in_heatstrips', 'out_defrost'].forEach(function(id) {
+        ['area_of_home', 'system_type', 'in_brand', 'in_coil_brand', 'out_brand', 'in_btu',
+         'in_has_blower_cap', 'in_heatstrips', 'out_defrost', 'ms_out_brand', 'ms1_brand'].forEach(function(id) {
             document.getElementById(id).dispatchEvent(new Event('change'));
         });
 
