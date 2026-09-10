@@ -1562,6 +1562,12 @@
     function v(id) { return document.getElementById(id).value.trim(); }
     function chk(id) { return document.getElementById(id).checked; }
 
+    // Snapshot every field's starting value so "Clear Form" can restore it exactly
+    const notesDefaults = {};
+    document.querySelectorAll('#tab-notes input, #tab-notes select').forEach(function(el) {
+        notesDefaults[el.id] = el.type === 'checkbox' ? el.checked : el.value;
+    });
+
     // Wire only notes inputs to regenerate note live
     document.querySelectorAll('#tab-notes input, #tab-notes select').forEach(function(el) {
         el.addEventListener('change', generateNote);
@@ -1793,16 +1799,35 @@
     }
 
     function resetForm() {
-        document.querySelectorAll('#tab-notes input[type="text"]').forEach(function(el) { el.value = ''; });
-        document.getElementById('area_of_home').value = 'upstairs';
-        document.getElementById('area_of_home_other_field').style.display = 'none';
-        document.getElementById('in_has_blower_cap').checked = false;
-        document.getElementById('in_blower_cap_fields').style.display = 'none';
-        document.getElementById('in_heatstrips').checked = false;
-        document.getElementById('in_heatstrips_field').style.display = 'none';
-        document.getElementById('out_defrost').checked = false;
-        document.getElementById('out_defrost_field').style.display = 'none';
-        document.getElementById('out_defrost_toggle').style.display = '';
+        document.querySelectorAll('#tab-notes input, #tab-notes select').forEach(function(el) {
+            if (el.type === 'checkbox') {
+                el.checked = notesDefaults[el.id];
+            } else {
+                el.value = notesDefaults[el.id];
+            }
+        });
+
+        // in_type/out_type change handlers have side effects (e.g. forcing checkbox
+        // state) that aren't safe to replay via a synthetic event, so their
+        // dependent field visibility is re-derived here instead.
+        const isFurnaceDefault = notesDefaults['in_type'] === 'furnace';
+        document.getElementById('in_tons_field').style.display = isFurnaceDefault ? 'none' : '';
+        document.getElementById('in_btu_field').style.display = isFurnaceDefault ? '' : 'none';
+        document.getElementById('in_efficiency_field').style.display = isFurnaceDefault ? '' : 'none';
+        document.getElementById('in_coil_fields').style.display = isFurnaceDefault ? '' : 'none';
+        document.getElementById('in_heatstrips_toggle').style.display = isFurnaceDefault ? 'none' : '';
+
+        const isHeatPumpDefault = notesDefaults['out_type'] === 'heat pump';
+        document.getElementById('out_defrost_toggle').style.display = isHeatPumpDefault ? '' : 'none';
+
+        // Everything else just toggles its own dependent field off of its own
+        // value/checked state, so replaying "change" is safe and keeps this in
+        // sync with those handlers automatically.
+        ['area_of_home', 'in_brand', 'in_coil_brand', 'out_brand', 'in_btu',
+         'in_has_blower_cap', 'in_heatstrips', 'out_defrost'].forEach(function(id) {
+            document.getElementById(id).dispatchEvent(new Event('change'));
+        });
+
         generateNote();
     }
 
