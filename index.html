@@ -1684,9 +1684,7 @@
         }
         if (inCoil === 'chemically cleaned') {
             indoor += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
-        } else if (inCoil === 'not checked') {
-            indoor += `Indoor coil was not checked. `;
-        } else {
+        } else if (inCoil !== 'not checked') {
             indoor += `Indoor coil was inspected and is ${inCoil}. `;
         }
         indoor += inBlower === 'chemically cleaned'
