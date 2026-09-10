@@ -1333,16 +1333,13 @@
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Tonnage</label>
-            <select id="ms1_tons">
-              <option>1</option>
-              <option>1.5</option>
-              <option selected>2</option>
-              <option>2.5</option>
-              <option>3</option>
-              <option>3.5</option>
-              <option>4</option>
-              <option>5</option>
+            <label>BTU</label>
+            <select id="ms1_btu">
+              <option value="6k">6k</option>
+              <option value="9k">9k</option>
+              <option value="12k" selected>12k</option>
+              <option value="18k">18k</option>
+              <option value="24k">24k</option>
             </select>
           </div>
           <div class="field">
@@ -1353,6 +1350,7 @@
               <option value="dirty">Dirty</option>
               <option value="very dirty">Very Dirty</option>
               <option value="clogged">Clogged</option>
+              <option value="washed">Washed - Now Clean</option>
             </select>
           </div>
         </div>
@@ -1854,16 +1852,13 @@
         </div>
         <div class="field-row">
           <div class="field">
-            <label>Tonnage</label>
-            <select id="ms${i}_tons">
-              <option>1</option>
-              <option>1.5</option>
-              <option selected>2</option>
-              <option>2.5</option>
-              <option>3</option>
-              <option>3.5</option>
-              <option>4</option>
-              <option>5</option>
+            <label>BTU</label>
+            <select id="ms${i}_btu">
+              <option value="6k">6k</option>
+              <option value="9k">9k</option>
+              <option value="12k" selected>12k</option>
+              <option value="18k">18k</option>
+              <option value="24k">24k</option>
             </select>
           </div>
           <div class="field">
@@ -1874,6 +1869,7 @@
               <option value="dirty">Dirty</option>
               <option value="very dirty">Very Dirty</option>
               <option value="clogged">Clogged</option>
+              <option value="washed">Washed - Now Clean</option>
             </select>
           </div>
         </div>
@@ -2046,7 +2042,7 @@
             const location = v(`ms${i}_location`);
             const year     = v(`ms${i}_year`);
             const brand    = v(`ms${i}_brand`) === 'Other' ? (v(`ms${i}_brand_other`) || 'Other') : v(`ms${i}_brand`);
-            const tons     = v(`ms${i}_tons`);
+            const btu      = v(`ms${i}_btu`);
             const filter   = v(`ms${i}_filter`);
             const coil     = v(`ms${i}_coil`);
             const blower   = v(`ms${i}_blower`);
@@ -2058,8 +2054,10 @@
             const yearPart     = year ? `${year} ` : '';
             const locationPart = location ? ` located in ${location}` : '';
 
-            let unit = `${yearPart}${brand} ${tons} ton ${type} unit${locationPart}. `;
-            unit += `Washable filter was inspected and is ${filter}. `;
+            let unit = `${yearPart}${brand} ${btu} BTU ${type} unit${locationPart}. `;
+            unit += filter === 'washed'
+                ? `Washable filter was inspected, found dirty, and was washed and is now clean. `
+                : `Washable filter was inspected and is ${filter}. `;
             if (coil === 'chemically cleaned') {
                 unit += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
             } else if (coil !== 'not checked') {
@@ -2078,7 +2076,8 @@
             }
             unit = unit.trim();
 
-            unitsText += `\n\nIndoor Unit ${i}\n${unit}`;
+            const unitLabel = location || `Indoor Unit ${i}`;
+            unitsText += `\n\n${unitLabel}\n${unit}`;
         }
 
         return `${locationLine}Outdoor\n${outdoor}${unitsText}`;
