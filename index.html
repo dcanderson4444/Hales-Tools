@@ -992,11 +992,11 @@
     </div>
 
     <div class="toggle-row">
-      <input type="checkbox" id="in_has_blower_cap" checked>
+      <input type="checkbox" id="in_has_blower_cap">
       <label for="in_has_blower_cap">Unit has blower capacitor</label>
     </div>
 
-    <div id="in_blower_cap_fields">
+    <div id="in_blower_cap_fields" style="display:none;">
       <div class="field-row">
         <div class="field">
           <label>Blower Cap. Spec (MFD)</label>
@@ -1012,6 +1012,7 @@
         <select id="in_cap_status">
           <option value="in">In Spec</option>
           <option value="out">Not In Spec</option>
+          <option value="replaced">Not In Spec - Replaced With Customer Approval</option>
         </select>
       </div>
     </div>
@@ -1148,6 +1149,7 @@
       <select id="out_cap_status">
         <option value="in">In Spec</option>
         <option value="out">Not In Spec</option>
+        <option value="replaced">Not In Spec - Replaced With Customer Approval</option>
       </select>
     </div>
 
@@ -1679,6 +1681,8 @@
         if (hasBlowerCap) {
             if (inCapStatus === 'in') {
                 indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is in spec. `;
+            } else if (inCapStatus === 'replaced') {
+                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec. Capacitor was replaced with customer approval. `;
             } else {
                 indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec and should be replaced for continuous operation. `;
             }
@@ -1733,6 +1737,8 @@
 
         if (outCapStatus === 'in') {
             outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is in spec. `;
+        } else if (outCapStatus === 'replaced') {
+            outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec. Capacitor was replaced with customer approval. `;
         } else {
             outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec and should be replaced. `;
         }
@@ -1774,6 +1780,8 @@
         document.querySelectorAll('#tab-notes input[type="text"]').forEach(function(el) { el.value = ''; });
         document.getElementById('area_of_home').value = 'upstairs';
         document.getElementById('area_of_home_other_field').style.display = 'none';
+        document.getElementById('in_has_blower_cap').checked = false;
+        document.getElementById('in_blower_cap_fields').style.display = 'none';
         document.getElementById('in_heatstrips').checked = false;
         document.getElementById('in_heatstrips_field').style.display = 'none';
         document.getElementById('out_defrost').checked = false;
