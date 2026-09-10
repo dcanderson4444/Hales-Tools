@@ -1804,20 +1804,16 @@
 
     // Temporary banner: let everyone know the Service Call Notes tool changed.
     // Auto-expires 2 days after NOTES_UPDATE_POSTED, so it never lingers.
-    const NOTES_UPDATE_ID = '2026-09-10-notes-update';
+    // Re-shows on every visit during that window (closing it only hides it for the current visit).
     const NOTES_UPDATE_POSTED = new Date('2026-09-10T00:00:00');
     const NOTES_UPDATE_EXPIRES = new Date(NOTES_UPDATE_POSTED.getTime() + 2 * 24 * 60 * 60 * 1000);
 
     function dismissNotesUpdateNotice() {
         document.getElementById('notes-update-overlay').style.display = 'none';
-        try { localStorage.setItem('notesUpdateNoticeDismissed', NOTES_UPDATE_ID); } catch (e) {}
     }
 
     (function showNotesUpdateNoticeIfActive() {
         if (new Date() >= NOTES_UPDATE_EXPIRES) return;
-        let alreadyDismissed = false;
-        try { alreadyDismissed = localStorage.getItem('notesUpdateNoticeDismissed') === NOTES_UPDATE_ID; } catch (e) {}
-        if (alreadyDismissed) return;
         document.getElementById('notes-update-overlay').style.display = 'flex';
     })();
 
