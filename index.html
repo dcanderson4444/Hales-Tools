@@ -1190,8 +1190,23 @@
       <select id="out_ref_status">
         <option value="within">Within Manufacturer Specifications</option>
         <option value="low">Low - System Needs Refrigerant</option>
-        <option value="high">High - System is Overcharged</option>
       </select>
+    </div>
+
+    <div class="field-row" id="out_ref_added_fields" style="display:none;">
+      <div class="field">
+        <label>Amount of Refrigerant Added</label>
+        <input type="text" id="out_ref_added_amount" placeholder="2 lbs">
+      </div>
+      <div class="field">
+        <label>Type of Refrigerant Added</label>
+        <select id="out_ref_added_type">
+          <option value="R-410A">R-410A</option>
+          <option value="R-454B">R-454B</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="out_ref_added_type_other" placeholder="Enter type..." style="display:none; margin-top:6px;">
+      </div>
     </div>
 
     <div class="field">
@@ -1271,8 +1286,23 @@
         <select id="ms_out_ref_status">
           <option value="within">Within Manufacturer Specifications</option>
           <option value="low">Low - System Needs Refrigerant</option>
-          <option value="high">High - System is Overcharged</option>
         </select>
+      </div>
+    </div>
+
+    <div class="field-row" id="ms_out_ref_added_fields" style="display:none;">
+      <div class="field">
+        <label>Amount of Refrigerant Added</label>
+        <input type="text" id="ms_out_ref_added_amount" placeholder="2 lbs">
+      </div>
+      <div class="field">
+        <label>Type of Refrigerant Added</label>
+        <select id="ms_out_ref_added_type">
+          <option value="R-410A">R-410A</option>
+          <option value="R-454B">R-454B</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="ms_out_ref_added_type_other" placeholder="Enter type..." style="display:none; margin-top:6px;">
       </div>
     </div>
   </div>
@@ -1816,6 +1846,20 @@
         document.getElementById('ms_out_btu_other').style.display = this.value === 'Other' ? '' : 'none';
     });
 
+    document.getElementById('out_ref_status').addEventListener('change', function() {
+        document.getElementById('out_ref_added_fields').style.display = this.value === 'low' ? '' : 'none';
+    });
+    document.getElementById('out_ref_added_type').addEventListener('change', function() {
+        document.getElementById('out_ref_added_type_other').style.display = this.value === 'Other' ? '' : 'none';
+    });
+
+    document.getElementById('ms_out_ref_status').addEventListener('change', function() {
+        document.getElementById('ms_out_ref_added_fields').style.display = this.value === 'low' ? '' : 'none';
+    });
+    document.getElementById('ms_out_ref_added_type').addEventListener('change', function() {
+        document.getElementById('ms_out_ref_added_type_other').style.display = this.value === 'Other' ? '' : 'none';
+    });
+
     function miniSplitUnitHTML(i) {
         return `
       <div class="ms-indoor-unit" id="ms_unit_${i}" data-index="${i}" style="border-top:1px solid #1a3a5c; padding-top:14px; margin-top:14px;">
@@ -2025,6 +2069,8 @@
         const outCoil      = v('ms_out_coil');
         const outRefMode   = v('ms_out_ref_mode');
         const outRefStatus = v('ms_out_ref_status');
+        const refAmount    = v('ms_out_ref_added_amount');
+        const refType      = v('ms_out_ref_added_type') === 'Other' ? (v('ms_out_ref_added_type_other') || 'Other') : v('ms_out_ref_added_type');
         const outYearPart  = outYear ? `${outYear} ` : '';
 
         let outdoor = `${outYearPart}${outBrand} ${outBtu} BTU mini split heat pump. `;
@@ -2036,10 +2082,11 @@
 
         if (outRefStatus === 'within') {
             outdoor += `Refrigerant pressures were tested in ${outRefMode} and are within manufacturer specifications.`;
-        } else if (outRefStatus === 'low') {
-            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
         } else {
-            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is overcharged.`;
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
+            if (refAmount && refType) {
+                outdoor += ` ${refAmount} of ${refType} refrigerant was added to bring the system back to manufacturer specifications.`;
+            }
         }
 
         const count = parseInt(v('ms_indoor_count'), 10) || 1;
@@ -2201,6 +2248,8 @@
         const outDefrostSt  = v('out_defrost_status');
         const outRefMode    = v('out_ref_mode');
         const outRefStatus  = v('out_ref_status');
+        const refAmount     = v('out_ref_added_amount');
+        const refType       = v('out_ref_added_type') === 'Other' ? (v('out_ref_added_type_other') || 'Other') : v('out_ref_added_type');
         const outNotes      = v('out_notes');
         const outYearPart   = outYear ? `${outYear} ` : '';
 
@@ -2238,10 +2287,11 @@
 
         if (outRefStatus === 'within') {
             outdoor += `Refrigerant pressures were tested in ${outRefMode} and are within manufacturer specifications.`;
-        } else if (outRefStatus === 'low') {
-            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
         } else {
-            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is overcharged.`;
+            outdoor += `Refrigerant pressures were tested in ${outRefMode} and are not within manufacturer specifications. System is low on refrigerant.`;
+            if (refAmount && refType) {
+                outdoor += ` ${refAmount} of ${refType} refrigerant was added to bring the system back to manufacturer specifications.`;
+            }
         }
 
         if (outNotes) outdoor += ` ${outNotes}`;
@@ -2295,7 +2345,8 @@
         // value/checked state, so replaying "change" is safe and keeps this in
         // sync with those handlers automatically.
         ['area_of_home', 'system_type', 'in_brand', 'in_coil_brand', 'out_brand', 'in_btu',
-         'in_has_blower_cap', 'in_heatstrips', 'out_defrost', 'ms_out_brand', 'ms_out_btu', 'ms1_brand'].forEach(function(id) {
+         'in_has_blower_cap', 'in_heatstrips', 'out_defrost', 'out_ref_status', 'out_ref_added_type',
+         'ms_out_brand', 'ms_out_btu', 'ms_out_ref_status', 'ms_out_ref_added_type', 'ms1_brand'].forEach(function(id) {
             document.getElementById(id).dispatchEvent(new Event('change'));
         });
 
