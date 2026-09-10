@@ -1630,48 +1630,51 @@
 
     function generateNote() {
         const areaOfHomeMap  = { upstairs: 'Upstairs', 'main level': 'Main Level', basement: 'Basement' };
-        const areaOfHome    = v('area_of_home') === 'Other' ? (v('area_of_home_other') || '[LOCATION]') : areaOfHomeMap[v('area_of_home')];
-        const inYear        = v('in_year')          || 'XXXX';
+        const areaOfHome    = v('area_of_home') === 'Other' ? v('area_of_home_other') : areaOfHomeMap[v('area_of_home')];
+        const inYear        = v('in_year');
         const inBrand       = v('in_brand') === 'Other' ? (v('in_brand_other') || 'Other') : v('in_brand');
         const inTons        = v('in_tons');
         const inType        = v('in_type');
         const inConfig      = v('in_config');
         const inLocation    = v('in_location');
         const inFilterLoc   = v('in_filter_loc');
-        const inFilterSize  = v('in_filter_size')   || '[FILTER SIZE]';
+        const inFilterSize  = v('in_filter_size');
         const inFilterCond  = v('in_filter_cond');
         const inFilterAct   = v('in_filter_action');
         const inCoil        = v('in_coil');
         const inBlower      = v('in_blower');
-        const inCapSpec     = v('in_cap_spec')       || '[SPEC]';
-        const inCapActual   = v('in_cap_actual')     || '[ACTUAL]';
+        const inCapSpec     = v('in_cap_spec');
+        const inCapActual   = v('in_cap_actual');
         const inCapStatus   = v('in_cap_status');
         const hasBlowerCap  = chk('in_has_blower_cap');
         const inDrain       = v('in_drain');
         const hasHeat       = chk('in_heatstrips');
         const inHeatSt      = v('in_heat_status');
-        const inTempSup     = v('in_temp_supply')    || '[SUPPLY]';
-        const inTempRet     = v('in_temp_return')    || '[RETURN]';
+        const inTempSup     = v('in_temp_supply');
+        const inTempRet     = v('in_temp_return');
         const inTempSt      = v('in_temp_status');
         const inNotes       = v('in_notes');
 
         const isFurnace = inType === 'furnace';
         const inBtu = v('in_btu') === 'Other' ? (v('in_btu_other') || 'Other') : v('in_btu');
-        const inCoilYear  = v('in_coil_year')  || 'XXXX';
+        const inCoilYear  = v('in_coil_year');
         const inCoilBrand = v('in_coil_brand') === 'Other' ? (v('in_coil_brand_other') || 'Other') : v('in_coil_brand');
         const inCoilTons  = v('in_coil_tons');
         const inEfficiency = v('in_efficiency');
         const inSize = isFurnace ? `${inBtu} BTU ${inEfficiency}` : `${inTons} ton`;
+        const inYearPart     = inYear ? `${inYear} ` : '';
+        const inCoilYearPart = inCoilYear ? `${inCoilYear} ` : '';
 
         let indoor = '';
         if (isFurnace) {
-            indoor += `${inYear} ${inBrand} ${inSize} ${inType} and ${inCoilYear} ${inCoilBrand} ${inCoilTons} ton indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
+            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} and ${inCoilYearPart}${inCoilBrand} ${inCoilTons} ton indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
         } else {
-            indoor += `${inYear} ${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
+            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
         }
+        const inFilterSizePart = inFilterSize ? `${inFilterSize} ` : '';
         indoor += inFilterAct === 'customer to replace'
-            ? `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond}. Customer to replace filter. `
-            : `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond} and was ${inFilterAct}. `;
+            ? `System is filtered ${inFilterLoc} with a ${inFilterSizePart}filter that was ${inFilterCond}. Customer to replace filter. `
+            : `System is filtered ${inFilterLoc} with a ${inFilterSizePart}filter that was ${inFilterCond} and was ${inFilterAct}. `;
         if (inCoil === 'chemically cleaned') {
             indoor += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
         } else if (inCoil === 'not checked') {
@@ -1684,12 +1687,13 @@
             : `Blower wheel was inspected and is ${inBlower}. `;
 
         if (hasBlowerCap) {
+            const inCapSpecPart = (inCapSpec && inCapActual) ? `is a ${inCapSpec} MFD and measured ${inCapActual} and ` : '';
             if (inCapStatus === 'in') {
-                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is in spec. `;
+                indoor += `Blower capacitor ${inCapSpecPart}is in spec. `;
             } else if (inCapStatus === 'replaced') {
-                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec. Capacitor was replaced with customer approval. `;
+                indoor += `Blower capacitor ${inCapSpecPart}is not in spec. Capacitor was replaced with customer approval. `;
             } else {
-                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec and should be replaced for continuous operation. `;
+                indoor += `Blower capacitor ${inCapSpecPart}is not in spec and should be replaced for continuous operation. `;
             }
         }
 
@@ -1705,27 +1709,30 @@
                 : `Electric heat strips were tested for operation and are not operating properly. `;
         }
 
-        indoor += `System has a ${inTempRet}-${inTempSup} temperature split and is ${inTempSt} specs.`;
+        indoor += (inTempRet && inTempSup)
+            ? `System has a ${inTempRet}-${inTempSup} temperature split and is ${inTempSt} specs.`
+            : `System's temperature split is ${inTempSt} specs.`;
 
         if (inNotes) indoor += ` ${inNotes}`;
 
-        const outYear       = v('out_year')         || 'XXXX';
+        const outYear       = v('out_year');
         const outBrand      = v('out_brand') === 'Other' ? (v('out_brand_other') || 'Other') : v('out_brand');
         const outTons       = v('out_tons');
         const outType       = v('out_type');
         const outCoil       = v('out_coil');
         const outContactor  = v('out_contactor');
-        const outCapSpec    = v('out_cap_spec')      || '[SPEC]';
-        const outCapActual  = v('out_cap_actual')    || '[ACTUAL]';
+        const outCapSpec    = v('out_cap_spec');
+        const outCapActual  = v('out_cap_actual');
         const outCapStatus  = v('out_cap_status');
         const hasDefrost    = chk('out_defrost');
         const outDefrostSt  = v('out_defrost_status');
         const outRefMode    = v('out_ref_mode');
         const outRefStatus  = v('out_ref_status');
         const outNotes      = v('out_notes');
+        const outYearPart   = outYear ? `${outYear} ` : '';
 
         let outdoor = '';
-        outdoor += `${outYear} ${outBrand} ${outTons} ton ${outType}. `;
+        outdoor += `${outYearPart}${outBrand} ${outTons} ton ${outType}. `;
         outdoor += outCoil === 'chemically cleaned'
             ? `Outdoor coil was inspected, found dirty, and was chemically cleaned. `
             : outCoil === 'dirty and needs to be cleaned'
@@ -1740,12 +1747,13 @@
             outdoor += `Contactor was inspected and is pitted and should be replaced. `;
         }
 
+        const outCapSpecPart = (outCapSpec && outCapActual) ? `is a ${outCapSpec} MFD and measured ${outCapActual} MFD and ` : '';
         if (outCapStatus === 'in') {
-            outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is in spec. `;
+            outdoor += `Capacitor ${outCapSpecPart}is in spec. `;
         } else if (outCapStatus === 'replaced') {
-            outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec. Capacitor was replaced with customer approval. `;
+            outdoor += `Capacitor ${outCapSpecPart}is not in spec. Capacitor was replaced with customer approval. `;
         } else {
-            outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec and should be replaced. `;
+            outdoor += `Capacitor ${outCapSpecPart}is not in spec and should be replaced. `;
         }
 
         if (hasDefrost) {
@@ -1764,8 +1772,9 @@
 
         if (outNotes) outdoor += ` ${outNotes}`;
 
+        const locationLine = areaOfHome ? `${areaOfHome}\n\n` : '';
         document.getElementById('noteOutput').textContent =
-            `${areaOfHome}\n\nIndoor\n${indoor}\n\nOutdoor\n${outdoor}`;
+            `${locationLine}Indoor\n${indoor}\n\nOutdoor\n${outdoor}`;
     }
 
     function copyNote() {
