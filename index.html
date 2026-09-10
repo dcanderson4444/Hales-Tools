@@ -785,6 +785,24 @@
 
 <h1>HVAC Service Call Notes</h1>
 
+<div class="section" style="margin-bottom:20px;">
+  <div class="field-row">
+    <div class="field">
+      <label>Area of Home Serviced</label>
+      <select id="area_of_home">
+        <option value="upstairs">Upstairs</option>
+        <option value="main level">Main Level</option>
+        <option value="basement">Basement</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="field" id="area_of_home_other_field" style="display:none;">
+      <label>Enter Location</label>
+      <input type="text" id="area_of_home_other" placeholder="Enter location...">
+    </div>
+  </div>
+</div>
+
 <div class="sections">
 
   <!-- INDOOR -->
@@ -1547,6 +1565,10 @@
         el.addEventListener('input', generateNote);
     });
 
+    document.getElementById('area_of_home').addEventListener('change', function() {
+        document.getElementById('area_of_home_other_field').style.display = this.value === 'Other' ? '' : 'none';
+    });
+
     // Show/hide Other brand text inputs
     document.getElementById('in_brand').addEventListener('change', function() {
         document.getElementById('in_brand_other').style.display = this.value === 'Other' ? '' : 'none';
@@ -1604,6 +1626,8 @@
     });
 
     function generateNote() {
+        const areaOfHomeMap  = { upstairs: 'Upstairs', 'main level': 'Main Level', basement: 'Basement' };
+        const areaOfHome    = v('area_of_home') === 'Other' ? (v('area_of_home_other') || '[LOCATION]') : areaOfHomeMap[v('area_of_home')];
         const inYear        = v('in_year')          || 'XXXX';
         const inBrand       = v('in_brand') === 'Other' ? (v('in_brand_other') || 'Other') : v('in_brand');
         const inTons        = v('in_tons');
@@ -1730,7 +1754,7 @@
         if (outNotes) outdoor += ` ${outNotes}`;
 
         document.getElementById('noteOutput').textContent =
-            `Indoor\n\n${indoor}\n\nOutdoor\n\n${outdoor}`;
+            `Location: ${areaOfHome}\n\nIndoor\n\n${indoor}\n\nOutdoor\n\n${outdoor}`;
     }
 
     function copyNote() {
@@ -1748,6 +1772,8 @@
 
     function resetForm() {
         document.querySelectorAll('#tab-notes input[type="text"]').forEach(function(el) { el.value = ''; });
+        document.getElementById('area_of_home').value = 'upstairs';
+        document.getElementById('area_of_home_other_field').style.display = 'none';
         document.getElementById('in_heatstrips').checked = false;
         document.getElementById('in_heatstrips_field').style.display = 'none';
         document.getElementById('out_defrost').checked = false;
