@@ -1754,7 +1754,7 @@
         if (outNotes) outdoor += ` ${outNotes}`;
 
         document.getElementById('noteOutput').textContent =
-            `Location: ${areaOfHome}\n\nIndoor\n\n${indoor}\n\nOutdoor\n\n${outdoor}`;
+            `${areaOfHome}\n\nIndoor\n${indoor}\n\nOutdoor\n${outdoor}`;
     }
 
     function copyNote() {
