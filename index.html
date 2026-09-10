@@ -786,7 +786,7 @@
 <h1>HVAC Service Call Notes</h1>
 
 <div class="section" style="margin-bottom:20px;">
-  <div class="field-row">
+  <div class="field-row" id="area_of_home_row">
     <div class="field">
       <label>Area of Home Serviced</label>
       <select id="area_of_home">
@@ -1233,17 +1233,19 @@
 
     <div class="field-row">
       <div class="field">
-        <label>Tonnage</label>
-        <select id="ms_out_tons">
-          <option>1</option>
-          <option>1.5</option>
-          <option selected>2</option>
-          <option>2.5</option>
-          <option>3</option>
-          <option>3.5</option>
-          <option>4</option>
-          <option>5</option>
+        <label>BTU</label>
+        <select id="ms_out_btu">
+          <option value="6k">6k</option>
+          <option value="9k">9k</option>
+          <option value="12k">12k</option>
+          <option value="18k">18k</option>
+          <option value="24k" selected>24k</option>
+          <option value="30k">30k</option>
+          <option value="36k">36k</option>
+          <option value="48k">48k</option>
+          <option value="Other">Other</option>
         </select>
+        <input type="text" id="ms_out_btu_other" placeholder="Enter BTU" style="display:none; margin-top:6px;">
       </div>
       <div class="field">
         <label>Outdoor Coil Condition</label>
@@ -1803,10 +1805,15 @@
         document.getElementById('split_system_sections').style.display = this.value === 'split' ? '' : 'none';
         document.getElementById('minisplit_sections').style.display = this.value === 'mini split' ? '' : 'none';
         document.getElementById('packageunit_sections').style.display = this.value === 'package unit' ? '' : 'none';
+        document.getElementById('area_of_home_row').style.display = this.value === 'mini split' ? 'none' : '';
     });
 
     document.getElementById('ms_out_brand').addEventListener('change', function() {
         document.getElementById('ms_out_brand_other').style.display = this.value === 'Other' ? '' : 'none';
+    });
+
+    document.getElementById('ms_out_btu').addEventListener('change', function() {
+        document.getElementById('ms_out_btu_other').style.display = this.value === 'Other' ? '' : 'none';
     });
 
     function miniSplitUnitHTML(i) {
@@ -2014,13 +2021,13 @@
     function buildMiniSplitNote(locationLine) {
         const outYear      = v('ms_out_year');
         const outBrand     = v('ms_out_brand') === 'Other' ? (v('ms_out_brand_other') || 'Other') : v('ms_out_brand');
-        const outTons      = v('ms_out_tons');
+        const outBtu       = v('ms_out_btu') === 'Other' ? (v('ms_out_btu_other') || 'Other') : v('ms_out_btu');
         const outCoil      = v('ms_out_coil');
         const outRefMode   = v('ms_out_ref_mode');
         const outRefStatus = v('ms_out_ref_status');
         const outYearPart  = outYear ? `${outYear} ` : '';
 
-        let outdoor = `${outYearPart}${outBrand} ${outTons} ton heat pump. `;
+        let outdoor = `${outYearPart}${outBrand} ${outBtu} BTU heat pump. `;
         outdoor += outCoil === 'chemically cleaned'
             ? `Outdoor coil was inspected, found dirty, and was chemically cleaned. `
             : outCoil === 'dirty and needs to be cleaned'
@@ -2090,7 +2097,7 @@
         const systemType    = v('system_type');
 
         if (systemType === 'mini split') {
-            document.getElementById('noteOutput').textContent = buildMiniSplitNote(locationLine);
+            document.getElementById('noteOutput').textContent = buildMiniSplitNote('');
             return;
         }
         if (systemType === 'package unit') {
@@ -2288,7 +2295,7 @@
         // value/checked state, so replaying "change" is safe and keeps this in
         // sync with those handlers automatically.
         ['area_of_home', 'system_type', 'in_brand', 'in_coil_brand', 'out_brand', 'in_btu',
-         'in_has_blower_cap', 'in_heatstrips', 'out_defrost', 'ms_out_brand', 'ms1_brand'].forEach(function(id) {
+         'in_has_blower_cap', 'in_heatstrips', 'out_defrost', 'ms_out_brand', 'ms_out_btu', 'ms1_brand'].forEach(function(id) {
             document.getElementById(id).dispatchEvent(new Event('change'));
         });
 
