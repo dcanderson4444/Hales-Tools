@@ -1671,10 +1671,11 @@
         } else {
             indoor += `${inYearPart}${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
         }
-        const inFilterSizePart = inFilterSize ? `${inFilterSize} ` : '';
-        indoor += inFilterAct === 'customer to replace'
-            ? `System is filtered ${inFilterLoc} with a ${inFilterSizePart}filter that was ${inFilterCond}. Customer to replace filter. `
-            : `System is filtered ${inFilterLoc} with a ${inFilterSizePart}filter that was ${inFilterCond} and was ${inFilterAct}. `;
+        if (inFilterSize) {
+            indoor += inFilterAct === 'customer to replace'
+                ? `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond}. Customer to replace filter. `
+                : `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond} and was ${inFilterAct}. `;
+        }
         if (inCoil === 'chemically cleaned') {
             indoor += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
         } else if (inCoil === 'not checked') {
@@ -1686,14 +1687,13 @@
             ? `Blower wheel was inspected, found dirty, and was chemically cleaned. `
             : `Blower wheel was inspected and is ${inBlower}. `;
 
-        if (hasBlowerCap) {
-            const inCapSpecPart = (inCapSpec && inCapActual) ? `is a ${inCapSpec} MFD and measured ${inCapActual} and ` : '';
+        if (hasBlowerCap && inCapSpec && inCapActual) {
             if (inCapStatus === 'in') {
-                indoor += `Blower capacitor ${inCapSpecPart}is in spec. `;
+                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is in spec. `;
             } else if (inCapStatus === 'replaced') {
-                indoor += `Blower capacitor ${inCapSpecPart}is not in spec. Capacitor was replaced with customer approval. `;
+                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec. Capacitor was replaced with customer approval. `;
             } else {
-                indoor += `Blower capacitor ${inCapSpecPart}is not in spec and should be replaced for continuous operation. `;
+                indoor += `Blower capacitor is a ${inCapSpec} MFD and measured ${inCapActual} and is not in spec and should be replaced for continuous operation. `;
             }
         }
 
@@ -1709,10 +1709,11 @@
                 : `Electric heat strips were tested for operation and are not operating properly. `;
         }
 
-        indoor += (inTempRet && inTempSup)
-            ? `System has a ${inTempRet}-${inTempSup} temperature split and is ${inTempSt} specs.`
-            : `System's temperature split is ${inTempSt} specs.`;
+        if (inTempRet && inTempSup) {
+            indoor += `System has a ${inTempRet}-${inTempSup} temperature split and is ${inTempSt} specs.`;
+        }
 
+        indoor = indoor.trim();
         if (inNotes) indoor += ` ${inNotes}`;
 
         const outYear       = v('out_year');
@@ -1747,13 +1748,14 @@
             outdoor += `Contactor was inspected and is pitted and should be replaced. `;
         }
 
-        const outCapSpecPart = (outCapSpec && outCapActual) ? `is a ${outCapSpec} MFD and measured ${outCapActual} MFD and ` : '';
-        if (outCapStatus === 'in') {
-            outdoor += `Capacitor ${outCapSpecPart}is in spec. `;
-        } else if (outCapStatus === 'replaced') {
-            outdoor += `Capacitor ${outCapSpecPart}is not in spec. Capacitor was replaced with customer approval. `;
-        } else {
-            outdoor += `Capacitor ${outCapSpecPart}is not in spec and should be replaced. `;
+        if (outCapSpec && outCapActual) {
+            if (outCapStatus === 'in') {
+                outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is in spec. `;
+            } else if (outCapStatus === 'replaced') {
+                outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec. Capacitor was replaced with customer approval. `;
+            } else {
+                outdoor += `Capacitor is a ${outCapSpec} MFD and measured ${outCapActual} MFD and is not in spec and should be replaced. `;
+            }
         }
 
         if (hasDefrost) {
