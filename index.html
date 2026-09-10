@@ -1014,11 +1014,11 @@
     </div>
 
     <div class="toggle-row" id="in_heatstrips_toggle">
-      <input type="checkbox" id="in_heatstrips" checked>
+      <input type="checkbox" id="in_heatstrips">
       <label for="in_heatstrips">Were heat strips checked?</label>
     </div>
 
-    <div class="field" id="in_heatstrips_field">
+    <div class="field" id="in_heatstrips_field" style="display:none;">
       <label>Heat Strips Status</label>
       <select id="in_heat_status">
         <option value="properly">Operating Properly</option>
@@ -1143,11 +1143,11 @@
     </div>
 
     <div class="toggle-row" id="out_defrost_toggle">
-      <input type="checkbox" id="out_defrost" checked>
+      <input type="checkbox" id="out_defrost">
       <label for="out_defrost">Was defrost checked?</label>
     </div>
 
-    <div class="field" id="out_defrost_field">
+    <div class="field" id="out_defrost_field" style="display:none;">
       <label>Defrost Status</label>
       <select id="out_defrost_status">
         <option value="properly">Operating Properly</option>
@@ -1757,10 +1757,10 @@
 
     function resetForm() {
         document.querySelectorAll('#tab-notes input[type="text"]').forEach(function(el) { el.value = ''; });
-        document.getElementById('in_heatstrips').checked = true;
-        document.getElementById('in_heatstrips_field').style.display = '';
-        document.getElementById('out_defrost').checked = true;
-        document.getElementById('out_defrost_field').style.display = '';
+        document.getElementById('in_heatstrips').checked = false;
+        document.getElementById('in_heatstrips_field').style.display = 'none';
+        document.getElementById('out_defrost').checked = false;
+        document.getElementById('out_defrost_field').style.display = 'none';
         document.getElementById('out_defrost_toggle').style.display = '';
         generateNote();
     }
