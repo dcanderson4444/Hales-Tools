@@ -978,6 +978,7 @@
         <option value="slightly dirty">Slightly Dirty</option>
         <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
         <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
+        <option value="not checked">Not Checked</option>
       </select>
     </div>
 
@@ -1671,9 +1672,13 @@
         indoor += inFilterAct === 'customer to replace'
             ? `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond}. Customer to replace filter. `
             : `System is filtered ${inFilterLoc} with a ${inFilterSize} filter that was ${inFilterCond} and was ${inFilterAct}. `;
-        indoor += inCoil === 'chemically cleaned'
-            ? `Indoor coil was inspected, found dirty, and was chemically cleaned. `
-            : `Indoor coil was inspected and is ${inCoil}. `;
+        if (inCoil === 'chemically cleaned') {
+            indoor += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
+        } else if (inCoil === 'not checked') {
+            indoor += `Indoor coil was not checked. `;
+        } else {
+            indoor += `Indoor coil was inspected and is ${inCoil}. `;
+        }
         indoor += inBlower === 'chemically cleaned'
             ? `Blower wheel was inspected, found dirty, and was chemically cleaned. `
             : `Blower wheel was inspected and is ${inBlower}. `;
