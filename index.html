@@ -783,6 +783,15 @@
 <!-- ====== SERVICE CALL NOTES TAB ====== -->
 <div id="tab-notes" class="tab-content active">
 
+<!-- NOTES UPDATE ANNOUNCEMENT -->
+<div id="notes-update-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:2rem;max-width:360px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#0D3F75;margin-bottom:8px;">Notes Updated</div>
+    <div style="font-size:14px;color:#6B7691;margin-bottom:1.5rem;">The Service Call Notes tool has recently been updated. Please review your notes carefully to make sure everything still looks right.</div>
+    <button onclick="dismissNotesUpdateNotice()" style="width:100%;padding:10px;border-radius:8px;border:none;background:#1B5EA8;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;">Got it</button>
+  </div>
+</div>
+
 <h1>HVAC Service Call Notes</h1>
 
 <div class="section" style="margin-bottom:20px;">
@@ -1792,6 +1801,21 @@
 <script>
     function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
     function chk(id) { return document.getElementById(id).checked; }
+
+    // Temporary banner: let everyone know the Service Call Notes tool changed.
+    // Auto-expires 2 days after NOTES_UPDATE_POSTED, so it never lingers.
+    // Re-shows on every visit during that window (closing it only hides it for the current visit).
+    const NOTES_UPDATE_POSTED = new Date('2026-09-10T00:00:00');
+    const NOTES_UPDATE_EXPIRES = new Date(NOTES_UPDATE_POSTED.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+    function dismissNotesUpdateNotice() {
+        document.getElementById('notes-update-overlay').style.display = 'none';
+    }
+
+    (function showNotesUpdateNoticeIfActive() {
+        if (new Date() >= NOTES_UPDATE_EXPIRES) return;
+        document.getElementById('notes-update-overlay').style.display = 'flex';
+    })();
 
     // Snapshot every field's starting value so "Clear Form" can restore it exactly
     const notesDefaults = {};
