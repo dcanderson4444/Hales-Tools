@@ -753,22 +753,22 @@
     <div class="ins-tool-title">On-Call Schedule</div>
     <div class="ins-step">
       <div class="ins-num">1</div>
-      <div class="ins-text">The <strong>top card</strong> always shows who is on call the current weekend at a glance.</div>
+      <div class="ins-text">The <strong>top card</strong> always shows who is on call the current week (Monday–Sunday) at a glance.</div>
     </div>
     <div class="ins-step">
       <div class="ins-num">2</div>
-      <div class="ins-text">The <strong>schedule list</strong> shows the next 12 weekends. Weekends where someone switched are marked with an orange <strong>Swap</strong> badge showing who was originally scheduled.</div>
+      <div class="ins-text">The <strong>schedule list</strong> shows the next 12 weeks. Weeks where someone switched are marked with an orange <strong>Swap</strong> badge showing who was originally scheduled.</div>
     </div>
     <div class="ins-step">
       <div class="ins-num">3</div>
-      <div class="ins-text">To make a change, scroll to <strong>Make a Change</strong>, enter your name, select the weekend, select the person who agreed to swap with you, and add an optional note explaining the reason. Tap <strong>Save Change</strong>.</div>
+      <div class="ins-text">To make a change, scroll to <strong>Make a Change</strong>, enter your name, select the week, select the person who agreed to swap with you, and add an optional note explaining the reason. Tap <strong>Save Change</strong>.</div>
     </div>
     <div class="ins-step">
       <div class="ins-num">4</div>
       <div class="ins-text">All changes are saved live and visible to everyone on the team instantly. The <strong>Change Log</strong> at the bottom keeps a full record of every change made and who made it.</div>
     </div>
     <div class="ins-note">
-      <strong>Note:</strong> Swaps only affect the specific weekend selected — the base rotation stays the same for all other weekends.
+      <strong>Note:</strong> Swaps only affect the specific week selected — the base rotation stays the same for all other weeks.
     </div>
   </div>
 
@@ -1589,9 +1589,9 @@
     Add your Apps Script URL to the On-Call widget to enable live data across all devices.
   </div>
 
-  <!-- Hero: This Weekend -->
+  <!-- Hero: This Week -->
   <div class="oc-hero">
-    <div class="oc-hero-label">On Call This Weekend</div>
+    <div class="oc-hero-label">On Call This Week</div>
     <div class="oc-hero-name" id="oc-hero-name">—</div>
     <div class="oc-hero-dates" id="oc-hero-dates"></div>
   </div>
@@ -1610,7 +1610,7 @@
       <input type="text" id="oc-your-name" placeholder="e.g. Taylor">
     </div>
     <div class="oc-field">
-      <label>Weekend</label>
+      <label>Week</label>
       <select id="oc-weekend-select"></select>
     </div>
     <div class="oc-field">
@@ -2777,9 +2777,11 @@
   var OC_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby4grx4KJqhrgWnuS0w5TMIU9XjIk6NAi48lRdXb2zBHGbCRDS4OYfy63AyLNa18JQ/exec';
 
   // Rotation: Chris=0, Robert=1, Justin=2
-  // Starting Saturday March 28 2026 = Robert (index 1)
+  // On-call weeks run Monday-Sunday. Anchor is the Monday of the week
+  // containing the original Saturday anchor (2026-05-09), so rotation
+  // continuity with the old weekend-only schedule is preserved.
   var OC_TECHS      = ['Robert', 'Justin', 'Chris']; // overridden by sheet
-  var OC_START_SAT  = new Date('2026-05-09T12:00:00'); // anchor date — update when roster changes
+  var OC_START_MON  = new Date('2026-05-04T12:00:00'); // anchor date — update when roster changes
   var OC_START_IDX  = 0; // overridden by sheet
   var OC_WEEKS      = 12; // how many weeks to show
 
@@ -2788,10 +2790,10 @@
 
   // ── Helpers ──────────────────────────────────────────────
 
-  function ocKey(sat) {
-    var y = sat.getFullYear();
-    var m = String(sat.getMonth() + 1).padStart(2, '0');
-    var d = String(sat.getDate()).padStart(2, '0');
+  function ocKey(mon) {
+    var y = mon.getFullYear();
+    var m = String(mon.getMonth() + 1).padStart(2, '0');
+    var d = String(mon.getDate()).padStart(2, '0');
     return y + '_' + m + '_' + d;
   }
 
@@ -2799,8 +2801,8 @@
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
-  function ocFmtLabel(sat, sun) {
-    return 'Sat ' + ocFmt(sat) + ' \u2013 Sun ' + ocFmt(sun);
+  function ocFmtLabel(mon, sun) {
+    return 'Mon ' + ocFmt(mon) + ' \u2013 Sun ' + ocFmt(sun);
   }
 
   function ocFmtTimestamp(ts) {
@@ -2810,48 +2812,46 @@
       + ' ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
   }
 
-  function ocGetWeekends() {
+  function ocGetWeeks() {
     var weeks = [];
     var today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Find the most recent Saturday at or before today
+    // Find the most recent Monday at or before today
     var d = today.getDay();
-    var daysSinceSat = d === 6 ? 0 : d + 1;
-    var startSat = new Date(today);
-    startSat.setDate(startSat.getDate() - daysSinceSat);
-    startSat.setHours(12, 0, 0, 0);
+    var daysSinceMon = d === 0 ? 6 : d - 1;
+    var startMon = new Date(today);
+    startMon.setDate(startMon.getDate() - daysSinceMon);
+    startMon.setHours(12, 0, 0, 0);
 
     for (var i = 0; i < OC_WEEKS; i++) {
-      var sat = new Date(startSat);
-      sat.setDate(sat.getDate() + i * 7);
-      var sun = new Date(sat);
-      sun.setDate(sun.getDate() + 1);
+      var mon = new Date(startMon);
+      mon.setDate(mon.getDate() + i * 7);
+      var sun = new Date(mon);
+      sun.setDate(sun.getDate() + 6);
 
       // Calculate rotation index relative to anchor date
-      var weeksSinceAnchor = Math.round((sat - OC_START_SAT) / (7 * 24 * 60 * 60 * 1000));
+      var weeksSinceAnchor = Math.round((mon - OC_START_MON) / (7 * 24 * 60 * 60 * 1000));
       var rotIdx = ((OC_START_IDX + weeksSinceAnchor) % OC_TECHS.length + OC_TECHS.length) % OC_TECHS.length;
 
-      weeks.push({ sat: sat, sun: sun, key: ocKey(sat), basePerson: OC_TECHS[rotIdx] });
+      weeks.push({ mon: mon, sun: sun, key: ocKey(mon), basePerson: OC_TECHS[rotIdx] });
     }
     return weeks;
   }
 
-  function ocCurrentWeekendKey() {
+  function ocCurrentWeekKey() {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
-    var weeks = ocGetWeekends();
+    var weeks = ocGetWeeks();
     for (var i = 0; i < weeks.length; i++) {
-      var sat = new Date(weeks[i].sat); sat.setHours(0, 0, 0, 0);
+      var mon = new Date(weeks[i].mon); mon.setHours(0, 0, 0, 0);
       var sun = new Date(weeks[i].sun); sun.setHours(23, 59, 59, 0);
-      // "This weekend" = today is Fri/Sat/Sun of that weekend
-      var fri = new Date(sat); fri.setDate(fri.getDate() - 1);
-      if (today >= fri && today <= sun) return weeks[i].key;
+      if (today >= mon && today <= sun) return weeks[i].key;
     }
-    // Fallback: first future Saturday
+    // Fallback: first future Monday
     for (var j = 0; j < weeks.length; j++) {
-      var s = new Date(weeks[j].sat); s.setHours(0, 0, 0, 0);
-      if (s >= today) return weeks[j].key;
+      var m = new Date(weeks[j].mon); m.setHours(0, 0, 0, 0);
+      if (m >= today) return weeks[j].key;
     }
     return weeks[0].key;
   }
@@ -2859,8 +2859,8 @@
   // ── Render ───────────────────────────────────────────────
 
   function ocRender() {
-    var weeks       = ocGetWeekends();
-    var currentKey  = ocCurrentWeekendKey();
+    var weeks       = ocGetWeeks();
+    var currentKey  = ocCurrentWeekKey();
     var today       = new Date(); today.setHours(0, 0, 0, 0);
 
     // Hero
@@ -2869,14 +2869,14 @@
       ? ocOverrides[heroWeek.key].person
       : heroWeek.basePerson;
     document.getElementById('oc-hero-name').textContent  = heroPerson;
-    document.getElementById('oc-hero-dates').textContent = ocFmtLabel(heroWeek.sat, heroWeek.sun);
+    document.getElementById('oc-hero-dates').textContent = ocFmtLabel(heroWeek.mon, heroWeek.sun);
 
     // Schedule list
     var listEl = document.getElementById('oc-schedule-list');
     var html = '';
     weeks.forEach(function(w) {
       var sun = new Date(w.sun); sun.setHours(23, 59, 59, 0);
-      if (sun < today) return; // hide past weekends
+      if (sun < today) return; // hide past weeks
       var isCurrent = w.key === currentKey;
       var override  = ocOverrides[w.key];
       var person    = override ? override.person : w.basePerson;
@@ -2884,13 +2884,13 @@
 
       var rowClass = 'oc-row' + (isCurrent ? ' is-current' : '');
       html += '<div class="' + rowClass + '">';
-      html += '<span class="oc-dates">' + ocFmtLabel(w.sat, w.sun) + '</span>';
+      html += '<span class="oc-dates">' + ocFmtLabel(w.mon, w.sun) + '</span>';
       html += '<span class="oc-person">' + person + '</span>';
-      if (isCurrent) html += '<span class="oc-badge oc-badge-current">This Weekend</span>';
+      if (isCurrent) html += '<span class="oc-badge oc-badge-current">This Week</span>';
       if (isSwap)    html += '<span class="oc-badge oc-badge-swap">Swap (was ' + w.basePerson + ')</span>';
       html += '</div>';
     });
-    listEl.innerHTML = html || '<div class="oc-empty">No upcoming weekends found.</div>';
+    listEl.innerHTML = html || '<div class="oc-empty">No upcoming weeks found.</div>';
 
     // Assign To dropdown
     var assignEl = document.getElementById('oc-assign-to');
@@ -2898,13 +2898,13 @@
     OC_TECHS.forEach(function(t) { assignHtml += '<option value="' + t + '">' + t + '</option>'; });
     assignEl.innerHTML = assignHtml;
 
-    // Weekend dropdown (current + future only)
+    // Week dropdown (current + future only)
     var selEl = document.getElementById('oc-weekend-select');
     var selHtml = '';
     weeks.forEach(function(w) {
       var sun = new Date(w.sun); sun.setHours(23, 59, 59, 0);
       if (sun >= today) {
-        selHtml += '<option value="' + w.key + '">' + ocFmtLabel(w.sat, w.sun) + '</option>';
+        selHtml += '<option value="' + w.key + '">' + ocFmtLabel(w.mon, w.sun) + '</option>';
       }
     });
     selEl.innerHTML = selHtml;
@@ -2917,10 +2917,10 @@
       var logHtml = '';
       var todayLog = new Date(); todayLog.setHours(0, 0, 0, 0);
       var sorted = ocChangelog.slice().reverse().filter(function(entry) {
-        // weekendKey format: 2026_03_28 — parse the Sunday and check if it's passed
+        // weekendKey format: 2026_03_28 — parse the Monday and add 6 days to get the Sunday, then check if it's passed
         var parts = entry.weekendKey.split('_');
         if (parts.length < 3) return true;
-        var sun = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]) + 1);
+        var sun = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]) + 6);
         sun.setHours(23, 59, 59, 0);
         return sun >= todayLog;
       });
@@ -2990,16 +2990,16 @@
       return;
     }
 
-    var weeks = ocGetWeekends();
+    var weeks = ocGetWeeks();
     var week = weeks.find(function(w) { return w.key === weekendKey; });
-    var weekendLabel = week ? ocFmtLabel(week.sat, week.sun) : weekendKey;
+    var weekendLabel = week ? ocFmtLabel(week.mon, week.sun) : weekendKey;
     var fromPerson = (ocOverrides[weekendKey] && ocOverrides[weekendKey].person)
       ? ocOverrides[weekendKey].person
       : (week ? week.basePerson : '?');
 
     if (fromPerson === assignTo) {
       statusEl.className = 'oc-status error';
-      statusEl.textContent = assignTo + ' is already on call that weekend.';
+      statusEl.textContent = assignTo + ' is already on call that week.';
       return;
     }
 
