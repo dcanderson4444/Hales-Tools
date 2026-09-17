@@ -813,7 +813,7 @@
     </div>
     <div class="ins-step">
       <div class="ins-num">2</div>
-      <div class="ins-text">Work through <strong>Change-Out Overview</strong>, <strong>Indoor Unit</strong>, <strong>Outdoor Unit</strong>, and <strong>Electrical &amp; Gas</strong> — brand, capacity, condition, access, and anything relevant to quoting the job.</div>
+      <div class="ins-text">Work through <strong>Indoor Unit</strong>, <strong>Outdoor Unit</strong>, and <strong>Electrical &amp; Gas</strong> — capacity, condition, access, and anything relevant to quoting the job.</div>
     </div>
     <div class="ins-step">
       <div class="ins-num">3</div>
@@ -1853,40 +1853,6 @@
     <h2>Job Info</h2>
     <div class="co-field"><label>Technician Name</label><input type="text" id="co_tech_name" placeholder="Your name" oninput="coUpdateOutput()"></div>
     <div class="co-field"><label>Job Address</label><input type="text" id="co_job_address" placeholder="123 Main St" oninput="coUpdateOutput()"></div>
-  </div>
-
-  <div class="co-card">
-    <h2>Change-Out Overview</h2>
-    <div class="co-field">
-      <label>System Configuration</label>
-      <select id="co_system_config" onchange="coUpdateOutput()">
-        <option value="split system">Split System</option>
-        <option value="package unit">Package Unit</option>
-        <option value="mini split">Mini Split</option>
-      </select>
-    </div>
-    <div class="co-field">
-      <label>Reason for Recommending Change-Out</label>
-      <select id="co_reason" onchange="coUpdateOutput()">
-        <option value="system down / not repairable">System Down / Not Repairable</option>
-        <option value="repair cost not justified">Repair Cost Not Justified</option>
-        <option value="age and efficiency">Age &amp; Efficiency</option>
-        <option value="safety concern">Safety Concern</option>
-        <option value="customer requested upgrade">Customer Requested Upgrade</option>
-      </select>
-    </div>
-    <div class="co-field-row">
-      <div class="co-field"><label>Approx. System Age (yrs)</label><input type="text" id="co_system_age" placeholder="e.g. 15" oninput="coUpdateOutput()"></div>
-      <div class="co-field">
-        <label>Current Refrigerant</label>
-        <select id="co_refrigerant" onchange="coUpdateOutput()">
-          <option value="R-22">R-22</option>
-          <option value="R-410A">R-410A</option>
-          <option value="R-454B">R-454B</option>
-          <option value="Unknown">Unknown</option>
-        </select>
-      </div>
-    </div>
   </div>
 
   <div class="co-card">
@@ -3959,14 +3925,6 @@
     var lines = [];
     if (address) lines.push('Address: ' + address);
     if (techName) lines.push('Technician: ' + techName);
-    lines.push('');
-
-    lines.push('Change-Out Overview');
-    lines.push('  System Configuration: ' + coVal('co_system_config'));
-    lines.push('  Reason: ' + coVal('co_reason'));
-    var age = coVal('co_system_age');
-    if (age) lines.push('  Approx. System Age: ' + age + ' yrs');
-    lines.push('  Current Refrigerant: ' + coVal('co_refrigerant'));
     lines.push('');
 
     lines.push('Indoor Unit');
