@@ -2046,6 +2046,13 @@
     </div>
   </div>
 
+  <div class="co-card" style="border-left-color:#22c55e;">
+    <h2 style="color:#22c55e;">Generate PDF</h2>
+    <p style="font-size:0.85rem;color:#9ca3af;margin-bottom:14px;">Downloads a PDF with all the info above, including photos.</p>
+    <button class="co-btn" id="co-pdf-btn" onclick="coGeneratePdf()" style="background:#22c55e;color:#fff;width:100%;font-size:1rem;">Generate PDF</button>
+    <div id="co-pdf-status" style="margin-top:12px;text-align:center;font-size:0.9rem;font-weight:600;display:none;"></div>
+  </div>
+
 </div>
 </div>
 <!-- ====== END CHANGE-OUT SURVEY TAB ====== -->
@@ -3980,6 +3987,105 @@
       document.getElementById('co-preview-' + key).innerHTML = '';
     });
     coUpdateOutput();
+  }
+
+  async function coGeneratePdf() {
+    var btn = document.getElementById('co-pdf-btn');
+    var status = document.getElementById('co-pdf-status');
+    var address = coVal('co_job_address') || 'Unknown Address';
+
+    btn.disabled = true;
+    btn.textContent = 'Generating PDF...';
+    status.style.display = 'none';
+
+    try {
+      var { jsPDF } = window.jspdf;
+      var doc = new jsPDF({ unit: 'pt', format: 'letter' });
+      var pageW = doc.internal.pageSize.getWidth();
+      var margin = 40;
+      var y = margin;
+      var lineH = 15;
+
+      doc.setFillColor(13, 63, 117);
+      doc.rect(0, 0, pageW, 50, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text("Hale's Heating & Cooling — Change-Out Survey", margin, 33);
+      y = 70;
+
+      var now = new Date();
+      var dateStr = (now.getMonth() + 1) + '/' + now.getDate() + '/' + now.getFullYear();
+      doc.setTextColor(30, 30, 30);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('Date: ' + dateStr, margin, y);
+      y += lineH + 8;
+
+      var summaryLines = document.getElementById('co-output').textContent.split('\n');
+      summaryLines.forEach(function(line) {
+        if (y > 740) { doc.addPage(); y = margin; }
+        if (line === '') { y += lineH * 0.6; return; }
+        var trimmed = line.trim();
+        var isHeader = !line.startsWith('  ') && (trimmed.indexOf(':') === -1 || trimmed.endsWith(':'));
+        doc.setFont('helvetica', isHeader ? 'bold' : 'normal');
+        doc.setFontSize(isHeader ? 12 : 10);
+        var wrapped = doc.splitTextToSize(line, pageW - margin * 2);
+        doc.text(wrapped, margin, y);
+        y += lineH * wrapped.length;
+      });
+      y += 10;
+
+      var photoDefs = [
+        { id: 'co_photo_indoor_dataplate', label: 'Indoor Data Plate' },
+        { id: 'co_photo_outdoor_dataplate', label: 'Outdoor Data Plate' },
+        { id: 'co_photo_indoor_system', label: 'Indoor Overall System' },
+        { id: 'co_photo_outdoor_system', label: 'Outdoor Overall System' },
+        { id: 'co_photo_thermostat', label: 'Thermostat' }
+      ];
+
+      for (var pi = 0; pi < photoDefs.length; pi++) {
+        var inp = document.getElementById(photoDefs[pi].id);
+        if (!inp || !inp.files || !inp.files.length) continue;
+        if (y > 650) { doc.addPage(); y = margin; }
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(13);
+        doc.setTextColor(30, 30, 30);
+        doc.text(photoDefs[pi].label, margin, y); y += lineH + 6;
+        for (var fi = 0; fi < inp.files.length; fi++) {
+          var dataUrl = await new Promise(function(resolve) {
+            var reader = new FileReader();
+            var file = inp.files[fi];
+            reader.onload = function(e) { resolve(e.target.result); };
+            reader.readAsDataURL(file);
+          });
+          var imgProps = doc.getImageProperties(dataUrl);
+          var imgW = pageW - margin * 2;
+          var imgH = (imgProps.height * imgW) / imgProps.width;
+          if (imgH > 400) { imgH = 400; imgW = (imgProps.width * imgH) / imgProps.height; }
+          if (y + imgH > 720) { doc.addPage(); y = margin; }
+          doc.addImage(dataUrl, imgProps.fileType || 'JPEG', margin, y, imgW, imgH);
+          y += imgH + 12;
+        }
+        y += 6;
+      }
+
+      var safeAddress = address.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+      var filename = dateStr.replace(/\//g, '-') + ' - ' + safeAddress + ' - Change-Out Survey.pdf';
+      doc.save(filename);
+
+      btn.textContent = 'PDF Downloaded!';
+      setTimeout(function() {
+        btn.disabled = false;
+        btn.textContent = 'Generate PDF';
+      }, 2000);
+    } catch (err) {
+      status.style.display = 'block';
+      status.style.color = '#f87171';
+      status.textContent = 'Error: ' + err.message;
+      btn.disabled = false;
+      btn.textContent = 'Generate PDF';
+    }
   }
 
   coRenderTakeoffs('supply');
