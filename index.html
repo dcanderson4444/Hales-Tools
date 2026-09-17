@@ -2030,10 +2030,15 @@
       <label class="co-photo-upload-btn" for="co_photo_outdoor_system"><span id="co-photo-outdoor-system-text">Tap to upload photo</span><input type="file" id="co_photo_outdoor_system" accept="image/*" multiple onchange="coPhotoSelected(this, 'outdoor-system')"></label>
       <div class="co-photo-preview" id="co-preview-outdoor-system"></div>
     </div>
-    <div class="co-photo-item" id="co-photo-thermostat" style="border-bottom:none;">
+    <div class="co-photo-item" id="co-photo-thermostat">
       <div class="co-photo-label">Thermostat <span style="color:#F5A623;">*</span></div>
       <label class="co-photo-upload-btn" for="co_photo_thermostat"><span id="co-photo-thermostat-text">Tap to upload photo</span><input type="file" id="co_photo_thermostat" accept="image/*" multiple onchange="coPhotoSelected(this, 'thermostat')"></label>
       <div class="co-photo-preview" id="co-preview-thermostat"></div>
+    </div>
+    <div class="co-photo-item" style="border-bottom:none;">
+      <div class="co-photo-label">Other Relevant Photos <span style="color:#6b7280;font-size:0.75rem;font-weight:400;text-transform:none;letter-spacing:0;">(Optional)</span></div>
+      <label class="co-photo-upload-btn" for="co_photo_misc"><span id="co-photo-misc-text">Tap to upload photos</span><input type="file" id="co_photo_misc" accept="image/*" multiple onchange="coPhotoSelectedOptional(this)"></label>
+      <div class="co-photo-preview" id="co-preview-misc"></div>
     </div>
   </div>
 
@@ -3824,6 +3829,26 @@
     coUpdateOutput();
   }
 
+  function coPhotoSelectedOptional(input) {
+    if (!input.files || !input.files.length) return;
+    var btn = input.closest('.co-photo-upload-btn');
+    var span = btn.querySelector('span');
+    btn.classList.add('uploaded');
+    var count = input.files.length;
+    span.textContent = '✓ ' + count + ' photo' + (count > 1 ? 's' : '') + ' selected';
+    var preview = document.getElementById('co-preview-misc');
+    preview.innerHTML = '';
+    Array.from(input.files).forEach(function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function coOnUnitKindChange() {
     var isFurnace = document.getElementById('co_in_unit_kind').value === 'furnace';
     document.getElementById('co-sysdim-wrap').style.display = isFurnace ? 'none' : '';
@@ -3986,6 +4011,11 @@
       btn.querySelector('span').textContent = 'Tap to upload photo';
       document.getElementById('co-preview-' + key).innerHTML = '';
     });
+    document.getElementById('co_photo_misc').value = '';
+    var miscBtn = document.querySelector('label[for="co_photo_misc"]');
+    miscBtn.classList.remove('uploaded');
+    miscBtn.querySelector('span').textContent = 'Tap to upload photos';
+    document.getElementById('co-preview-misc').innerHTML = '';
     coUpdateOutput();
   }
 
@@ -4041,7 +4071,8 @@
         { id: 'co_photo_outdoor_dataplate', label: 'Outdoor Data Plate' },
         { id: 'co_photo_indoor_system', label: 'Indoor Overall System' },
         { id: 'co_photo_outdoor_system', label: 'Outdoor Overall System' },
-        { id: 'co_photo_thermostat', label: 'Thermostat' }
+        { id: 'co_photo_thermostat', label: 'Thermostat' },
+        { id: 'co_photo_misc', label: 'Other Relevant Photos' }
       ];
 
       for (var pi = 0; pi < photoDefs.length; pi++) {
