@@ -1919,15 +1919,7 @@
       <div class="co-field"><label>Filter Size</label><input type="text" id="co_in_filter_size" placeholder="20x20x1" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field-row">
-      <div class="co-field">
-        <label>Ductwork Condition</label>
-        <select id="co_in_duct" onchange="coUpdateOutput()">
-          <option value="good - reusable">Good - Reusable</option>
-          <option value="fair - minor repairs needed">Fair - Minor Repairs Needed</option>
-          <option value="poor - needs replacement">Poor - Needs Replacement</option>
-          <option value="not inspected">Not Inspected</option>
-        </select>
-      </div>
+      <div class="co-field"><label>Attic / Crawlspace Door Dimensions</label><input type="text" id="co_in_access" placeholder="e.g. 22x30 scuttle hole" oninput="coUpdateOutput()"></div>
       <div class="co-field">
         <label>Condensate Setup</label>
         <select id="co_in_condensate" onchange="coUpdateOutput()">
@@ -1937,7 +1929,15 @@
         </select>
       </div>
     </div>
-    <div class="co-field"><label>Attic / Crawlspace Door Dimensions</label><input type="text" id="co_in_access" placeholder="e.g. 22x30 scuttle hole" oninput="coUpdateOutput()"></div>
+    <div class="co-field">
+      <label>Ductwork Condition</label>
+      <select id="co_in_duct" onchange="coUpdateOutput()">
+        <option value="good - reusable">Good - Reusable</option>
+        <option value="fair - minor repairs needed">Fair - Minor Repairs Needed</option>
+        <option value="poor - needs replacement">Poor - Needs Replacement</option>
+        <option value="not inspected">Not Inspected</option>
+      </select>
+    </div>
     <div class="co-field"><label>Additional Indoor Notes</label><textarea id="co_in_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
   </div>
 
@@ -3870,10 +3870,10 @@
     lines.push('  Configuration: ' + coVal('co_in_config'));
     var inFilter = coVal('co_in_filter_size');
     if (inFilter) lines.push('  Filter Size: ' + inFilter);
-    lines.push('  Ductwork Condition: ' + coVal('co_in_duct'));
-    lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
     var inAccess = coVal('co_in_access');
     if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
+    lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
+    lines.push('  Ductwork Condition: ' + coVal('co_in_duct'));
     var inNotes = coVal('co_in_notes');
     if (inNotes) lines.push('  Notes: ' + inNotes);
     lines.push('');
