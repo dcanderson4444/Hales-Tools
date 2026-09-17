@@ -614,6 +614,15 @@
     #tab-changeout .co-btn:hover { opacity: 0.85; }
     #tab-changeout .co-btn-copy { background: #4A90D9; color: #fff; }
     #tab-changeout .co-btn-clear { background: #374151; color: #e5e7eb; }
+    #tab-changeout .co-photo-item { padding: 12px 0; border-bottom: 1px solid #1a3a5c; }
+    #tab-changeout .co-photo-item:last-child { border-bottom: none; }
+    #tab-changeout .co-photo-label { font-size: 0.85rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    #tab-changeout .co-photo-upload-btn { display: block; background: #111827; border: 2px dashed #374151; border-radius: 8px; padding: 14px; text-align: center; color: #4A90D9; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: border-color 0.15s; }
+    #tab-changeout .co-photo-upload-btn:hover { border-color: #4A90D9; }
+    #tab-changeout .co-photo-upload-btn.uploaded { border-color: #22c55e; color: #22c55e; border-style: solid; }
+    #tab-changeout .co-photo-upload-btn input[type="file"] { display: none; }
+    #tab-changeout .co-photo-preview { margin-top: 8px; }
+    #tab-changeout .co-photo-preview img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; display: block; margin-bottom: 4px; }
 
     /* ====== INSTRUCTIONS TAB ====== */
     #tab-instructions {
@@ -1997,6 +2006,35 @@
   <div class="co-card">
     <h2>Additional Notes for Install Crew</h2>
     <div class="co-field"><textarea id="co_crew_notes" placeholder="Anything else Bill or the crew should know..." oninput="coUpdateOutput()"></textarea></div>
+  </div>
+
+  <div class="co-card">
+    <h2>Photos</h2>
+    <div class="co-photo-item" id="co-photo-indoor-dataplate">
+      <div class="co-photo-label">Indoor Data Plate <span style="color:#F5A623;">*</span></div>
+      <label class="co-photo-upload-btn" for="co_photo_indoor_dataplate"><span id="co-photo-indoor-dataplate-text">Tap to upload photo</span><input type="file" id="co_photo_indoor_dataplate" accept="image/*" multiple onchange="coPhotoSelected(this, 'indoor-dataplate')"></label>
+      <div class="co-photo-preview" id="co-preview-indoor-dataplate"></div>
+    </div>
+    <div class="co-photo-item" id="co-photo-outdoor-dataplate">
+      <div class="co-photo-label">Outdoor Data Plate <span style="color:#F5A623;">*</span></div>
+      <label class="co-photo-upload-btn" for="co_photo_outdoor_dataplate"><span id="co-photo-outdoor-dataplate-text">Tap to upload photo</span><input type="file" id="co_photo_outdoor_dataplate" accept="image/*" multiple onchange="coPhotoSelected(this, 'outdoor-dataplate')"></label>
+      <div class="co-photo-preview" id="co-preview-outdoor-dataplate"></div>
+    </div>
+    <div class="co-photo-item" id="co-photo-indoor-system">
+      <div class="co-photo-label">Indoor Overall System <span style="color:#F5A623;">*</span></div>
+      <label class="co-photo-upload-btn" for="co_photo_indoor_system"><span id="co-photo-indoor-system-text">Tap to upload photo</span><input type="file" id="co_photo_indoor_system" accept="image/*" multiple onchange="coPhotoSelected(this, 'indoor-system')"></label>
+      <div class="co-photo-preview" id="co-preview-indoor-system"></div>
+    </div>
+    <div class="co-photo-item" id="co-photo-outdoor-system">
+      <div class="co-photo-label">Outdoor Overall System <span style="color:#F5A623;">*</span></div>
+      <label class="co-photo-upload-btn" for="co_photo_outdoor_system"><span id="co-photo-outdoor-system-text">Tap to upload photo</span><input type="file" id="co_photo_outdoor_system" accept="image/*" multiple onchange="coPhotoSelected(this, 'outdoor-system')"></label>
+      <div class="co-photo-preview" id="co-preview-outdoor-system"></div>
+    </div>
+    <div class="co-photo-item" id="co-photo-thermostat" style="border-bottom:none;">
+      <div class="co-photo-label">Thermostat <span style="color:#F5A623;">*</span></div>
+      <label class="co-photo-upload-btn" for="co_photo_thermostat"><span id="co-photo-thermostat-text">Tap to upload photo</span><input type="file" id="co_photo_thermostat" accept="image/*" multiple onchange="coPhotoSelected(this, 'thermostat')"></label>
+      <div class="co-photo-preview" id="co-preview-thermostat"></div>
+    </div>
   </div>
 
   <div class="co-card">
@@ -3754,6 +3792,31 @@
 
 <!-- ====== CHANGE-OUT SURVEY SCRIPT ====== -->
 <script>
+  var coPhotoKeys = ['indoor-dataplate', 'outdoor-dataplate', 'indoor-system', 'outdoor-system', 'thermostat'];
+  var coPhotosDone = { 'indoor-dataplate': false, 'outdoor-dataplate': false, 'indoor-system': false, 'outdoor-system': false, 'thermostat': false };
+
+  function coPhotoSelected(input, key) {
+    if (!input.files || !input.files.length) return;
+    coPhotosDone[key] = true;
+    var btn = input.closest('.co-photo-upload-btn');
+    var span = btn.querySelector('span');
+    btn.classList.add('uploaded');
+    var count = input.files.length;
+    span.textContent = '✓ ' + count + ' photo' + (count > 1 ? 's' : '') + ' selected';
+    var preview = document.getElementById('co-preview-' + key);
+    preview.innerHTML = '';
+    Array.from(input.files).forEach(function(file) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = document.createElement('img');
+        img.src = e.target.result;
+        preview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+    coUpdateOutput();
+  }
+
   function coOnUnitKindChange() {
     var isFurnace = document.getElementById('co_in_unit_kind').value === 'furnace';
     document.getElementById('co-sysdim-wrap').style.display = isFurnace ? 'none' : '';
@@ -3874,6 +3937,10 @@
     if (outNotes) lines.push('  Notes: ' + outNotes);
     lines.push('');
 
+    var photosDoneCount = coPhotoKeys.filter(function(k) { return coPhotosDone[k]; }).length;
+    lines.push('Photos: ' + photosDoneCount + ' of ' + coPhotoKeys.length + ' uploaded');
+    lines.push('');
+
     var crewNotes = coVal('co_crew_notes');
     if (crewNotes) {
       lines.push('Additional Notes for Install Crew:');
@@ -3904,6 +3971,14 @@
     document.getElementById('co-furnacedim-wrap').style.display = 'none';
     coRenderTakeoffs('supply');
     coRenderTakeoffs('return');
+    coPhotoKeys.forEach(function(key) {
+      coPhotosDone[key] = false;
+      document.getElementById('co_photo_' + key.replace(/-/g, '_')).value = '';
+      var btn = document.querySelector('#co-photo-' + key + ' .co-photo-upload-btn');
+      btn.classList.remove('uploaded');
+      btn.querySelector('span').textContent = 'Tap to upload photo';
+      document.getElementById('co-preview-' + key).innerHTML = '';
+    });
     coUpdateOutput();
   }
 
