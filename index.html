@@ -1892,7 +1892,7 @@
       <div class="co-field"><label>Filter Size</label><input type="text" id="co_in_filter_size" placeholder="20x20x1" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field-row">
-      <div class="co-field"><label>Breaker Size</label><input type="text" id="co_in_breaker_size" placeholder="e.g. 60A" oninput="coUpdateOutput()"></div>
+      <div class="co-field"><label>Breaker Size and Conductor Size</label><input type="text" id="co_in_breaker_size" placeholder="e.g. 60A, #6 AWG" oninput="coUpdateOutput()"></div>
       <div class="co-field"><label>Heat Kit Size</label><input type="text" id="co_in_heat_kit_size" placeholder="e.g. 10kW" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field-row">
@@ -3939,7 +3939,7 @@
     var inFilter = coVal('co_in_filter_size');
     if (inFilter) lines.push('  Filter Size: ' + inFilter);
     var inBreaker = coVal('co_in_breaker_size');
-    if (inBreaker) lines.push('  Breaker Size: ' + inBreaker);
+    if (inBreaker) lines.push('  Breaker Size and Conductor Size: ' + inBreaker);
     var inHeatKit = coVal('co_in_heat_kit_size');
     if (inHeatKit) lines.push('  Heat Kit Size: ' + inHeatKit);
     var inAccess = coVal('co_in_access');
