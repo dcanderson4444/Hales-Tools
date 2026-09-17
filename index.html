@@ -1988,45 +1988,7 @@
   <div class="co-card">
     <h2>Outdoor Unit</h2>
     <div class="co-field-row">
-      <div class="co-field">
-        <label>Mounting / Location</label>
-        <select id="co_out_location" onchange="coUpdateOutput()">
-          <option value="ground pad">Ground Pad</option>
-          <option value="elevated stand">Elevated Stand</option>
-          <option value="roof">Roof</option>
-          <option value="side yard">Side Yard</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      <div class="co-field">
-        <label>Pad/Stand Condition</label>
-        <select id="co_out_pad" onchange="coUpdateOutput()">
-          <option value="good - reusable">Good - Reusable</option>
-          <option value="needs replacement">Needs Replacement</option>
-          <option value="not present">Not Present</option>
-        </select>
-      </div>
-    </div>
-    <div class="co-field-row">
-      <div class="co-field">
-        <label>Brand</label>
-        <select id="co_out_brand" onchange="coToggleOther('co_out_brand', 'co_out_brand_other'); coUpdateOutput()">
-          <option>Carrier</option>
-          <option>Trane</option>
-          <option>Lennox</option>
-          <option>Goodman</option>
-          <option>Rheem</option>
-          <option>American Standard</option>
-          <option>Bryant</option>
-          <option>Nordyne</option>
-          <option>Daikin</option>
-          <option value="Other">Other</option>
-        </select>
-        <input type="text" id="co_out_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;" oninput="coUpdateOutput()">
-      </div>
       <div class="co-field"><label>Tonnage</label><input type="text" id="co_out_capacity" placeholder="e.g. 2 Ton" oninput="coUpdateOutput()"></div>
-    </div>
-    <div class="co-field-row">
       <div class="co-field">
         <label>Unit Type</label>
         <select id="co_out_unit_type" onchange="coUpdateOutput()">
@@ -2034,14 +1996,10 @@
           <option value="straight AC">Straight AC</option>
         </select>
       </div>
-      <div class="co-field">
-        <label>Line Set</label>
-        <select id="co_out_lineset" onchange="coUpdateOutput()">
-          <option value="reusable">Reusable</option>
-          <option value="needs replacement">Needs Replacement</option>
-          <option value="unknown">Unknown</option>
-        </select>
-      </div>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field"><label>Estimated Line Set Length</label><input type="text" id="co_out_lineset" placeholder="e.g. 35 ft" oninput="coUpdateOutput()"></div>
+      <div class="co-field"><label>Breaker Size and Conductor Size</label><input type="text" id="co_out_breaker_size" placeholder="e.g. 40A, #8 AWG" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field"><label>Additional Outdoor Notes</label><textarea id="co_out_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
   </div>
@@ -3857,11 +3815,6 @@
 
 <!-- ====== CHANGE-OUT SURVEY SCRIPT ====== -->
 <script>
-  function coToggleOther(selectId, otherId) {
-    var select = document.getElementById(selectId);
-    document.getElementById(otherId).style.display = select.value === 'Other' ? '' : 'none';
-  }
-
   function coToggleCheck(el) {
     el.classList.toggle('checked');
     coUpdateOutput();
@@ -3910,11 +3863,6 @@
   function coVal(id) {
     var el = document.getElementById(id);
     return el ? el.value.trim() : '';
-  }
-
-  function coBrand(selectId, otherId) {
-    var val = coVal(selectId);
-    return val === 'Other' ? (coVal(otherId) || 'Other') : val;
   }
 
   function coUpdateOutput() {
@@ -3981,13 +3929,13 @@
     lines.push('');
 
     lines.push('Outdoor Unit');
-    lines.push('  Mounting / Location: ' + coVal('co_out_location'));
-    lines.push('  Pad/Stand Condition: ' + coVal('co_out_pad'));
-    lines.push('  Brand: ' + coBrand('co_out_brand', 'co_out_brand_other'));
     var outCapacity = coVal('co_out_capacity');
     if (outCapacity) lines.push('  Tonnage: ' + outCapacity);
     lines.push('  Unit Type: ' + coVal('co_out_unit_type'));
-    lines.push('  Line Set: ' + coVal('co_out_lineset'));
+    var outLineset = coVal('co_out_lineset');
+    if (outLineset) lines.push('  Estimated Line Set Length: ' + outLineset);
+    var outBreaker = coVal('co_out_breaker_size');
+    if (outBreaker) lines.push('  Breaker Size and Conductor Size: ' + outBreaker);
     var outNotes = coVal('co_out_notes');
     if (outNotes) lines.push('  Notes: ' + outNotes);
     lines.push('');
@@ -4043,7 +3991,6 @@
     tab.querySelectorAll('input[type="text"], textarea').forEach(function(el) { el.value = ''; });
     tab.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
     tab.querySelectorAll('.co-check-item').forEach(function(el) { el.classList.remove('checked'); });
-    tab.querySelectorAll('input[id$="_other"]').forEach(function(el) { el.style.display = 'none'; });
     document.getElementById('co-gas-fields').style.display = 'none';
     document.getElementById('co-sysdim-wrap').style.display = '';
     document.getElementById('co-furnacedim-wrap').style.display = 'none';
