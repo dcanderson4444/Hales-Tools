@@ -1974,6 +1974,22 @@
       </div>
     </div>
     <div class="co-field">
+      <label># of Supply Plenum Takeoffs</label>
+      <select id="co_in_supply_takeoffs" onchange="coRenderTakeoffs('supply')">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </div>
+    <div id="co-supply-takeoff-sizes"></div>
+    <div class="co-field">
       <label>Return Plenum Dimensions</label>
       <div class="co-field-row-3">
         <input type="text" id="co_in_return_l" placeholder="Length (in)" oninput="coUpdateOutput()">
@@ -1981,6 +1997,22 @@
         <input type="text" id="co_in_return_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
       </div>
     </div>
+    <div class="co-field">
+      <label># of Return Plenum Takeoffs</label>
+      <select id="co_in_return_takeoffs" onchange="coRenderTakeoffs('return')">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+    </div>
+    <div id="co-return-takeoff-sizes"></div>
     <div class="co-field"><label>Additional Indoor Notes</label><textarea id="co_in_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
   </div>
 
@@ -3879,6 +3911,33 @@
     coUpdateOutput();
   }
 
+  function coRenderTakeoffs(kind) {
+    var count = parseInt(document.getElementById('co_in_' + kind + '_takeoffs').value, 10) || 0;
+    var container = document.getElementById('co-' + kind + '-takeoff-sizes');
+    var existing = {};
+    container.querySelectorAll('input').forEach(function(inp) { existing[inp.id] = inp.value; });
+    var html = '';
+    for (var i = 1; i <= count; i++) {
+      var id = 'co_in_' + kind + '_takeoff_' + i;
+      var val = existing[id] || '';
+      html += '<div class="co-field"><label>Takeoff ' + i + ' Size</label>'
+        + '<input type="text" id="' + id + '" placeholder="e.g. 6 in" oninput="coUpdateOutput()"></div>';
+    }
+    container.innerHTML = html;
+    for (var j = 1; j <= count; j++) {
+      var fieldId = 'co_in_' + kind + '_takeoff_' + j;
+      if (existing[fieldId]) document.getElementById(fieldId).value = existing[fieldId];
+    }
+    coUpdateOutput();
+  }
+
+  function coTakeoffSizes(kind) {
+    var container = document.getElementById('co-' + kind + '-takeoff-sizes');
+    var sizes = [];
+    container.querySelectorAll('input').forEach(function(inp) { sizes.push(inp.value.trim()); });
+    return sizes;
+  }
+
   function coVal(id) {
     var el = document.getElementById(id);
     return el ? el.value.trim() : '';
@@ -3942,9 +4001,17 @@
     if (supplyL || supplyW || supplyD) {
       lines.push('  Supply Plenum (LxWxD): ' + (supplyL || '?') + ' x ' + (supplyW || '?') + ' x ' + (supplyD || '?'));
     }
+    var supplyTakeoffs = coTakeoffSizes('supply');
+    if (supplyTakeoffs.some(function(v) { return v; })) {
+      lines.push('  Supply Takeoffs (' + supplyTakeoffs.length + '): ' + supplyTakeoffs.map(function(v) { return v || '?'; }).join(', '));
+    }
     var returnL = coVal('co_in_return_l'), returnW = coVal('co_in_return_w'), returnD = coVal('co_in_return_d');
     if (returnL || returnW || returnD) {
       lines.push('  Return Plenum (LxWxD): ' + (returnL || '?') + ' x ' + (returnW || '?') + ' x ' + (returnD || '?'));
+    }
+    var returnTakeoffs = coTakeoffSizes('return');
+    if (returnTakeoffs.some(function(v) { return v; })) {
+      lines.push('  Return Takeoffs (' + returnTakeoffs.length + '): ' + returnTakeoffs.map(function(v) { return v || '?'; }).join(', '));
     }
     var inNotes = coVal('co_in_notes');
     if (inNotes) lines.push('  Notes: ' + inNotes);
@@ -4017,9 +4084,13 @@
     document.getElementById('co-gas-fields').style.display = 'none';
     document.getElementById('co-sysdim-wrap').style.display = '';
     document.getElementById('co-furnacedim-wrap').style.display = 'none';
+    coRenderTakeoffs('supply');
+    coRenderTakeoffs('return');
     coUpdateOutput();
   }
 
+  coRenderTakeoffs('supply');
+  coRenderTakeoffs('return');
   coUpdateOutput();
 </script>
 
