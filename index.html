@@ -1892,6 +1892,10 @@
       <div class="co-field"><label>Filter Size</label><input type="text" id="co_in_filter_size" placeholder="20x20x1" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field-row">
+      <div class="co-field"><label>Breaker Size</label><input type="text" id="co_in_breaker_size" placeholder="e.g. 60A" oninput="coUpdateOutput()"></div>
+      <div class="co-field"><label>Heat Kit Size</label><input type="text" id="co_in_heat_kit_size" placeholder="e.g. 10kW" oninput="coUpdateOutput()"></div>
+    </div>
+    <div class="co-field-row">
       <div class="co-field"><label>Attic / Crawlspace Door Dimensions</label><input type="text" id="co_in_access" placeholder="e.g. 22x30 scuttle hole" oninput="coUpdateOutput()"></div>
       <div class="co-field">
         <label>Condensate Setup</label>
@@ -3934,6 +3938,10 @@
     lines.push('  Configuration: ' + coVal('co_in_config'));
     var inFilter = coVal('co_in_filter_size');
     if (inFilter) lines.push('  Filter Size: ' + inFilter);
+    var inBreaker = coVal('co_in_breaker_size');
+    if (inBreaker) lines.push('  Breaker Size: ' + inBreaker);
+    var inHeatKit = coVal('co_in_heat_kit_size');
+    if (inHeatKit) lines.push('  Heat Kit Size: ' + inHeatKit);
     var inAccess = coVal('co_in_access');
     if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
     lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
