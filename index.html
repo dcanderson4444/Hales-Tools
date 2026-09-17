@@ -1985,7 +1985,11 @@
     </div>
     <div class="co-field-row">
       <div class="co-field"><label>Estimated Line Set Length</label><input type="text" id="co_out_lineset" placeholder="e.g. 35 ft" oninput="coUpdateOutput()"></div>
+      <div class="co-field"><label>Line Set Size</label><input type="text" id="co_out_lineset_size" placeholder="e.g. 3/8 liquid, 7/8 suction" oninput="coUpdateOutput()"></div>
+    </div>
+    <div class="co-field-row">
       <div class="co-field"><label>Breaker Size and Conductor Size</label><input type="text" id="co_out_breaker_size" placeholder="e.g. 40A, #8 AWG" oninput="coUpdateOutput()"></div>
+      <div class="co-field"><label>Thermostat Wire (# of Conductors)</label><input type="text" id="co_out_tstat_wire" placeholder="e.g. 8-wire" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field"><label>Additional Outdoor Notes</label><textarea id="co_out_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
   </div>
@@ -3860,8 +3864,12 @@
     lines.push('  Unit Type: ' + coVal('co_out_unit_type'));
     var outLineset = coVal('co_out_lineset');
     if (outLineset) lines.push('  Estimated Line Set Length: ' + outLineset);
+    var outLinesetSize = coVal('co_out_lineset_size');
+    if (outLinesetSize) lines.push('  Line Set Size: ' + outLinesetSize);
     var outBreaker = coVal('co_out_breaker_size');
     if (outBreaker) lines.push('  Breaker Size and Conductor Size: ' + outBreaker);
+    var outTstatWire = coVal('co_out_tstat_wire');
+    if (outTstatWire) lines.push('  Thermostat Wire: ' + outTstatWire);
     var outNotes = coVal('co_out_notes');
     if (outNotes) lines.push('  Notes: ' + outNotes);
     lines.push('');
