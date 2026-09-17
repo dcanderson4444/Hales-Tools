@@ -592,6 +592,36 @@
     #tab-install .ic-complete-banner { display: none; background: #14532d; border: 1px solid #22c55e; border-radius: 8px; padding: 12px 16px; text-align: center; color: #86efac; font-weight: 600; font-size: 0.95rem; margin-bottom: 16px; }
     #tab-install .ic-complete-banner.show { display: block; }
 
+    /* ====== CHANGE-OUT SURVEY TAB ====== */
+    #tab-changeout { background: #111827; color: #e5e7eb; min-height: calc(100vh - 107px); }
+    #tab-changeout .co-wrap { max-width: 700px; margin: 0 auto; padding: 20px; }
+    #tab-changeout h1.co-title { text-align: center; color: #4A90D9; margin-bottom: 6px; font-size: 1.5rem; letter-spacing: 1px; }
+    #tab-changeout .co-sub { text-align: center; color: #9ca3af; font-size: 0.85rem; margin-bottom: 24px; }
+    #tab-changeout .co-card { background: #1f2937; border-radius: 10px; padding: 18px; border: 1px solid #1a3a5c; margin-bottom: 20px; }
+    #tab-changeout .co-card h2 { color: #4A90D9; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid #1a3a5c; }
+    #tab-changeout .co-field { margin-bottom: 14px; }
+    #tab-changeout .co-field:last-child { margin-bottom: 0; }
+    #tab-changeout .co-field label { display: block; font-size: 0.78rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+    #tab-changeout .co-field input[type="text"], #tab-changeout .co-field select, #tab-changeout .co-field textarea { width: 100%; padding: 8px 10px; background: #111827; border: 1px solid #374151; color: #e5e7eb; border-radius: 6px; font-size: 0.95rem; }
+    #tab-changeout .co-field input[type="text"]:focus, #tab-changeout .co-field select:focus, #tab-changeout .co-field textarea:focus { outline: none; border-color: #4A90D9; }
+    #tab-changeout .co-field textarea { min-height: 70px; resize: vertical; font-family: inherit; }
+    #tab-changeout .co-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    @media (max-width: 500px) { #tab-changeout .co-field-row { grid-template-columns: 1fr; } }
+    #tab-changeout .co-check-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #1a3a5c; cursor: pointer; }
+    #tab-changeout .co-check-item:last-child { border-bottom: none; }
+    #tab-changeout .co-check-item input[type="checkbox"] { display: none; }
+    #tab-changeout .co-check-box { width: 22px; height: 22px; border: 2px solid #374151; border-radius: 5px; flex-shrink: 0; margin-top: 1px; transition: background 0.15s, border-color 0.15s; }
+    #tab-changeout .co-check-box::after { content: ''; display: none; width: 6px; height: 10px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); margin: 3px auto; }
+    #tab-changeout .co-check-item.checked .co-check-box { background: #F5A623; border-color: #F5A623; }
+    #tab-changeout .co-check-item.checked .co-check-box::after { display: block; }
+    #tab-changeout .co-check-label { font-size: 0.95rem; color: #e5e7eb; line-height: 1.4; flex: 1; }
+    #tab-changeout .co-output-box { background: #111827; border: 1px solid #374151; border-radius: 8px; padding: 14px; font-size: 0.9rem; line-height: 1.7; color: #d1d5db; white-space: pre-wrap; min-height: 80px; }
+    #tab-changeout .co-btn-row { display: flex; gap: 10px; margin-top: 16px; }
+    #tab-changeout .co-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+    #tab-changeout .co-btn:hover { opacity: 0.85; }
+    #tab-changeout .co-btn-copy { background: #4A90D9; color: #fff; }
+    #tab-changeout .co-btn-clear { background: #374151; color: #e5e7eb; }
+
     /* ====== INSTRUCTIONS TAB ====== */
     #tab-instructions {
       background: #111827;
@@ -686,6 +716,7 @@
   <button class="tab-btn" onclick="showTab('quotes', this)">Quote Builder</button>
   <button class="tab-btn" onclick="showTab('oncall', this)">On-Call Schedule</button>
   <button class="tab-btn" onclick="showTab('install', this)">Install Close Out</button>
+  <button class="tab-btn" onclick="showTab('changeout', this)">Change-Out Survey</button>
 </nav>
 
 <!-- ====== INSTRUCTIONS TAB ====== -->
@@ -769,6 +800,30 @@
     </div>
     <div class="ins-note">
       <strong>Note:</strong> Swaps only affect the specific week selected — the base rotation stays the same for all other weeks.
+    </div>
+  </div>
+
+  <!-- Change-Out Survey -->
+  <div class="ins-tool">
+    <div class="ins-tool-title">Change-Out Survey</div>
+    <div class="ins-step">
+      <div class="ins-num">1</div>
+      <div class="ins-text">Fill this out in the field whenever you're recommending a system change-out. It captures the current unit's specs and condition so <strong>Bill</strong> knows what he's quoting and the install crew doesn't show up blind.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">2</div>
+      <div class="ins-text">Work through <strong>Change-Out Overview</strong>, <strong>Indoor Unit</strong>, <strong>Outdoor Unit</strong>, and <strong>Electrical &amp; Gas</strong> — brand, capacity, condition, access, and anything relevant to quoting the job.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">3</div>
+      <div class="ins-text">Check any boxes under <strong>Flag for Install Crew</strong> that apply — new disconnect, new pad, duct modifications, permit, etc. — so the crew shows up with the right parts and expectations.</div>
+    </div>
+    <div class="ins-step">
+      <div class="ins-num">4</div>
+      <div class="ins-text">The <strong>Summary</strong> at the bottom updates as you go. Tap <strong>Copy Summary</strong> and paste it into a text or email to Bill.</div>
+    </div>
+    <div class="ins-note">
+      <strong>Tip:</strong> Checking <strong>Gas line present</strong> reveals fields for gas line size and venting type.
     </div>
   </div>
 
@@ -1786,6 +1841,270 @@
 </div>
 </div>
 <!-- ====== END INSTALL CLOSE OUT TAB ====== -->
+
+<!-- ====== CHANGE-OUT SURVEY TAB ====== -->
+<div id="tab-changeout" class="tab-content">
+<div class="co-wrap">
+  <h1 class="co-title">System Change-Out Survey</h1>
+  <div class="co-sub">Fill this out when recommending a change-out so Bill can quote the job and the install crew knows what to expect.</div>
+
+  <div class="co-card">
+    <h2>Job Info</h2>
+    <div class="co-field"><label>Technician Name</label><input type="text" id="co_tech_name" placeholder="Your name" oninput="coUpdateOutput()"></div>
+    <div class="co-field"><label>Customer Name</label><input type="text" id="co_customer_name" placeholder="Customer name" oninput="coUpdateOutput()"></div>
+    <div class="co-field"><label>Job Address</label><input type="text" id="co_job_address" placeholder="123 Main St" oninput="coUpdateOutput()"></div>
+  </div>
+
+  <div class="co-card">
+    <h2>Change-Out Overview</h2>
+    <div class="co-field">
+      <label>System Configuration</label>
+      <select id="co_system_config" onchange="coUpdateOutput()">
+        <option value="split system">Split System</option>
+        <option value="package unit">Package Unit</option>
+        <option value="mini split">Mini Split</option>
+      </select>
+    </div>
+    <div class="co-field">
+      <label>Reason for Recommending Change-Out</label>
+      <select id="co_reason" onchange="coUpdateOutput()">
+        <option value="system down / not repairable">System Down / Not Repairable</option>
+        <option value="repair cost not justified">Repair Cost Not Justified</option>
+        <option value="age and efficiency">Age &amp; Efficiency</option>
+        <option value="safety concern">Safety Concern</option>
+        <option value="customer requested upgrade">Customer Requested Upgrade</option>
+      </select>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field"><label>Approx. System Age (yrs)</label><input type="text" id="co_system_age" placeholder="e.g. 15" oninput="coUpdateOutput()"></div>
+      <div class="co-field">
+        <label>Current Refrigerant</label>
+        <select id="co_refrigerant" onchange="coUpdateOutput()">
+          <option value="R-22">R-22</option>
+          <option value="R-410A">R-410A</option>
+          <option value="R-454B">R-454B</option>
+          <option value="Unknown">Unknown</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="co-card">
+    <h2>Indoor Unit</h2>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Unit Location</label>
+        <select id="co_in_location" onchange="coUpdateOutput()">
+          <option value="attic">Attic</option>
+          <option value="closet">Closet</option>
+          <option value="garage">Garage</option>
+          <option value="basement">Basement</option>
+          <option value="crawlspace">Crawlspace</option>
+          <option value="utility room">Utility Room</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="co-field">
+        <label>Unit Type</label>
+        <select id="co_in_unit_type" onchange="coUpdateOutput()">
+          <option value="air handler">Air Handler</option>
+          <option value="gas furnace">Gas Furnace</option>
+          <option value="electric furnace">Electric Furnace</option>
+        </select>
+      </div>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Brand</label>
+        <select id="co_in_brand" onchange="coToggleOther('co_in_brand', 'co_in_brand_other'); coUpdateOutput()">
+          <option>Carrier</option>
+          <option>Trane</option>
+          <option>Lennox</option>
+          <option>Goodman</option>
+          <option>Rheem</option>
+          <option>American Standard</option>
+          <option>Bryant</option>
+          <option>Nordyne</option>
+          <option>Daikin</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="co_in_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;" oninput="coUpdateOutput()">
+      </div>
+      <div class="co-field"><label>Tonnage / BTU</label><input type="text" id="co_in_capacity" placeholder="e.g. 2 Ton / 80,000 BTU" oninput="coUpdateOutput()"></div>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Configuration</label>
+        <select id="co_in_config" onchange="coUpdateOutput()">
+          <option value="upflow">Upflow</option>
+          <option value="downflow">Downflow</option>
+          <option value="horizontal left">Horizontal Left</option>
+          <option value="horizontal right">Horizontal Right</option>
+        </select>
+      </div>
+      <div class="co-field"><label>Filter Size</label><input type="text" id="co_in_filter_size" placeholder="20x20x1" oninput="coUpdateOutput()"></div>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Ductwork Condition</label>
+        <select id="co_in_duct" onchange="coUpdateOutput()">
+          <option value="good - reusable">Good - Reusable</option>
+          <option value="fair - minor repairs needed">Fair - Minor Repairs Needed</option>
+          <option value="poor - needs replacement">Poor - Needs Replacement</option>
+          <option value="not inspected">Not Inspected</option>
+        </select>
+      </div>
+      <div class="co-field">
+        <label>Condensate Setup</label>
+        <select id="co_in_condensate" onchange="coUpdateOutput()">
+          <option value="gravity / pvc drain">Gravity / PVC Drain</option>
+          <option value="condensate pump">Condensate Pump</option>
+          <option value="not present / unknown">Not Present / Unknown</option>
+        </select>
+      </div>
+    </div>
+    <div class="co-field">
+      <label>Access Difficulty</label>
+      <select id="co_in_access" onchange="coUpdateOutput()">
+        <option value="easy access">Easy Access</option>
+        <option value="tight space">Tight Space</option>
+        <option value="pull-down attic stairs">Pull-Down Attic Stairs</option>
+        <option value="scuttle hole only">Scuttle Hole Only</option>
+        <option value="other obstruction">Other Obstruction</option>
+      </select>
+    </div>
+    <div class="co-field"><label>Additional Indoor Notes</label><textarea id="co_in_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
+  </div>
+
+  <div class="co-card">
+    <h2>Outdoor Unit</h2>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Mounting / Location</label>
+        <select id="co_out_location" onchange="coUpdateOutput()">
+          <option value="ground pad">Ground Pad</option>
+          <option value="elevated stand">Elevated Stand</option>
+          <option value="roof">Roof</option>
+          <option value="side yard">Side Yard</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="co-field">
+        <label>Pad/Stand Condition</label>
+        <select id="co_out_pad" onchange="coUpdateOutput()">
+          <option value="good - reusable">Good - Reusable</option>
+          <option value="needs replacement">Needs Replacement</option>
+          <option value="not present">Not Present</option>
+        </select>
+      </div>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Brand</label>
+        <select id="co_out_brand" onchange="coToggleOther('co_out_brand', 'co_out_brand_other'); coUpdateOutput()">
+          <option>Carrier</option>
+          <option>Trane</option>
+          <option>Lennox</option>
+          <option>Goodman</option>
+          <option>Rheem</option>
+          <option>American Standard</option>
+          <option>Bryant</option>
+          <option>Nordyne</option>
+          <option>Daikin</option>
+          <option value="Other">Other</option>
+        </select>
+        <input type="text" id="co_out_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;" oninput="coUpdateOutput()">
+      </div>
+      <div class="co-field"><label>Tonnage</label><input type="text" id="co_out_capacity" placeholder="e.g. 2 Ton" oninput="coUpdateOutput()"></div>
+    </div>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Unit Type</label>
+        <select id="co_out_unit_type" onchange="coUpdateOutput()">
+          <option value="heat pump">Heat Pump</option>
+          <option value="straight AC">Straight AC</option>
+        </select>
+      </div>
+      <div class="co-field">
+        <label>Line Set</label>
+        <select id="co_out_lineset" onchange="coUpdateOutput()">
+          <option value="reusable">Reusable</option>
+          <option value="needs replacement">Needs Replacement</option>
+          <option value="unknown">Unknown</option>
+        </select>
+      </div>
+    </div>
+    <div class="co-field"><label>Additional Outdoor Notes</label><textarea id="co_out_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
+  </div>
+
+  <div class="co-card">
+    <h2>Electrical &amp; Gas</h2>
+    <div class="co-field-row">
+      <div class="co-field">
+        <label>Voltage</label>
+        <select id="co_voltage" onchange="coUpdateOutput()">
+          <option value="208/230V Single Phase">208/230V Single Phase</option>
+          <option value="230V Single Phase">230V Single Phase</option>
+          <option value="460V Three Phase">460V Three Phase</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="co-field"><label>Breaker Size</label><input type="text" id="co_breaker_size" placeholder="e.g. 40A" oninput="coUpdateOutput()"></div>
+    </div>
+    <div class="co-check-item" id="co-disconnect-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Disconnect present at outdoor unit</span></div>
+    <div class="co-field" style="margin-top:14px;">
+      <label>Whip Condition</label>
+      <select id="co_whip" onchange="coUpdateOutput()">
+        <option value="good - reusable">Good - Reusable</option>
+        <option value="needs replacement">Needs Replacement</option>
+        <option value="not present">Not Present</option>
+      </select>
+    </div>
+    <div class="co-check-item" id="co-gas-item" onclick="coToggleCheck(this); coOnGasToggle()" style="margin-top:14px;"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Gas line present</span></div>
+    <div id="co-gas-fields" style="display:none;">
+      <div class="co-field-row" style="margin-top:14px;">
+        <div class="co-field"><label>Gas Line Size</label><input type="text" id="co_gas_size" placeholder="e.g. 1/2 in" oninput="coUpdateOutput()"></div>
+        <div class="co-field">
+          <label>Venting Type</label>
+          <select id="co_venting" onchange="coUpdateOutput()">
+            <option value="PVC / Direct Vent">PVC / Direct Vent</option>
+            <option value="Metal B-Vent">Metal B-Vent</option>
+            <option value="Chimney">Chimney</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="co-card" id="co-flag-card">
+    <h2>Flag for Install Crew</h2>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New disconnect needed</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New whip needed</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New pad or stand needed</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New drain pan / float switch needed</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Duct modifications needed</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Electrical panel upgrade needed</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Permit likely required</span></div>
+    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Crane or special equipment needed</span></div>
+  </div>
+
+  <div class="co-card">
+    <h2>Additional Notes for Install Crew</h2>
+    <div class="co-field"><textarea id="co_crew_notes" placeholder="Anything else Bill or the crew should know..." oninput="coUpdateOutput()"></textarea></div>
+  </div>
+
+  <div class="co-card">
+    <h2>Summary</h2>
+    <div class="co-output-box" id="co-output">Fill out the form above to generate a summary.</div>
+    <div class="co-btn-row">
+      <button class="co-btn co-btn-copy" id="co-copy-btn" onclick="coCopyOutput()">Copy Summary</button>
+      <button class="co-btn co-btn-clear" onclick="coClearAll()">Clear Form</button>
+    </div>
+  </div>
+
+</div>
+</div>
+<!-- ====== END CHANGE-OUT SURVEY TAB ====== -->
 
 <!-- ====== TAB SWITCHING ====== -->
 <script>
@@ -3525,6 +3844,145 @@
   }
 
   icUpdateProgress();
+</script>
+
+<!-- ====== CHANGE-OUT SURVEY SCRIPT ====== -->
+<script>
+  function coToggleOther(selectId, otherId) {
+    var select = document.getElementById(selectId);
+    document.getElementById(otherId).style.display = select.value === 'Other' ? '' : 'none';
+  }
+
+  function coToggleCheck(el) {
+    el.classList.toggle('checked');
+    coUpdateOutput();
+  }
+
+  function coOnGasToggle() {
+    var present = document.getElementById('co-gas-item').classList.contains('checked');
+    document.getElementById('co-gas-fields').style.display = present ? '' : 'none';
+    coUpdateOutput();
+  }
+
+  function coVal(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function coBrand(selectId, otherId) {
+    var val = coVal(selectId);
+    return val === 'Other' ? (coVal(otherId) || 'Other') : val;
+  }
+
+  function coUpdateOutput() {
+    var techName = coVal('co_tech_name');
+    var customerName = coVal('co_customer_name');
+    var address = coVal('co_job_address');
+
+    if (!techName && !customerName && !address) {
+      document.getElementById('co-output').textContent = 'Fill out the form above to generate a summary.';
+      return;
+    }
+
+    var lines = [];
+    if (customerName) lines.push('Customer: ' + customerName);
+    if (address) lines.push('Address: ' + address);
+    if (techName) lines.push('Technician: ' + techName);
+    lines.push('');
+
+    lines.push('Change-Out Overview');
+    lines.push('  System Configuration: ' + coVal('co_system_config'));
+    lines.push('  Reason: ' + coVal('co_reason'));
+    var age = coVal('co_system_age');
+    if (age) lines.push('  Approx. System Age: ' + age + ' yrs');
+    lines.push('  Current Refrigerant: ' + coVal('co_refrigerant'));
+    lines.push('');
+
+    lines.push('Indoor Unit');
+    lines.push('  Location: ' + coVal('co_in_location'));
+    lines.push('  Unit Type: ' + coVal('co_in_unit_type'));
+    lines.push('  Brand: ' + coBrand('co_in_brand', 'co_in_brand_other'));
+    var inCapacity = coVal('co_in_capacity');
+    if (inCapacity) lines.push('  Tonnage / BTU: ' + inCapacity);
+    lines.push('  Configuration: ' + coVal('co_in_config'));
+    var inFilter = coVal('co_in_filter_size');
+    if (inFilter) lines.push('  Filter Size: ' + inFilter);
+    lines.push('  Ductwork Condition: ' + coVal('co_in_duct'));
+    lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
+    lines.push('  Access Difficulty: ' + coVal('co_in_access'));
+    var inNotes = coVal('co_in_notes');
+    if (inNotes) lines.push('  Notes: ' + inNotes);
+    lines.push('');
+
+    lines.push('Outdoor Unit');
+    lines.push('  Mounting / Location: ' + coVal('co_out_location'));
+    lines.push('  Pad/Stand Condition: ' + coVal('co_out_pad'));
+    lines.push('  Brand: ' + coBrand('co_out_brand', 'co_out_brand_other'));
+    var outCapacity = coVal('co_out_capacity');
+    if (outCapacity) lines.push('  Tonnage: ' + outCapacity);
+    lines.push('  Unit Type: ' + coVal('co_out_unit_type'));
+    lines.push('  Line Set: ' + coVal('co_out_lineset'));
+    var outNotes = coVal('co_out_notes');
+    if (outNotes) lines.push('  Notes: ' + outNotes);
+    lines.push('');
+
+    lines.push('Electrical & Gas');
+    lines.push('  Voltage: ' + coVal('co_voltage'));
+    var breaker = coVal('co_breaker_size');
+    if (breaker) lines.push('  Breaker Size: ' + breaker);
+    lines.push('  Disconnect Present: ' + (document.getElementById('co-disconnect-item').classList.contains('checked') ? 'Yes' : 'No'));
+    lines.push('  Whip Condition: ' + coVal('co_whip'));
+    var gasPresent = document.getElementById('co-gas-item').classList.contains('checked');
+    lines.push('  Gas Line Present: ' + (gasPresent ? 'Yes' : 'No'));
+    if (gasPresent) {
+      var gasSize = coVal('co_gas_size');
+      if (gasSize) lines.push('  Gas Line Size: ' + gasSize);
+      lines.push('  Venting Type: ' + coVal('co_venting'));
+    }
+    lines.push('');
+
+    var flagItems = document.querySelectorAll('#co-flag-card .co-check-item.checked');
+    if (flagItems.length > 0) {
+      lines.push('Flagged for Install Crew:');
+      flagItems.forEach(function(item) {
+        lines.push('  ✓ ' + item.querySelector('.co-check-label').textContent.trim());
+      });
+      lines.push('');
+    }
+
+    var crewNotes = coVal('co_crew_notes');
+    if (crewNotes) {
+      lines.push('Additional Notes for Install Crew:');
+      lines.push('  ' + crewNotes);
+    }
+
+    document.getElementById('co-output').textContent = lines.join('\n').replace(/\n+$/, '');
+  }
+
+  function coCopyOutput() {
+    var text = document.getElementById('co-output').textContent;
+    navigator.clipboard.writeText(text).then(function() {
+      var btn = document.getElementById('co-copy-btn');
+      btn.textContent = 'Copied!';
+      btn.style.background = '#22c55e';
+      setTimeout(function() {
+        btn.textContent = 'Copy Summary';
+        btn.style.background = '';
+      }, 2000);
+    });
+  }
+
+  function coClearAll() {
+    var tab = document.getElementById('tab-changeout');
+    tab.querySelectorAll('input[type="text"], textarea').forEach(function(el) { el.value = ''; });
+    tab.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
+    tab.querySelectorAll('.co-check-item').forEach(function(el) { el.classList.remove('checked'); });
+    tab.querySelectorAll('input[id$="_other"]').forEach(function(el) { el.style.display = 'none'; });
+    document.getElementById('co-gas-fields').style.display = 'none';
+    coUpdateOutput();
+  }
+
+  coUpdateOutput();
 </script>
 
 </body>
