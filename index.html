@@ -1931,6 +1931,14 @@
       </div>
     </div>
     <div class="co-field">
+      <label>System Dimensions</label>
+      <div class="co-field-row-3">
+        <input type="text" id="co_in_sys_l" placeholder="Length (in)" oninput="coUpdateOutput()">
+        <input type="text" id="co_in_sys_w" placeholder="Width (in)" oninput="coUpdateOutput()">
+        <input type="text" id="co_in_sys_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+      </div>
+    </div>
+    <div class="co-field">
       <label>Supply Plenum Dimensions</label>
       <div class="co-field-row-3">
         <input type="text" id="co_in_supply_l" placeholder="Length (in)" oninput="coUpdateOutput()">
@@ -3881,6 +3889,10 @@
     var inAccess = coVal('co_in_access');
     if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
     lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
+    var sysL = coVal('co_in_sys_l'), sysW = coVal('co_in_sys_w'), sysD = coVal('co_in_sys_d');
+    if (sysL || sysW || sysD) {
+      lines.push('  System Dimensions (LxWxD): ' + (sysL || '?') + ' x ' + (sysW || '?') + ' x ' + (sysD || '?'));
+    }
     var supplyL = coVal('co_in_supply_l'), supplyW = coVal('co_in_supply_w'), supplyD = coVal('co_in_supply_d');
     if (supplyL || supplyW || supplyD) {
       lines.push('  Supply Plenum (LxWxD): ' + (supplyL || '?') + ' x ' + (supplyW || '?') + ' x ' + (supplyD || '?'));
