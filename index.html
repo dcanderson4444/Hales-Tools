@@ -718,7 +718,7 @@
   <button class="tab-btn" onclick="showTab('quotes', this)">Quote Builder</button>
   <button class="tab-btn" onclick="showTab('oncall', this)">On-Call Schedule</button>
   <button class="tab-btn" onclick="showTab('install', this)">Install Close Out</button>
-  <button class="tab-btn" onclick="showTab('changeout', this)">Change-Out Survey</button>
+  <button class="tab-btn" onclick="showTab('changeout', this)">System Replacement Information</button>
 </nav>
 
 <!-- ====== INSTRUCTIONS TAB ====== -->
@@ -805,9 +805,9 @@
     </div>
   </div>
 
-  <!-- Change-Out Survey -->
+  <!-- System Replacement Information -->
   <div class="ins-tool">
-    <div class="ins-tool-title">Change-Out Survey</div>
+    <div class="ins-tool-title">System Replacement Information</div>
     <div class="ins-step">
       <div class="ins-num">1</div>
       <div class="ins-text">Fill this out in the field whenever you're recommending a system change-out. It captures the current unit's specs and condition so <strong>Bill</strong> knows what he's quoting and the install crew doesn't show up blind.</div>
@@ -1840,7 +1840,7 @@
 <!-- ====== CHANGE-OUT SURVEY TAB ====== -->
 <div id="tab-changeout" class="tab-content">
 <div class="co-wrap">
-  <h1 class="co-title">System Change-Out Survey</h1>
+  <h1 class="co-title">System Replacement Information</h1>
   <div class="co-sub">Fill this out when recommending a change-out so Bill can quote the job and the install crew knows what to expect.</div>
 
   <div class="co-card">
@@ -3888,6 +3888,10 @@
     return el ? el.value.trim() : '';
   }
 
+  function coSelectVal(id) {
+    return coVal(id).replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+  }
+
   function coUpdateOutput() {
     var techName = coVal('co_tech_name');
     var address = coVal('co_job_address');
@@ -3903,10 +3907,10 @@
     lines.push('');
 
     lines.push('Indoor Unit');
-    lines.push('  Location: ' + coVal('co_in_location'));
+    lines.push('  Location: ' + coSelectVal('co_in_location'));
     var inCapacity = coVal('co_in_capacity');
     if (inCapacity) lines.push('  Tonnage / BTU: ' + inCapacity);
-    lines.push('  Configuration: ' + coVal('co_in_config'));
+    lines.push('  Configuration: ' + coSelectVal('co_in_config'));
     var inFilter = coVal('co_in_filter_size');
     if (inFilter) lines.push('  Filter Size: ' + inFilter);
     var inTstatWire = coVal('co_in_tstat_wire');
@@ -3917,7 +3921,7 @@
     if (inHeatKit) lines.push('  Heat Kit Size: ' + inHeatKit);
     var inAccess = coVal('co_in_access');
     if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
-    lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
+    lines.push('  Condensate Setup: ' + coSelectVal('co_in_condensate'));
     if (coVal('co_in_unit_kind') === 'furnace') {
       var furnaceL = coVal('co_in_furnace_l'), furnaceW = coVal('co_in_furnace_w'), furnaceD = coVal('co_in_furnace_d');
       if (furnaceL || furnaceW || furnaceD) {
@@ -3956,7 +3960,7 @@
     lines.push('Outdoor Unit');
     var outCapacity = coVal('co_out_capacity');
     if (outCapacity) lines.push('  Tonnage: ' + outCapacity);
-    lines.push('  Unit Type: ' + coVal('co_out_unit_type'));
+    lines.push('  Unit Type: ' + coSelectVal('co_out_unit_type'));
     var outLineset = coVal('co_out_lineset');
     if (outLineset) lines.push('  Estimated Line Set Length: ' + outLineset);
     var outLinesetSize = coVal('co_out_lineset_size');
@@ -4041,7 +4045,7 @@
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.text("Hale's Heating & Cooling — Change-Out Survey", margin, 33);
+      doc.text("Hale's Heating & Cooling — System Replacement Information", margin, 33);
       y = 70;
 
       var now = new Date();
@@ -4102,7 +4106,7 @@
       }
 
       var safeAddress = address.replace(/[^a-zA-Z0-9\s]/g, '').trim();
-      var filename = dateStr.replace(/\//g, '-') + ' - ' + safeAddress + ' - Change-Out Survey.pdf';
+      var filename = dateStr.replace(/\//g, '-') + ' - ' + safeAddress + ' - System Replacement Information.pdf';
       doc.save(filename);
 
       btn.textContent = 'PDF Downloaded!';
