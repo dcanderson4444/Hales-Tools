@@ -1937,16 +1937,7 @@
         </select>
       </div>
     </div>
-    <div class="co-field">
-      <label>Access Difficulty</label>
-      <select id="co_in_access" onchange="coUpdateOutput()">
-        <option value="easy access">Easy Access</option>
-        <option value="tight space">Tight Space</option>
-        <option value="pull-down attic stairs">Pull-Down Attic Stairs</option>
-        <option value="scuttle hole only">Scuttle Hole Only</option>
-        <option value="other obstruction">Other Obstruction</option>
-      </select>
-    </div>
+    <div class="co-field"><label>Attic / Crawlspace Door Dimensions</label><input type="text" id="co_in_access" placeholder="e.g. 22x30 scuttle hole" oninput="coUpdateOutput()"></div>
     <div class="co-field"><label>Additional Indoor Notes</label><textarea id="co_in_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
   </div>
 
@@ -3881,7 +3872,8 @@
     if (inFilter) lines.push('  Filter Size: ' + inFilter);
     lines.push('  Ductwork Condition: ' + coVal('co_in_duct'));
     lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
-    lines.push('  Access Difficulty: ' + coVal('co_in_access'));
+    var inAccess = coVal('co_in_access');
+    if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
     var inNotes = coVal('co_in_notes');
     if (inNotes) lines.push('  Notes: ' + inNotes);
     lines.push('');
