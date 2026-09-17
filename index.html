@@ -1904,32 +1904,6 @@
           <option value="other">Other</option>
         </select>
       </div>
-      <div class="co-field">
-        <label>Unit Type</label>
-        <select id="co_in_unit_type" onchange="coUpdateOutput()">
-          <option value="air handler">Air Handler</option>
-          <option value="gas furnace">Gas Furnace</option>
-          <option value="electric furnace">Electric Furnace</option>
-        </select>
-      </div>
-    </div>
-    <div class="co-field-row">
-      <div class="co-field">
-        <label>Brand</label>
-        <select id="co_in_brand" onchange="coToggleOther('co_in_brand', 'co_in_brand_other'); coUpdateOutput()">
-          <option>Carrier</option>
-          <option>Trane</option>
-          <option>Lennox</option>
-          <option>Goodman</option>
-          <option>Rheem</option>
-          <option>American Standard</option>
-          <option>Bryant</option>
-          <option>Nordyne</option>
-          <option>Daikin</option>
-          <option value="Other">Other</option>
-        </select>
-        <input type="text" id="co_in_brand_other" placeholder="Enter brand..." style="display:none; margin-top:6px;" oninput="coUpdateOutput()">
-      </div>
       <div class="co-field"><label>Tonnage / BTU</label><input type="text" id="co_in_capacity" placeholder="e.g. 2 Ton / 80,000 BTU" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field-row">
@@ -3900,8 +3874,6 @@
 
     lines.push('Indoor Unit');
     lines.push('  Location: ' + coVal('co_in_location'));
-    lines.push('  Unit Type: ' + coVal('co_in_unit_type'));
-    lines.push('  Brand: ' + coBrand('co_in_brand', 'co_in_brand_other'));
     var inCapacity = coVal('co_in_capacity');
     if (inCapacity) lines.push('  Tonnage / BTU: ' + inCapacity);
     lines.push('  Configuration: ' + coVal('co_in_config'));
