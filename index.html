@@ -1852,7 +1852,6 @@
   <div class="co-card">
     <h2>Job Info</h2>
     <div class="co-field"><label>Technician Name</label><input type="text" id="co_tech_name" placeholder="Your name" oninput="coUpdateOutput()"></div>
-    <div class="co-field"><label>Customer Name</label><input type="text" id="co_customer_name" placeholder="Customer name" oninput="coUpdateOutput()"></div>
     <div class="co-field"><label>Job Address</label><input type="text" id="co_job_address" placeholder="123 Main St" oninput="coUpdateOutput()"></div>
   </div>
 
@@ -1893,7 +1892,7 @@
   <div class="co-card">
     <h2>Indoor Unit</h2>
     <div class="co-field">
-      <label>Unit Kind</label>
+      <label>Unit Type</label>
       <select id="co_in_unit_kind" onchange="coOnUnitKindChange()">
         <option value="air handler">Air Handler</option>
         <option value="furnace">Furnace / Coil</option>
@@ -3950,16 +3949,14 @@
 
   function coUpdateOutput() {
     var techName = coVal('co_tech_name');
-    var customerName = coVal('co_customer_name');
     var address = coVal('co_job_address');
 
-    if (!techName && !customerName && !address) {
+    if (!techName && !address) {
       document.getElementById('co-output').textContent = 'Fill out the form above to generate a summary.';
       return;
     }
 
     var lines = [];
-    if (customerName) lines.push('Customer: ' + customerName);
     if (address) lines.push('Address: ' + address);
     if (techName) lines.push('Technician: ' + techName);
     lines.push('');
