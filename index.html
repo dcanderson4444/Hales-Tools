@@ -1892,6 +1892,13 @@
 
   <div class="co-card">
     <h2>Indoor Unit</h2>
+    <div class="co-field">
+      <label>Unit Kind</label>
+      <select id="co_in_unit_kind" onchange="coOnUnitKindChange()">
+        <option value="air handler">Air Handler</option>
+        <option value="furnace">Furnace / Coil</option>
+      </select>
+    </div>
     <div class="co-field-row">
       <div class="co-field">
         <label>Unit Location</label>
@@ -1930,12 +1937,32 @@
         </select>
       </div>
     </div>
-    <div class="co-field">
-      <label>System Dimensions</label>
-      <div class="co-field-row-3">
-        <input type="text" id="co_in_sys_l" placeholder="Length (in)" oninput="coUpdateOutput()">
-        <input type="text" id="co_in_sys_w" placeholder="Width (in)" oninput="coUpdateOutput()">
-        <input type="text" id="co_in_sys_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+    <div id="co-sysdim-wrap">
+      <div class="co-field">
+        <label>System Dimensions</label>
+        <div class="co-field-row-3">
+          <input type="text" id="co_in_sys_l" placeholder="Length (in)" oninput="coUpdateOutput()">
+          <input type="text" id="co_in_sys_w" placeholder="Width (in)" oninput="coUpdateOutput()">
+          <input type="text" id="co_in_sys_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+        </div>
+      </div>
+    </div>
+    <div id="co-furnacedim-wrap" style="display:none;">
+      <div class="co-field">
+        <label>Furnace Dimensions</label>
+        <div class="co-field-row-3">
+          <input type="text" id="co_in_furnace_l" placeholder="Length (in)" oninput="coUpdateOutput()">
+          <input type="text" id="co_in_furnace_w" placeholder="Width (in)" oninput="coUpdateOutput()">
+          <input type="text" id="co_in_furnace_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+        </div>
+      </div>
+      <div class="co-field">
+        <label>Coil Dimensions</label>
+        <div class="co-field-row-3">
+          <input type="text" id="co_in_coil_l" placeholder="Length (in)" oninput="coUpdateOutput()">
+          <input type="text" id="co_in_coil_w" placeholder="Width (in)" oninput="coUpdateOutput()">
+          <input type="text" id="co_in_coil_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+        </div>
       </div>
     </div>
     <div class="co-field">
@@ -3845,6 +3872,13 @@
     coUpdateOutput();
   }
 
+  function coOnUnitKindChange() {
+    var isFurnace = document.getElementById('co_in_unit_kind').value === 'furnace';
+    document.getElementById('co-sysdim-wrap').style.display = isFurnace ? 'none' : '';
+    document.getElementById('co-furnacedim-wrap').style.display = isFurnace ? '' : 'none';
+    coUpdateOutput();
+  }
+
   function coVal(id) {
     var el = document.getElementById(id);
     return el ? el.value.trim() : '';
@@ -3889,9 +3923,20 @@
     var inAccess = coVal('co_in_access');
     if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
     lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
-    var sysL = coVal('co_in_sys_l'), sysW = coVal('co_in_sys_w'), sysD = coVal('co_in_sys_d');
-    if (sysL || sysW || sysD) {
-      lines.push('  System Dimensions (LxWxD): ' + (sysL || '?') + ' x ' + (sysW || '?') + ' x ' + (sysD || '?'));
+    if (coVal('co_in_unit_kind') === 'furnace') {
+      var furnaceL = coVal('co_in_furnace_l'), furnaceW = coVal('co_in_furnace_w'), furnaceD = coVal('co_in_furnace_d');
+      if (furnaceL || furnaceW || furnaceD) {
+        lines.push('  Furnace Dimensions (LxWxD): ' + (furnaceL || '?') + ' x ' + (furnaceW || '?') + ' x ' + (furnaceD || '?'));
+      }
+      var coilL = coVal('co_in_coil_l'), coilW = coVal('co_in_coil_w'), coilD = coVal('co_in_coil_d');
+      if (coilL || coilW || coilD) {
+        lines.push('  Coil Dimensions (LxWxD): ' + (coilL || '?') + ' x ' + (coilW || '?') + ' x ' + (coilD || '?'));
+      }
+    } else {
+      var sysL = coVal('co_in_sys_l'), sysW = coVal('co_in_sys_w'), sysD = coVal('co_in_sys_d');
+      if (sysL || sysW || sysD) {
+        lines.push('  System Dimensions (LxWxD): ' + (sysL || '?') + ' x ' + (sysW || '?') + ' x ' + (sysD || '?'));
+      }
     }
     var supplyL = coVal('co_in_supply_l'), supplyW = coVal('co_in_supply_w'), supplyD = coVal('co_in_supply_d');
     if (supplyL || supplyW || supplyD) {
@@ -3970,6 +4015,8 @@
     tab.querySelectorAll('.co-check-item').forEach(function(el) { el.classList.remove('checked'); });
     tab.querySelectorAll('input[id$="_other"]').forEach(function(el) { el.style.display = 'none'; });
     document.getElementById('co-gas-fields').style.display = 'none';
+    document.getElementById('co-sysdim-wrap').style.display = '';
+    document.getElementById('co-furnacedim-wrap').style.display = 'none';
     coUpdateOutput();
   }
 
