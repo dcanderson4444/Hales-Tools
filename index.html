@@ -608,14 +608,6 @@
     #tab-changeout .co-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     @media (max-width: 500px) { #tab-changeout .co-field-row { grid-template-columns: 1fr; } }
     #tab-changeout .co-field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    #tab-changeout .co-check-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #1a3a5c; cursor: pointer; }
-    #tab-changeout .co-check-item:last-child { border-bottom: none; }
-    #tab-changeout .co-check-item input[type="checkbox"] { display: none; }
-    #tab-changeout .co-check-box { width: 22px; height: 22px; border: 2px solid #374151; border-radius: 5px; flex-shrink: 0; margin-top: 1px; transition: background 0.15s, border-color 0.15s; }
-    #tab-changeout .co-check-box::after { content: ''; display: none; width: 6px; height: 10px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translateY(-1px); margin: 3px auto; }
-    #tab-changeout .co-check-item.checked .co-check-box { background: #F5A623; border-color: #F5A623; }
-    #tab-changeout .co-check-item.checked .co-check-box::after { display: block; }
-    #tab-changeout .co-check-label { font-size: 0.95rem; color: #e5e7eb; line-height: 1.4; flex: 1; }
     #tab-changeout .co-output-box { background: #111827; border: 1px solid #374151; border-radius: 8px; padding: 14px; font-size: 0.9rem; line-height: 1.7; color: #d1d5db; white-space: pre-wrap; min-height: 80px; }
     #tab-changeout .co-btn-row { display: flex; gap: 10px; margin-top: 16px; }
     #tab-changeout .co-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
@@ -813,18 +805,11 @@
     </div>
     <div class="ins-step">
       <div class="ins-num">2</div>
-      <div class="ins-text">Work through <strong>Indoor Unit</strong>, <strong>Outdoor Unit</strong>, and <strong>Electrical &amp; Gas</strong> — capacity, condition, access, and anything relevant to quoting the job.</div>
+      <div class="ins-text">Work through <strong>Indoor Unit</strong> and <strong>Outdoor Unit</strong> — capacity, condition, access, and anything relevant to quoting the job.</div>
     </div>
     <div class="ins-step">
       <div class="ins-num">3</div>
-      <div class="ins-text">Check any boxes under <strong>Flag for Install Crew</strong> that apply — new disconnect, new pad, duct modifications, permit, etc. — so the crew shows up with the right parts and expectations.</div>
-    </div>
-    <div class="ins-step">
-      <div class="ins-num">4</div>
       <div class="ins-text">The <strong>Summary</strong> at the bottom updates as you go. Tap <strong>Copy Summary</strong> and paste it into a text or email to Bill.</div>
-    </div>
-    <div class="ins-note">
-      <strong>Tip:</strong> Checking <strong>Gas line present</strong> reveals fields for gas line size and venting type.
     </div>
   </div>
 
@@ -2002,57 +1987,6 @@
       <div class="co-field"><label>Breaker Size and Conductor Size</label><input type="text" id="co_out_breaker_size" placeholder="e.g. 40A, #8 AWG" oninput="coUpdateOutput()"></div>
     </div>
     <div class="co-field"><label>Additional Outdoor Notes</label><textarea id="co_out_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
-  </div>
-
-  <div class="co-card">
-    <h2>Electrical &amp; Gas</h2>
-    <div class="co-field-row">
-      <div class="co-field">
-        <label>Voltage</label>
-        <select id="co_voltage" onchange="coUpdateOutput()">
-          <option value="208/230V Single Phase">208/230V Single Phase</option>
-          <option value="230V Single Phase">230V Single Phase</option>
-          <option value="460V Three Phase">460V Three Phase</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="co-field"><label>Breaker Size</label><input type="text" id="co_breaker_size" placeholder="e.g. 40A" oninput="coUpdateOutput()"></div>
-    </div>
-    <div class="co-check-item" id="co-disconnect-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Disconnect present at outdoor unit</span></div>
-    <div class="co-field" style="margin-top:14px;">
-      <label>Whip Condition</label>
-      <select id="co_whip" onchange="coUpdateOutput()">
-        <option value="good - reusable">Good - Reusable</option>
-        <option value="needs replacement">Needs Replacement</option>
-        <option value="not present">Not Present</option>
-      </select>
-    </div>
-    <div class="co-check-item" id="co-gas-item" onclick="coToggleCheck(this); coOnGasToggle()" style="margin-top:14px;"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Gas line present</span></div>
-    <div id="co-gas-fields" style="display:none;">
-      <div class="co-field-row" style="margin-top:14px;">
-        <div class="co-field"><label>Gas Line Size</label><input type="text" id="co_gas_size" placeholder="e.g. 1/2 in" oninput="coUpdateOutput()"></div>
-        <div class="co-field">
-          <label>Venting Type</label>
-          <select id="co_venting" onchange="coUpdateOutput()">
-            <option value="PVC / Direct Vent">PVC / Direct Vent</option>
-            <option value="Metal B-Vent">Metal B-Vent</option>
-            <option value="Chimney">Chimney</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="co-card" id="co-flag-card">
-    <h2>Flag for Install Crew</h2>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New disconnect needed</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New whip needed</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New pad or stand needed</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">New drain pan / float switch needed</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Duct modifications needed</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Electrical panel upgrade needed</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Permit likely required</span></div>
-    <div class="co-check-item" onclick="coToggleCheck(this)"><input type="checkbox"><div class="co-check-box"></div><span class="co-check-label">Crane or special equipment needed</span></div>
   </div>
 
   <div class="co-card">
@@ -3815,17 +3749,6 @@
 
 <!-- ====== CHANGE-OUT SURVEY SCRIPT ====== -->
 <script>
-  function coToggleCheck(el) {
-    el.classList.toggle('checked');
-    coUpdateOutput();
-  }
-
-  function coOnGasToggle() {
-    var present = document.getElementById('co-gas-item').classList.contains('checked');
-    document.getElementById('co-gas-fields').style.display = present ? '' : 'none';
-    coUpdateOutput();
-  }
-
   function coOnUnitKindChange() {
     var isFurnace = document.getElementById('co_in_unit_kind').value === 'furnace';
     document.getElementById('co-sysdim-wrap').style.display = isFurnace ? 'none' : '';
@@ -3940,30 +3863,6 @@
     if (outNotes) lines.push('  Notes: ' + outNotes);
     lines.push('');
 
-    lines.push('Electrical & Gas');
-    lines.push('  Voltage: ' + coVal('co_voltage'));
-    var breaker = coVal('co_breaker_size');
-    if (breaker) lines.push('  Breaker Size: ' + breaker);
-    lines.push('  Disconnect Present: ' + (document.getElementById('co-disconnect-item').classList.contains('checked') ? 'Yes' : 'No'));
-    lines.push('  Whip Condition: ' + coVal('co_whip'));
-    var gasPresent = document.getElementById('co-gas-item').classList.contains('checked');
-    lines.push('  Gas Line Present: ' + (gasPresent ? 'Yes' : 'No'));
-    if (gasPresent) {
-      var gasSize = coVal('co_gas_size');
-      if (gasSize) lines.push('  Gas Line Size: ' + gasSize);
-      lines.push('  Venting Type: ' + coVal('co_venting'));
-    }
-    lines.push('');
-
-    var flagItems = document.querySelectorAll('#co-flag-card .co-check-item.checked');
-    if (flagItems.length > 0) {
-      lines.push('Flagged for Install Crew:');
-      flagItems.forEach(function(item) {
-        lines.push('  ✓ ' + item.querySelector('.co-check-label').textContent.trim());
-      });
-      lines.push('');
-    }
-
     var crewNotes = coVal('co_crew_notes');
     if (crewNotes) {
       lines.push('Additional Notes for Install Crew:');
@@ -3990,8 +3889,6 @@
     var tab = document.getElementById('tab-changeout');
     tab.querySelectorAll('input[type="text"], textarea').forEach(function(el) { el.value = ''; });
     tab.querySelectorAll('select').forEach(function(el) { el.selectedIndex = 0; });
-    tab.querySelectorAll('.co-check-item').forEach(function(el) { el.classList.remove('checked'); });
-    document.getElementById('co-gas-fields').style.display = 'none';
     document.getElementById('co-sysdim-wrap').style.display = '';
     document.getElementById('co-furnacedim-wrap').style.display = 'none';
     coRenderTakeoffs('supply');
