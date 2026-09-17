@@ -607,6 +607,7 @@
     #tab-changeout .co-field textarea { min-height: 70px; resize: vertical; font-family: inherit; }
     #tab-changeout .co-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     @media (max-width: 500px) { #tab-changeout .co-field-row { grid-template-columns: 1fr; } }
+    #tab-changeout .co-field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     #tab-changeout .co-check-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #1a3a5c; cursor: pointer; }
     #tab-changeout .co-check-item:last-child { border-bottom: none; }
     #tab-changeout .co-check-item input[type="checkbox"] { display: none; }
@@ -1930,13 +1931,20 @@
       </div>
     </div>
     <div class="co-field">
-      <label>Ductwork Condition</label>
-      <select id="co_in_duct" onchange="coUpdateOutput()">
-        <option value="good - reusable">Good - Reusable</option>
-        <option value="fair - minor repairs needed">Fair - Minor Repairs Needed</option>
-        <option value="poor - needs replacement">Poor - Needs Replacement</option>
-        <option value="not inspected">Not Inspected</option>
-      </select>
+      <label>Supply Plenum Dimensions</label>
+      <div class="co-field-row-3">
+        <input type="text" id="co_in_supply_l" placeholder="Length (in)" oninput="coUpdateOutput()">
+        <input type="text" id="co_in_supply_w" placeholder="Width (in)" oninput="coUpdateOutput()">
+        <input type="text" id="co_in_supply_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+      </div>
+    </div>
+    <div class="co-field">
+      <label>Return Plenum Dimensions</label>
+      <div class="co-field-row-3">
+        <input type="text" id="co_in_return_l" placeholder="Length (in)" oninput="coUpdateOutput()">
+        <input type="text" id="co_in_return_w" placeholder="Width (in)" oninput="coUpdateOutput()">
+        <input type="text" id="co_in_return_d" placeholder="Depth (in)" oninput="coUpdateOutput()">
+      </div>
     </div>
     <div class="co-field"><label>Additional Indoor Notes</label><textarea id="co_in_notes" placeholder="Optional..." oninput="coUpdateOutput()"></textarea></div>
   </div>
@@ -3873,7 +3881,14 @@
     var inAccess = coVal('co_in_access');
     if (inAccess) lines.push('  Attic/Crawlspace Door Dimensions: ' + inAccess);
     lines.push('  Condensate Setup: ' + coVal('co_in_condensate'));
-    lines.push('  Ductwork Condition: ' + coVal('co_in_duct'));
+    var supplyL = coVal('co_in_supply_l'), supplyW = coVal('co_in_supply_w'), supplyD = coVal('co_in_supply_d');
+    if (supplyL || supplyW || supplyD) {
+      lines.push('  Supply Plenum (LxWxD): ' + (supplyL || '?') + ' x ' + (supplyW || '?') + ' x ' + (supplyD || '?'));
+    }
+    var returnL = coVal('co_in_return_l'), returnW = coVal('co_in_return_w'), returnD = coVal('co_in_return_d');
+    if (returnL || returnW || returnD) {
+      lines.push('  Return Plenum (LxWxD): ' + (returnL || '?') + ' x ' + (returnW || '?') + ' x ' + (returnD || '?'));
+    }
     var inNotes = coVal('co_in_notes');
     if (inNotes) lines.push('  Notes: ' + inNotes);
     lines.push('');
