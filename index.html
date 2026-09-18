@@ -4023,6 +4023,123 @@
     coUpdateOutput();
   }
 
+  var CO_PDF_MARGIN = 40;
+  var CO_PDF_BLUE = [13, 63, 117];
+  var CO_PDF_ORANGE = [245, 166, 35];
+  var CO_PDF_BORDER = [216, 222, 232];
+  var CO_PDF_LABEL = [107, 118, 145];
+  var CO_PDF_VALUE = [26, 32, 48];
+  var CO_PDF_HEAD = [27, 94, 168];
+
+  function coPdfCard(doc, startY, title, rows) {
+    var margin = CO_PDF_MARGIN;
+    var pageW = doc.internal.pageSize.getWidth();
+    var pageH = doc.internal.pageSize.getHeight();
+    var contentW = pageW - margin * 2;
+    var padX = 12, padTop = 10, padBottom = 12;
+    var labelColW = 175;
+    var valueColW = contentW - padX * 2 - labelColW;
+    var lineH = 13;
+    var titleH = 20;
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    var rowInfo = rows.map(function(r) {
+      var wrapped = doc.splitTextToSize(String(r.value), valueColW);
+      return { row: r, wrapped: wrapped, h: Math.max(1, wrapped.length) * lineH };
+    });
+    var bodyH = rowInfo.reduce(function(sum, ri) { return sum + ri.h; }, 0);
+    var boxH = padTop + titleH + bodyH + padBottom;
+
+    if (startY + boxH > pageH - margin) {
+      doc.addPage();
+      startY = margin;
+    }
+
+    var y = startY;
+    var boxTop = y;
+    y += padTop;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(CO_PDF_HEAD[0], CO_PDF_HEAD[1], CO_PDF_HEAD[2]);
+    var titleText = title.toUpperCase();
+    doc.text(titleText, margin + padX, y + 8);
+    var titleW = doc.getTextWidth(titleText);
+    doc.setDrawColor(CO_PDF_BORDER[0], CO_PDF_BORDER[1], CO_PDF_BORDER[2]);
+    doc.setLineWidth(1);
+    doc.line(margin + padX + titleW + 8, y + 5, margin + contentW - padX, y + 5);
+    y += titleH;
+
+    rowInfo.forEach(function(ri) {
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.setTextColor(CO_PDF_LABEL[0], CO_PDF_LABEL[1], CO_PDF_LABEL[2]);
+      doc.text(ri.row.label, margin + padX, y + 10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(CO_PDF_VALUE[0], CO_PDF_VALUE[1], CO_PDF_VALUE[2]);
+      ri.wrapped.forEach(function(line, i) {
+        doc.text(line, margin + padX + labelColW, y + 10 + i * lineH);
+      });
+      y += ri.h;
+    });
+
+    y += padBottom;
+    var boxBottom = y;
+    doc.setDrawColor(CO_PDF_BORDER[0], CO_PDF_BORDER[1], CO_PDF_BORDER[2]);
+    doc.setLineWidth(1);
+    doc.roundedRect(margin, boxTop, contentW, boxBottom - boxTop, 6, 6, 'S');
+
+    return boxBottom + 14;
+  }
+
+  function coPdfPhotoCard(doc, startY, title, dataUrl, imgProps) {
+    var margin = CO_PDF_MARGIN;
+    var pageW = doc.internal.pageSize.getWidth();
+    var pageH = doc.internal.pageSize.getHeight();
+    var contentW = pageW - margin * 2;
+    var padX = 12, padTop = 10, padBottom = 12;
+    var titleH = 20;
+
+    var imgW = contentW - padX * 2;
+    var imgH = (imgProps.height * imgW) / imgProps.width;
+    var maxImgH = 320;
+    if (imgH > maxImgH) { imgH = maxImgH; imgW = (imgProps.width * imgH) / imgProps.height; }
+
+    var boxH = padTop + titleH + imgH + padBottom;
+
+    if (startY + boxH > pageH - margin) {
+      doc.addPage();
+      startY = margin;
+    }
+
+    var y = startY;
+    var boxTop = y;
+    y += padTop;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(CO_PDF_HEAD[0], CO_PDF_HEAD[1], CO_PDF_HEAD[2]);
+    var titleText = title.toUpperCase();
+    doc.text(titleText, margin + padX, y + 8);
+    var titleW = doc.getTextWidth(titleText);
+    doc.setDrawColor(CO_PDF_BORDER[0], CO_PDF_BORDER[1], CO_PDF_BORDER[2]);
+    doc.setLineWidth(1);
+    doc.line(margin + padX + titleW + 8, y + 5, margin + contentW - padX, y + 5);
+    y += titleH;
+
+    doc.addImage(dataUrl, imgProps.fileType || 'JPEG', margin + padX, y, imgW, imgH);
+    y += imgH;
+
+    y += padBottom;
+    var boxBottom = y;
+    doc.setDrawColor(CO_PDF_BORDER[0], CO_PDF_BORDER[1], CO_PDF_BORDER[2]);
+    doc.setLineWidth(1);
+    doc.roundedRect(margin, boxTop, contentW, boxBottom - boxTop, 6, 6, 'S');
+
+    return boxBottom + 14;
+  }
+
   async function coGeneratePdf() {
     var btn = document.getElementById('co-pdf-btn');
     var status = document.getElementById('co-pdf-status');
@@ -4036,39 +4153,97 @@
       var { jsPDF } = window.jspdf;
       var doc = new jsPDF({ unit: 'pt', format: 'letter' });
       var pageW = doc.internal.pageSize.getWidth();
-      var margin = 40;
-      var y = margin;
-      var lineH = 15;
+      var margin = CO_PDF_MARGIN;
 
-      doc.setFillColor(13, 63, 117);
-      doc.rect(0, 0, pageW, 50, 'F');
+      doc.setFillColor(CO_PDF_BLUE[0], CO_PDF_BLUE[1], CO_PDF_BLUE[2]);
+      doc.rect(0, 0, pageW, 60, 'F');
+      doc.setFillColor(CO_PDF_ORANGE[0], CO_PDF_ORANGE[1], CO_PDF_ORANGE[2]);
+      doc.rect(0, 58, pageW, 3, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(16);
-      doc.text("Hale's Heating & Cooling — System Replacement Information", margin, 33);
-      y = 70;
+      doc.text("Hale's Heating & Cooling", margin, 32);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(180, 200, 230);
+      doc.text('SYSTEM REPLACEMENT INFORMATION', margin, 48);
 
       var now = new Date();
       var dateStr = (now.getMonth() + 1) + '/' + now.getDate() + '/' + now.getFullYear();
-      doc.setTextColor(30, 30, 30);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(10);
-      doc.text('Date: ' + dateStr, margin, y);
-      y += lineH + 8;
+      doc.setFontSize(9);
+      doc.text(dateStr, pageW - margin, 32, { align: 'right' });
 
-      var summaryLines = document.getElementById('co-output').textContent.split('\n');
-      summaryLines.forEach(function(line) {
-        if (y > 740) { doc.addPage(); y = margin; }
-        if (line === '') { y += lineH * 0.6; return; }
-        var trimmed = line.trim();
-        var isHeader = !line.startsWith('  ') && (trimmed.indexOf(':') === -1 || trimmed.endsWith(':'));
-        doc.setFont('helvetica', isHeader ? 'bold' : 'normal');
-        doc.setFontSize(isHeader ? 12 : 10);
-        var wrapped = doc.splitTextToSize(line, pageW - margin * 2);
-        doc.text(wrapped, margin, y);
-        y += lineH * wrapped.length;
-      });
-      y += 10;
+      var y = 80;
+
+      var photosDoneCount = coPhotoKeys.filter(function(k) { return coPhotosDone[k]; }).length;
+      var jobRows = [];
+      if (coVal('co_tech_name')) jobRows.push({ label: 'Technician', value: coVal('co_tech_name') });
+      if (coVal('co_job_address')) jobRows.push({ label: 'Address', value: coVal('co_job_address') });
+      jobRows.push({ label: 'Required Photos', value: photosDoneCount + ' of ' + coPhotoKeys.length + ' uploaded' });
+      y = coPdfCard(doc, y, 'Job Info', jobRows);
+
+      var inRows = [];
+      inRows.push({ label: 'Location', value: coSelectVal('co_in_location') });
+      if (coVal('co_in_capacity')) inRows.push({ label: 'Tonnage / BTU', value: coVal('co_in_capacity') });
+      inRows.push({ label: 'Configuration', value: coSelectVal('co_in_config') });
+      if (coVal('co_in_tstat_wire')) inRows.push({ label: 'Thermostat Wire', value: coVal('co_in_tstat_wire') });
+      if (coVal('co_in_filter_size')) inRows.push({ label: 'Filter Size', value: coVal('co_in_filter_size') });
+      if (coVal('co_in_breaker_size')) inRows.push({ label: 'Breaker/Conductor Size', value: coVal('co_in_breaker_size') });
+      if (coVal('co_in_heat_kit_size')) inRows.push({ label: 'Heat Kit Size', value: coVal('co_in_heat_kit_size') });
+      if (coVal('co_in_access')) inRows.push({ label: 'Door Dimensions', value: coVal('co_in_access') });
+      inRows.push({ label: 'Condensate Setup', value: coSelectVal('co_in_condensate') });
+
+      if (coVal('co_in_unit_kind') === 'furnace') {
+        var furnaceL = coVal('co_in_furnace_l'), furnaceW = coVal('co_in_furnace_w'), furnaceD = coVal('co_in_furnace_d');
+        if (furnaceL || furnaceW || furnaceD) {
+          inRows.push({ label: 'Furnace Dimensions (LxWxD)', value: (furnaceL || '?') + ' x ' + (furnaceW || '?') + ' x ' + (furnaceD || '?') });
+        }
+        var coilL = coVal('co_in_coil_l'), coilW = coVal('co_in_coil_w'), coilD = coVal('co_in_coil_d');
+        if (coilL || coilW || coilD) {
+          inRows.push({ label: 'Coil Dimensions (LxWxD)', value: (coilL || '?') + ' x ' + (coilW || '?') + ' x ' + (coilD || '?') });
+        }
+      } else {
+        var sysL = coVal('co_in_sys_l'), sysW = coVal('co_in_sys_w'), sysD = coVal('co_in_sys_d');
+        if (sysL || sysW || sysD) {
+          inRows.push({ label: 'System Dimensions (LxWxD)', value: (sysL || '?') + ' x ' + (sysW || '?') + ' x ' + (sysD || '?') });
+        }
+      }
+
+      var supplyL = coVal('co_in_supply_l'), supplyW = coVal('co_in_supply_w'), supplyD = coVal('co_in_supply_d');
+      if (supplyL || supplyW || supplyD) {
+        inRows.push({ label: 'Supply Plenum (LxWxD)', value: (supplyL || '?') + ' x ' + (supplyW || '?') + ' x ' + (supplyD || '?') });
+      }
+      var supplyTakeoffs = coTakeoffSizes('supply');
+      if (supplyTakeoffs.some(function(v) { return v; })) {
+        inRows.push({ label: 'Supply Takeoffs (' + supplyTakeoffs.length + ')', value: supplyTakeoffs.map(function(v) { return v || '?'; }).join(', ') });
+      }
+      var returnL = coVal('co_in_return_l'), returnW = coVal('co_in_return_w'), returnD = coVal('co_in_return_d');
+      if (returnL || returnW || returnD) {
+        inRows.push({ label: 'Return Plenum (LxWxD)', value: (returnL || '?') + ' x ' + (returnW || '?') + ' x ' + (returnD || '?') });
+      }
+      var returnTakeoffs = coTakeoffSizes('return');
+      if (returnTakeoffs.some(function(v) { return v; })) {
+        inRows.push({ label: 'Return Takeoffs (' + returnTakeoffs.length + ')', value: returnTakeoffs.map(function(v) { return v || '?'; }).join(', ') });
+      }
+      if (coVal('co_in_notes')) inRows.push({ label: 'Notes', value: coVal('co_in_notes') });
+
+      y = coPdfCard(doc, y, 'Indoor Unit', inRows);
+
+      var outRows = [];
+      if (coVal('co_out_capacity')) outRows.push({ label: 'Tonnage', value: coVal('co_out_capacity') });
+      outRows.push({ label: 'Unit Type', value: coSelectVal('co_out_unit_type') });
+      if (coVal('co_out_lineset')) outRows.push({ label: 'Estimated Line Set Length', value: coVal('co_out_lineset') });
+      if (coVal('co_out_lineset_size')) outRows.push({ label: 'Line Set Size', value: coVal('co_out_lineset_size') });
+      if (coVal('co_out_breaker_size')) outRows.push({ label: 'Breaker/Conductor Size', value: coVal('co_out_breaker_size') });
+      if (coVal('co_out_tstat_wire')) outRows.push({ label: 'Thermostat Wire', value: coVal('co_out_tstat_wire') });
+      if (coVal('co_out_notes')) outRows.push({ label: 'Notes', value: coVal('co_out_notes') });
+
+      y = coPdfCard(doc, y, 'Outdoor Unit', outRows);
+
+      var crewNotes = coVal('co_crew_notes');
+      if (crewNotes) {
+        y = coPdfCard(doc, y, 'Additional Notes for Install Crew', [{ label: 'Notes', value: crewNotes }]);
+      }
 
       var photoDefs = [
         { id: 'co_photo_indoor_dataplate', label: 'Indoor Data Plate' },
@@ -4082,27 +4257,17 @@
       for (var pi = 0; pi < photoDefs.length; pi++) {
         var inp = document.getElementById(photoDefs[pi].id);
         if (!inp || !inp.files || !inp.files.length) continue;
-        if (y > 650) { doc.addPage(); y = margin; }
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.setTextColor(30, 30, 30);
-        doc.text(photoDefs[pi].label, margin, y); y += lineH + 6;
-        for (var fi = 0; fi < inp.files.length; fi++) {
+        var total = inp.files.length;
+        for (var fi = 0; fi < total; fi++) {
           var dataUrl = await new Promise(function(resolve) {
             var reader = new FileReader();
-            var file = inp.files[fi];
             reader.onload = function(e) { resolve(e.target.result); };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(inp.files[fi]);
           });
           var imgProps = doc.getImageProperties(dataUrl);
-          var imgW = pageW - margin * 2;
-          var imgH = (imgProps.height * imgW) / imgProps.width;
-          if (imgH > 400) { imgH = 400; imgW = (imgProps.width * imgH) / imgProps.height; }
-          if (y + imgH > 720) { doc.addPage(); y = margin; }
-          doc.addImage(dataUrl, imgProps.fileType || 'JPEG', margin, y, imgW, imgH);
-          y += imgH + 12;
+          var label = photoDefs[pi].label + (total > 1 ? ' (' + (fi + 1) + ' of ' + total + ')' : '');
+          y = coPdfPhotoCard(doc, y, label, dataUrl, imgProps);
         }
-        y += 6;
       }
 
       var safeAddress = address.replace(/[^a-zA-Z0-9\s]/g, '').trim();
