@@ -778,22 +778,10 @@
   </div>
   <div style="text-align:right;">
     <div class="site-title">Hale's Tools</div>
-    <div id="usage-user-label" style="display:none;font-size:11px;color:rgba(255,255,255,0.7);margin-top:4px;">
-      <span id="usage-user-name"></span> · <a href="#" onclick="openUsageNamePrompt(); return false;" style="color:#ffffff;">Change</a>
-    </div>
+    <div id="usage-device-code" style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:4px;"></div>
   </div>
 </header>
 
-<!-- ====== USAGE NAME PROMPT ====== -->
-<div id="usage-name-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:1001;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">
-  <div style="background:#fff;border-radius:12px;padding:1.75rem;max-width:360px;width:100%;">
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#0D3F75;margin-bottom:8px;">Who's using the tools?</div>
-    <div style="font-size:14px;color:#6B7691;margin-bottom:1rem;">Enter your name. You'll only need to do this once on this device.</div>
-    <input type="text" id="usage-name-input" placeholder="First and last name" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #c9d1e0;border-radius:8px;font-size:15px;margin-bottom:1rem;">
-    <div id="usage-name-error" style="display:none;color:#CC0000;font-size:13px;margin:-0.5rem 0 0.75rem;">Please enter your name.</div>
-    <button onclick="saveUsageName()" style="width:100%;padding:10px;border-radius:8px;border:none;background:#1B5EA8;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;color:#fff;cursor:pointer;">Continue</button>
-  </div>
-</div>
 
 <!-- ====== TAB NAV ====== -->
 <nav class="tab-nav">
@@ -4442,22 +4430,16 @@
 
 <!-- ====== USAGE LOGGING SCRIPT ====== -->
 <script>
-  // Logs who opened the site and who copied a service note to a Google Sheet.
+  // Logs site opens and service note copies to a Google Sheet, keyed by a
+  // random per-browser device ID. Names are assigned to devices in the sheet.
   // Paste the deployed Apps Script web app URL here; until then nothing is sent.
   var USAGE_LOG_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
-  var USAGE_NAME_KEY = 'halesToolsUserName';
 
-  function getUsageName() {
-    try { return localStorage.getItem(USAGE_NAME_KEY) || ''; } catch (e) { return ''; }
-  }
-
-  // A random ID per browser, so the sheet can flag a name showing up on a new
-  // device or one device being used under several names.
   function getUsageDeviceId() {
     try {
       var id = localStorage.getItem('halesToolsDeviceId');
       if (!id) {
-        id = Math.random().toString(36).slice(2, 10).toUpperCase();
+        id = Math.random().toString(36).slice(2, 8).toUpperCase();
         localStorage.setItem('halesToolsDeviceId', id);
       }
       return id;
@@ -4476,55 +4458,19 @@
   }
 
   function logUsage(action, details) {
-    var name = getUsageName();
-    if (!name || !USAGE_LOG_URL || USAGE_LOG_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
+    if (!USAGE_LOG_URL || USAGE_LOG_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
     fetch(USAGE_LOG_URL, {
       method: 'POST',
       keepalive: true,
       body: JSON.stringify({
-        action: 'logUsage', name: name, event: action, details: details || '',
+        action: 'logUsage', event: action, details: details || '',
         deviceId: getUsageDeviceId(), device: getUsageDeviceLabel()
       })
     }).catch(function() {});
   }
 
-  function showUsageName() {
-    var name = getUsageName();
-    document.getElementById('usage-user-name').textContent = name;
-    document.getElementById('usage-user-label').style.display = name ? '' : 'none';
-  }
-
-  function openUsageNamePrompt() {
-    document.getElementById('usage-name-input').value = getUsageName();
-    document.getElementById('usage-name-error').style.display = 'none';
-    document.getElementById('usage-name-overlay').style.display = 'flex';
-    document.getElementById('usage-name-input').focus();
-  }
-
-  function saveUsageName() {
-    var name = document.getElementById('usage-name-input').value.trim();
-    if (!name) {
-      document.getElementById('usage-name-error').style.display = '';
-      return;
-    }
-    var previousName = getUsageName();
-    try { localStorage.setItem(USAGE_NAME_KEY, name); } catch (e) {}
-    document.getElementById('usage-name-overlay').style.display = 'none';
-    showUsageName();
-    if (!previousName) logUsage('Opened site');
-    else if (previousName !== name) logUsage('Changed name', 'from ' + previousName);
-  }
-
-  document.getElementById('usage-name-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') saveUsageName();
-  });
-
-  if (getUsageName()) {
-    showUsageName();
-    logUsage('Opened site');
-  } else {
-    openUsageNamePrompt();
-  }
+  document.getElementById('usage-device-code').textContent = 'Device ' + getUsageDeviceId();
+  logUsage('Opened site');
 </script>
 
 </body>

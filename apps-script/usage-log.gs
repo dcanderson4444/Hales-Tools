@@ -4,8 +4,9 @@
 // Copy the web app URL into USAGE_LOG_URL in index.html.
 //
 // Writes two tabs:
-//   Usage Log - one row per event, with a Flag column for anything suspicious
-//   Devices   - every name + device pair ever seen, with first/last seen times
+//   Devices   - one row per phone/computer. Type the person's name in the Name
+//               column; every later event from that device is logged under it.
+//   Usage Log - one row per event. Devices with no name yet are flagged red.
 
 function doPost(e) {
   var data = JSON.parse(e.postData.contents);
@@ -15,39 +16,35 @@ function doPost(e) {
   lock.waitLock(10000);
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var devices = getOrCreateSheet(ss, 'Devices', ['Device ID', 'Name (fill in)', 'Device', 'First Seen', 'Last Seen', 'Times Used']);
     var log = getOrCreateSheet(ss, 'Usage Log', ['Time', 'Name', 'Action', 'Details', 'Device', 'Device ID', 'Flag']);
-    var devices = getOrCreateSheet(ss, 'Devices', ['Name', 'Device ID', 'Device', 'First Seen', 'Last Seen']);
 
     var now = new Date();
-    var name = String(data.name || '').trim();
-    var nameKey = name.toLowerCase();
     var deviceId = String(data.deviceId || '');
     var device = String(data.device || '');
 
-    var rows = devices.getLastRow() > 1 ? devices.getRange(2, 1, devices.getLastRow() - 1, 2).getValues() : [];
-    var pairRow = -1;
-    var nameSeenElsewhere = false;
-    var otherNamesOnDevice = [];
-    for (var i = 0; i < rows.length; i++) {
-      var rowName = String(rows[i][0]);
-      var rowDevice = String(rows[i][1]);
-      if (rowName.toLowerCase() === nameKey && rowDevice === deviceId) pairRow = i + 2;
-      else if (rowName.toLowerCase() === nameKey) nameSeenElsewhere = true;
-      else if (rowDevice === deviceId && otherNamesOnDevice.indexOf(rowName) === -1) otherNamesOnDevice.push(rowName);
+    var ids = devices.getLastRow() > 1 ? devices.getRange(2, 1, devices.getLastRow() - 1, 1).getValues() : [];
+    var row = -1;
+    for (var i = 0; i < ids.length; i++) {
+      if (String(ids[i][0]) === deviceId) { row = i + 2; break; }
     }
 
-    var flags = [];
-    if (pairRow === -1 && nameSeenElsewhere) flags.push('NEW DEVICE for this name');
-    if (otherNamesOnDevice.length) flags.push('Device also used as: ' + otherNamesOnDevice.join(', '));
-
-    if (pairRow === -1) {
-      devices.appendRow([name, deviceId, device, now, now]);
+    var name = '';
+    var flag = '';
+    if (row === -1) {
+      devices.appendRow([deviceId, '', device, now, now, 1]);
+      devices.getRange(devices.getLastRow(), 1, 1, 6).setBackground('#fde2e2');
+      flag = 'NEW DEVICE';
     } else {
-      devices.getRange(pairRow, 5).setValue(now);
+      name = String(devices.getRange(row, 2).getValue()).trim();
+      var count = Number(devices.getRange(row, 6).getValue()) || 0;
+      devices.getRange(row, 5, 1, 2).setValues([[now, count + 1]]);
+      devices.getRange(row, 1, 1, 6).setBackground(name ? null : '#fde2e2');
+      if (!name) flag = 'Unknown device';
     }
 
-    log.appendRow([now, name, data.event || '', data.details || '', device, deviceId, flags.join('; ')]);
-    if (flags.length) log.getRange(log.getLastRow(), 1, 1, 7).setBackground('#fde2e2');
+    log.appendRow([now, name, data.event || '', data.details || '', device, deviceId, flag]);
+    if (flag) log.getRange(log.getLastRow(), 1, 1, 7).setBackground('#fde2e2');
   } finally {
     lock.releaseLock();
   }
