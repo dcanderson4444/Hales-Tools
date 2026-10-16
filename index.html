@@ -4451,13 +4451,40 @@
     try { return localStorage.getItem(USAGE_NAME_KEY) || ''; } catch (e) { return ''; }
   }
 
+  // A random ID per browser, so the sheet can flag a name showing up on a new
+  // device or one device being used under several names.
+  function getUsageDeviceId() {
+    try {
+      var id = localStorage.getItem('halesToolsDeviceId');
+      if (!id) {
+        id = Math.random().toString(36).slice(2, 10).toUpperCase();
+        localStorage.setItem('halesToolsDeviceId', id);
+      }
+      return id;
+    } catch (e) { return 'unknown'; }
+  }
+
+  function getUsageDeviceLabel() {
+    var ua = navigator.userAgent;
+    var os = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android'
+           : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'Mac' : /CrOS/.test(ua) ? 'Chromebook'
+           : /Linux/.test(ua) ? 'Linux' : 'Other';
+    var browser = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet'
+                : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /FxiOS|Firefox\//.test(ua) ? 'Firefox'
+                : /Safari\//.test(ua) ? 'Safari' : 'Other';
+    return os + ', ' + browser;
+  }
+
   function logUsage(action, details) {
     var name = getUsageName();
     if (!name || !USAGE_LOG_URL || USAGE_LOG_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
     fetch(USAGE_LOG_URL, {
       method: 'POST',
       keepalive: true,
-      body: JSON.stringify({ action: 'logUsage', name: name, event: action, details: details || '' })
+      body: JSON.stringify({
+        action: 'logUsage', name: name, event: action, details: details || '',
+        deviceId: getUsageDeviceId(), device: getUsageDeviceLabel()
+      })
     }).catch(function() {});
   }
 
@@ -4480,11 +4507,12 @@
       document.getElementById('usage-name-error').style.display = '';
       return;
     }
-    var isFirstTime = !getUsageName();
+    var previousName = getUsageName();
     try { localStorage.setItem(USAGE_NAME_KEY, name); } catch (e) {}
     document.getElementById('usage-name-overlay').style.display = 'none';
     showUsageName();
-    if (isFirstTime) logUsage('Opened site');
+    if (!previousName) logUsage('Opened site');
+    else if (previousName !== name) logUsage('Changed name', 'from ' + previousName);
   }
 
   document.getElementById('usage-name-input').addEventListener('keydown', function(e) {
