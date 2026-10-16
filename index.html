@@ -2702,7 +2702,7 @@
     function copyNote() {
         const text = document.getElementById('noteOutput').textContent;
         navigator.clipboard.writeText(text).then(() => {
-            logUsage('Copied service note', `${v('call_type')}, ${v('system_type')}`);
+            logUsage('Copied service note', `${v('call_type')}, ${v('system_type')}`, text);
             const btn = document.getElementById('copyBtn');
             btn.textContent = 'Copied!';
             btn.classList.add('copied');
@@ -4457,13 +4457,13 @@
     return os + ', ' + browser;
   }
 
-  function logUsage(action, details) {
+  function logUsage(action, details, note) {
     if (!USAGE_LOG_URL || USAGE_LOG_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
     fetch(USAGE_LOG_URL, {
       method: 'POST',
       keepalive: true,
       body: JSON.stringify({
-        action: 'logUsage', event: action, details: details || '',
+        action: 'logUsage', event: action, details: details || '', note: note || '',
         deviceId: getUsageDeviceId(), device: getUsageDeviceLabel()
       })
     }).catch(function() {});

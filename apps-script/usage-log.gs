@@ -7,6 +7,7 @@
 //   Devices   - one row per phone/computer. Type the person's name in the Name
 //               column; every later event from that device is logged under it.
 //   Usage Log - one row per event. Devices with no name yet are flagged red.
+//               Copied service notes include the full note text.
 
 function doPost(e) {
   var data = JSON.parse(e.postData.contents);
@@ -17,7 +18,7 @@ function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var devices = getOrCreateSheet(ss, 'Devices', ['Device ID', 'Name (fill in)', 'Device', 'First Seen', 'Last Seen', 'Times Used']);
-    var log = getOrCreateSheet(ss, 'Usage Log', ['Time', 'Name', 'Action', 'Details', 'Device', 'Device ID', 'Flag']);
+    var log = getOrCreateSheet(ss, 'Usage Log', ['Time', 'Name', 'Action', 'Details', 'Device', 'Device ID', 'Flag', 'Note']);
 
     var now = new Date();
     var deviceId = String(data.deviceId || '');
@@ -43,8 +44,8 @@ function doPost(e) {
       if (!name) flag = 'Unknown device';
     }
 
-    log.appendRow([now, name, data.event || '', data.details || '', device, deviceId, flag]);
-    if (flag) log.getRange(log.getLastRow(), 1, 1, 7).setBackground('#fde2e2');
+    log.appendRow([now, name, data.event || '', data.details || '', device, deviceId, flag, data.note || '']);
+    if (flag) log.getRange(log.getLastRow(), 1, 1, 8).setBackground('#fde2e2');
   } finally {
     lock.releaseLock();
   }
