@@ -14,7 +14,7 @@
     /* ====== RESET & BASE ====== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { overflow-x: hidden; max-width: 100%; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; position: relative; }
 
     /* ====== SITE HEADER ====== */
     .site-header {
@@ -776,10 +776,7 @@
       <span>Internal Tools</span>
     </div>
   </div>
-  <div style="text-align:right;">
-    <div class="site-title">Hale's Tools</div>
-    <div id="usage-device-code" style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:4px;"></div>
-  </div>
+  <div class="site-title">Hale's Tools</div>
 </header>
 
 
@@ -4427,6 +4424,8 @@
   coRenderTakeoffs('return');
   coUpdateOutput();
 </script>
+
+<div id="usage-device-code" style="position:absolute;bottom:3px;right:6px;font-size:9px;color:rgba(128,128,128,0.35);pointer-events:none;"></div>
 
 <!-- ====== USAGE LOGGING SCRIPT ====== -->
 <script>
