@@ -93,6 +93,52 @@
       #tab-notes .sections { grid-template-columns: 1fr; }
     }
     #tab-notes .sections.single-column { grid-template-columns: 1fr; }
+    #tab-notes .check-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #tab-notes .field label.check-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 12px;
+      background: #111827;
+      border: 1px solid #1a3a5c;
+      border-radius: 8px;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      text-transform: none;
+      letter-spacing: 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    #tab-notes .field label.check-btn:hover { border-color: #4A90D9; }
+    #tab-notes .field label.check-btn input { display: none; }
+    #tab-notes .field label.check-btn::before {
+      content: '';
+      flex: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #4A90D9;
+      border-radius: 4px;
+    }
+    #tab-notes .field label.check-btn:has(input:checked) {
+      background: #1B5EA8;
+      border-color: #4A90D9;
+      color: #ffffff;
+    }
+    #tab-notes .field label.check-btn:has(input:checked)::before {
+      content: '\2713';
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #1B5EA8;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 16px;
+      text-align: center;
+    }
     #tab-notes .section {
       background: #1f2937;
       border-radius: 10px;
@@ -1131,6 +1177,15 @@
       </select>
     </div>
 
+    <div class="field" id="in_furnace_checks" style="display:none;">
+      <label>Furnace Checks</label>
+      <div class="check-btns">
+        <label class="check-btn"><input type="checkbox" id="in_pressure_switch">Was pressure switch tubing removed and cleared?</label>
+        <label class="check-btn"><input type="checkbox" id="in_flame_sensor">Was flame sensor removed and cleaned?</label>
+        <label class="check-btn"><input type="checkbox" id="in_heat_exchanger">Was heat exchanger tested for cracks?</label>
+      </div>
+    </div>
+
     <div class="toggle-row" id="in_heatstrips_toggle">
       <input type="checkbox" id="in_heatstrips">
       <label for="in_heatstrips">Were heat strips checked?</label>
@@ -2156,6 +2211,8 @@
         const hidden = isOutdoorHidden();
         document.getElementById('split_outdoor_section').style.display = hidden ? 'none' : '';
         document.getElementById('split_system_sections').classList.toggle('single-column', hidden);
+        // Furnace checks apply to the same heating + furnace case
+        document.getElementById('in_furnace_checks').style.display = hidden ? '' : 'none';
     }
 
     document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
@@ -2553,6 +2610,12 @@
             indoor += `Condensate pump was cleaned out, tested for operation, and treated with drain tablets. `;
         } else if (inDrain === 'pvc') {
             indoor += `PVC condensate drain line was flushed and treated with drain tablets. `;
+        }
+
+        if (isOutdoorHidden()) {
+            if (chk('in_pressure_switch')) indoor += `Pressure switch tubing was removed and cleared. `;
+            if (chk('in_flame_sensor'))    indoor += `Flame sensor was removed and cleaned. `;
+            if (chk('in_heat_exchanger'))  indoor += `Heat exchanger was tested for cracks. `;
         }
 
         if (hasHeat) {
