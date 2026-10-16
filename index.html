@@ -92,6 +92,53 @@
     @media (max-width: 700px) {
       #tab-notes .sections { grid-template-columns: 1fr; }
     }
+    #tab-notes .sections.single-column { grid-template-columns: 1fr; }
+    #tab-notes .check-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #tab-notes .field label.check-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      padding: 10px 12px;
+      background: #111827;
+      border: 1px solid #1a3a5c;
+      border-radius: 8px;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+      text-transform: none;
+      letter-spacing: 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    #tab-notes .field label.check-btn:hover { border-color: #4A90D9; }
+    #tab-notes .field label.check-btn input { display: none; }
+    #tab-notes .field label.check-btn::before {
+      content: '';
+      flex: none;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #4A90D9;
+      border-radius: 4px;
+    }
+    #tab-notes .field label.check-btn:has(input:checked) {
+      background: #1B5EA8;
+      border-color: #4A90D9;
+      color: #ffffff;
+    }
+    #tab-notes .field label.check-btn:has(input:checked)::before {
+      content: '\2713';
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #1B5EA8;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 16px;
+      text-align: center;
+    }
     #tab-notes .section {
       background: #1f2937;
       border-radius: 10px;
@@ -198,6 +245,27 @@
     #tab-notes .btn-copy:hover { background: #E53935; }
     #tab-notes .btn-copy.copied { background: #4ade80; color: #0f172a; }
     #tab-notes .btn-reset { background: #1a3a5c; color: #e5e7eb; }
+    #tab-notes .call-type-btns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 700px) {
+      #tab-notes .call-type-btns { grid-template-columns: 1fr 1fr; }
+    }
+    #tab-notes .call-type-btns button {
+      padding: 10px 8px;
+      background: #111827;
+      border: 1px solid #1a3a5c;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+    }
+    #tab-notes .call-type-btns button:hover { border-color: #4A90D9; }
+    #tab-notes .call-type-btns button.active {
+      background: #1B5EA8;
+      border-color: #4A90D9;
+      color: #ffffff;
+    }
     #tab-notes .btn-reset:hover { background: #4b5563; }
 
     /* ====== QUOTES TAB ====== */
@@ -845,6 +913,19 @@
 <h1>HVAC Service Call Notes</h1>
 
 <div class="section" style="margin-bottom:20px;">
+  <div class="field">
+    <label>Call Type</label>
+    <input type="hidden" id="call_type" value="cooling service">
+    <div class="call-type-btns" id="call_type_btns">
+      <button type="button" data-value="cooling service" class="active">Cooling Service Call</button>
+      <button type="button" data-value="heating service">Heating Service Call</button>
+      <button type="button" data-value="cooling maintenance">Cooling Maintenance</button>
+      <button type="button" data-value="heating maintenance">Heating Maintenance</button>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-bottom:20px;">
   <div class="field-row" id="area_of_home_row">
     <div class="field">
       <label>Area of Home Serviced</label>
@@ -1096,6 +1177,15 @@
       </select>
     </div>
 
+    <div class="field" id="in_furnace_checks" style="display:none;">
+      <label>Furnace Checks</label>
+      <div class="check-btns">
+        <label class="check-btn"><input type="checkbox" id="in_pressure_switch">Was pressure switch tubing removed and cleared?</label>
+        <label class="check-btn"><input type="checkbox" id="in_flame_sensor">Was flame sensor removed and cleaned?</label>
+        <label class="check-btn"><input type="checkbox" id="in_heat_exchanger">Was heat exchanger tested for cracks?</label>
+      </div>
+    </div>
+
     <div class="toggle-row" id="in_heatstrips_toggle">
       <input type="checkbox" id="in_heatstrips">
       <label for="in_heatstrips">Were heat strips checked?</label>
@@ -1135,7 +1225,7 @@
   </div>
 
   <!-- OUTDOOR -->
-  <div class="section">
+  <div class="section" id="split_outdoor_section">
     <h2>Outdoor Unit</h2>
 
     <div class="field-row">
@@ -2104,6 +2194,36 @@
         el.addEventListener('input', generateNote);
     });
 
+    // Call type: all four currently show the same fields; the hidden input
+    // holds the selection so it's snapshotted/reset like every other field.
+    function syncCallTypeButtons() {
+        const current = v('call_type');
+        document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.value === current);
+        });
+    }
+    // Heating calls on a furnace don't involve the outdoor unit, so that
+    // section is hidden and left out of the generated note.
+    function isOutdoorHidden() {
+        return v('call_type').indexOf('heating') === 0 && v('in_type') === 'furnace';
+    }
+    function syncOutdoorVisibility() {
+        const hidden = isOutdoorHidden();
+        document.getElementById('split_outdoor_section').style.display = hidden ? 'none' : '';
+        document.getElementById('split_system_sections').classList.toggle('single-column', hidden);
+        // Furnace checks apply to the same heating + furnace case
+        document.getElementById('in_furnace_checks').style.display = hidden ? '' : 'none';
+    }
+
+    document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.getElementById('call_type').value = btn.dataset.value;
+            syncCallTypeButtons();
+            syncOutdoorVisibility();
+            generateNote();
+        });
+    });
+
     document.getElementById('area_of_home').addEventListener('change', function() {
         document.getElementById('area_of_home_other_field').style.display = this.value === 'Other' ? '' : 'none';
     });
@@ -2307,6 +2427,7 @@
         if (isFurnace) {
             document.getElementById('in_heatstrips').checked = false;
         }
+        syncOutdoorVisibility();
         generateNote();
     });
 
@@ -2491,6 +2612,12 @@
             indoor += `PVC condensate drain line was flushed and treated with drain tablets. `;
         }
 
+        if (isOutdoorHidden()) {
+            if (chk('in_pressure_switch')) indoor += `Pressure switch tubing was removed and cleared. `;
+            if (chk('in_flame_sensor'))    indoor += `Flame sensor was removed and cleaned. `;
+            if (chk('in_heat_exchanger'))  indoor += `Heat exchanger was tested for cracks, and none were observed. `;
+        }
+
         if (hasHeat) {
             indoor += inHeatSt === 'properly'
                 ? `Electric heat strips were tested for operation and are operating properly. `
@@ -2563,8 +2690,9 @@
 
         if (outNotes) outdoor += ` ${outNotes}`;
 
-        document.getElementById('noteOutput').textContent =
-            `${locationLine}Indoor\n${indoor}\n\nOutdoor\n${outdoor}`;
+        document.getElementById('noteOutput').textContent = isOutdoorHidden()
+            ? `${locationLine}Indoor\n${indoor}`
+            : `${locationLine}Indoor\n${indoor}\n\nOutdoor\n${outdoor}`;
     }
 
     function copyNote() {
@@ -2617,6 +2745,8 @@
             document.getElementById(id).dispatchEvent(new Event('change'));
         });
 
+        syncCallTypeButtons();
+        syncOutdoorVisibility();
         generateNote();
     }
 
