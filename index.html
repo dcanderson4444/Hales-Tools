@@ -92,6 +92,7 @@
     @media (max-width: 700px) {
       #tab-notes .sections { grid-template-columns: 1fr; }
     }
+    #tab-notes .sections.single-column { grid-template-columns: 1fr; }
     #tab-notes .section {
       background: #1f2937;
       border-radius: 10px;
@@ -1169,7 +1170,7 @@
   </div>
 
   <!-- OUTDOOR -->
-  <div class="section">
+  <div class="section" id="split_outdoor_section">
     <h2>Outdoor Unit</h2>
 
     <div class="field-row">
@@ -2146,10 +2147,22 @@
             btn.classList.toggle('active', btn.dataset.value === current);
         });
     }
+    // Heating calls on a furnace don't involve the outdoor unit, so that
+    // section is hidden and left out of the generated note.
+    function isOutdoorHidden() {
+        return v('call_type').indexOf('heating') === 0 && v('in_type') === 'furnace';
+    }
+    function syncOutdoorVisibility() {
+        const hidden = isOutdoorHidden();
+        document.getElementById('split_outdoor_section').style.display = hidden ? 'none' : '';
+        document.getElementById('split_system_sections').classList.toggle('single-column', hidden);
+    }
+
     document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
         btn.addEventListener('click', function() {
             document.getElementById('call_type').value = btn.dataset.value;
             syncCallTypeButtons();
+            syncOutdoorVisibility();
             generateNote();
         });
     });
@@ -2357,6 +2370,7 @@
         if (isFurnace) {
             document.getElementById('in_heatstrips').checked = false;
         }
+        syncOutdoorVisibility();
         generateNote();
     });
 
@@ -2613,8 +2627,9 @@
 
         if (outNotes) outdoor += ` ${outNotes}`;
 
-        document.getElementById('noteOutput').textContent =
-            `${locationLine}Indoor\n${indoor}\n\nOutdoor\n${outdoor}`;
+        document.getElementById('noteOutput').textContent = isOutdoorHidden()
+            ? `${locationLine}Indoor\n${indoor}`
+            : `${locationLine}Indoor\n${indoor}\n\nOutdoor\n${outdoor}`;
     }
 
     function copyNote() {
@@ -2668,6 +2683,7 @@
         });
 
         syncCallTypeButtons();
+        syncOutdoorVisibility();
         generateNote();
     }
 
