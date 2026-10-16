@@ -198,6 +198,27 @@
     #tab-notes .btn-copy:hover { background: #E53935; }
     #tab-notes .btn-copy.copied { background: #4ade80; color: #0f172a; }
     #tab-notes .btn-reset { background: #1a3a5c; color: #e5e7eb; }
+    #tab-notes .call-type-btns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    @media (max-width: 700px) {
+      #tab-notes .call-type-btns { grid-template-columns: 1fr 1fr; }
+    }
+    #tab-notes .call-type-btns button {
+      padding: 10px 8px;
+      background: #111827;
+      border: 1px solid #1a3a5c;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+    }
+    #tab-notes .call-type-btns button:hover { border-color: #4A90D9; }
+    #tab-notes .call-type-btns button.active {
+      background: #1B5EA8;
+      border-color: #4A90D9;
+      color: #ffffff;
+    }
     #tab-notes .btn-reset:hover { background: #4b5563; }
 
     /* ====== QUOTES TAB ====== */
@@ -843,6 +864,19 @@
 </div>
 
 <h1>HVAC Service Call Notes</h1>
+
+<div class="section" style="margin-bottom:20px;">
+  <div class="field">
+    <label>Call Type</label>
+    <input type="hidden" id="call_type" value="cooling service">
+    <div class="call-type-btns" id="call_type_btns">
+      <button type="button" data-value="cooling service" class="active">Cooling Service Call</button>
+      <button type="button" data-value="heating service">Heating Service Call</button>
+      <button type="button" data-value="cooling maintenance">Cooling Maintenance</button>
+      <button type="button" data-value="heating maintenance">Heating Maintenance</button>
+    </div>
+  </div>
+</div>
 
 <div class="section" style="margin-bottom:20px;">
   <div class="field-row" id="area_of_home_row">
@@ -2104,6 +2138,22 @@
         el.addEventListener('input', generateNote);
     });
 
+    // Call type: all four currently show the same fields; the hidden input
+    // holds the selection so it's snapshotted/reset like every other field.
+    function syncCallTypeButtons() {
+        const current = v('call_type');
+        document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
+            btn.classList.toggle('active', btn.dataset.value === current);
+        });
+    }
+    document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.getElementById('call_type').value = btn.dataset.value;
+            syncCallTypeButtons();
+            generateNote();
+        });
+    });
+
     document.getElementById('area_of_home').addEventListener('change', function() {
         document.getElementById('area_of_home_other_field').style.display = this.value === 'Other' ? '' : 'none';
     });
@@ -2617,6 +2667,7 @@
             document.getElementById(id).dispatchEvent(new Event('change'));
         });
 
+        syncCallTypeButtons();
         generateNote();
     }
 
