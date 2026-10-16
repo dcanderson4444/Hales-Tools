@@ -776,8 +776,12 @@
       <span>Internal Tools</span>
     </div>
   </div>
-  <div class="site-title">Hale's Tools</div>
+  <div style="text-align:right;">
+    <div class="site-title">Hale's Tools</div>
+    <div id="usage-device-code" style="font-size:10px;color:rgba(255,255,255,0.45);margin-top:4px;"></div>
+  </div>
 </header>
+
 
 <!-- ====== TAB NAV ====== -->
 <nav class="tab-nav">
@@ -2698,6 +2702,7 @@
     function copyNote() {
         const text = document.getElementById('noteOutput').textContent;
         navigator.clipboard.writeText(text).then(() => {
+            logUsage('Copied service note', `${v('call_type')}, ${v('system_type')}`, text);
             const btn = document.getElementById('copyBtn');
             btn.textContent = 'Copied!';
             btn.classList.add('copied');
@@ -4421,6 +4426,51 @@
   coRenderTakeoffs('supply');
   coRenderTakeoffs('return');
   coUpdateOutput();
+</script>
+
+<!-- ====== USAGE LOGGING SCRIPT ====== -->
+<script>
+  // Logs site opens and service note copies to a Google Sheet, keyed by a
+  // random per-browser device ID. Names are assigned to devices in the sheet.
+  // Paste the deployed Apps Script web app URL here; until then nothing is sent.
+  var USAGE_LOG_URL = 'https://script.google.com/macros/s/AKfycbyJO9_DVlLToRLz0_G590xxheoV2dJ8xmxhcaI5lde8ETkH8DgQKEsZKVcokLvytLs/exec';
+
+  function getUsageDeviceId() {
+    try {
+      var id = localStorage.getItem('halesToolsDeviceId');
+      if (!id) {
+        id = Math.random().toString(36).slice(2, 8).toUpperCase();
+        localStorage.setItem('halesToolsDeviceId', id);
+      }
+      return id;
+    } catch (e) { return 'unknown'; }
+  }
+
+  function getUsageDeviceLabel() {
+    var ua = navigator.userAgent;
+    var os = /iPhone/.test(ua) ? 'iPhone' : /iPad/.test(ua) ? 'iPad' : /Android/.test(ua) ? 'Android'
+           : /Windows/.test(ua) ? 'Windows' : /Mac OS X/.test(ua) ? 'Mac' : /CrOS/.test(ua) ? 'Chromebook'
+           : /Linux/.test(ua) ? 'Linux' : 'Other';
+    var browser = /Edg\//.test(ua) ? 'Edge' : /SamsungBrowser/.test(ua) ? 'Samsung Internet'
+                : /CriOS|Chrome\//.test(ua) ? 'Chrome' : /FxiOS|Firefox\//.test(ua) ? 'Firefox'
+                : /Safari\//.test(ua) ? 'Safari' : 'Other';
+    return os + ', ' + browser;
+  }
+
+  function logUsage(action, details, note) {
+    if (!USAGE_LOG_URL || USAGE_LOG_URL === 'YOUR_APPS_SCRIPT_URL_HERE') return;
+    fetch(USAGE_LOG_URL, {
+      method: 'POST',
+      keepalive: true,
+      body: JSON.stringify({
+        action: 'logUsage', event: action, details: details || '', note: note || '',
+        deviceId: getUsageDeviceId(), device: getUsageDeviceLabel()
+      })
+    }).catch(function() {});
+  }
+
+  document.getElementById('usage-device-code').textContent = 'Device ' + getUsageDeviceId();
+  logUsage('Opened site');
 </script>
 
 </body>
