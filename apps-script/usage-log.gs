@@ -8,6 +8,9 @@
 //               column; every later event from that device is logged under it.
 //   Usage Log - one row per event. Devices with no name yet are flagged red.
 //               Copied service notes include the full note text.
+//
+// Typing (or changing) a name in Devices also fills that name into every past
+// Usage Log row for that device. "Usage Log > Refresh names" re-applies all names.
 
 function doPost(e) {
   var data = JSON.parse(e.postData.contents);
@@ -65,4 +68,56 @@ function getOrCreateSheet(ss, title, headers) {
 
 function jsonOut(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Runs automatically whenever someone edits the sheet by hand.
+function onEdit(e) {
+  var sheet = e.range.getSheet();
+  if (sheet.getName() !== 'Devices' || e.range.getLastColumn() < 2 || e.range.getColumn() > 2) return;
+  syncNames();
+}
+
+function onOpen() {
+  SpreadsheetApp.getUi().createMenu('Usage Log')
+    .addItem('Refresh names', 'syncNames')
+    .addToUi();
+}
+
+// Copies each device's name from Devices onto all of its Usage Log rows, and
+// sets the red highlight on rows whose device still has no name.
+function syncNames() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var devices = ss.getSheetByName('Devices');
+  var log = ss.getSheetByName('Usage Log');
+  if (!devices || !log || log.getLastRow() < 2) return;
+
+  var names = {};
+  if (devices.getLastRow() > 1) {
+    var deviceRows = devices.getRange(2, 1, devices.getLastRow() - 1, 2).getValues();
+    var deviceColors = [];
+    deviceRows.forEach(function(r) {
+      var name = String(r[1]).trim();
+      names[String(r[0])] = name;
+      deviceColors.push(new Array(6).fill(name ? null : '#fde2e2'));
+    });
+    devices.getRange(2, 1, deviceRows.length, 6).setBackgrounds(deviceColors);
+  }
+
+  var count = log.getLastRow() - 1;
+  var rows = log.getRange(2, 1, count, 8).getValues();
+  var nameCol = [];
+  var flagCol = [];
+  var colors = [];
+  rows.forEach(function(r) {
+    var name = names[String(r[5])] || '';
+    var flag = String(r[6]);
+    if (name && (flag === 'NEW DEVICE' || flag === 'Unknown device')) flag = '';
+    if (!name && !flag) flag = 'Unknown device';
+    nameCol.push([name]);
+    flagCol.push([flag]);
+    colors.push(new Array(8).fill(flag ? '#fde2e2' : null));
+  });
+  log.getRange(2, 2, count, 1).setValues(nameCol);
+  log.getRange(2, 7, count, 1).setValues(flagCol);
+  log.getRange(2, 1, count, 8).setBackgrounds(colors);
 }
