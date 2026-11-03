@@ -1128,7 +1128,8 @@
     <div class="field">
       <label>Indoor Coil Condition</label>
       <select id="in_coil">
-        <option value="clean">Clean</option>
+        <option value="">-- Select --</option>
+        <option value="clean" selected>Clean</option>
         <option value="slightly dirty">Slightly Dirty</option>
         <option value="chemically cleaned">Dirty - Chemically Cleaned</option>
         <option value="dirty and needs to be cleaned">Dirty - Needs Cleaning</option>
@@ -2219,9 +2220,23 @@
         document.getElementById('in_furnace_checks').style.display = hidden ? '' : 'none';
     }
 
+    // Indoor coil condition starts blank on heating calls (left off the note
+    // unless picked) and "Clean" on cooling calls. Once the tech picks a value
+    // themselves, switching call types no longer overrides it.
+    let inCoilTouched = false;
+    document.getElementById('in_coil').addEventListener('change', function() {
+        inCoilTouched = true;
+    });
+    function syncCoilConditionDefault() {
+        if (inCoilTouched) return;
+        document.getElementById('in_coil').value =
+            v('call_type').indexOf('heating') === 0 ? '' : 'clean';
+    }
+
     document.querySelectorAll('#call_type_btns button').forEach(function(btn) {
         btn.addEventListener('click', function() {
             document.getElementById('call_type').value = btn.dataset.value;
+            syncCoilConditionDefault();
             syncCallTypeButtons();
             syncOutdoorVisibility();
             generateNote();
@@ -2601,7 +2616,7 @@
         }
         if (inCoil === 'chemically cleaned') {
             indoor += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
-        } else if (inCoil !== 'not checked') {
+        } else if (inCoil && inCoil !== 'not checked') {
             indoor += `Indoor coil was inspected and is ${inCoil}. `;
         }
         indoor += inBlower === 'chemically cleaned'
@@ -2758,6 +2773,8 @@
             document.getElementById(id).dispatchEvent(new Event('change'));
         });
 
+        inCoilTouched = false;
+        syncCoilConditionDefault();
         syncCallTypeButtons();
         syncOutdoorVisibility();
         generateNote();
