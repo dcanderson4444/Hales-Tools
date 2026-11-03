@@ -1036,6 +1036,7 @@
         <div class="field">
           <label>Indoor Coil Brand</label>
           <select id="in_coil_brand">
+            <option value="" selected>-- Select --</option>
             <option>Carrier</option>
             <option>Trane</option>
             <option>Lennox</option>
@@ -1053,9 +1054,10 @@
       <div class="field">
         <label>Indoor Coil Tonnage</label>
         <select id="in_coil_tons">
+          <option value="" selected>-- Select --</option>
           <option>1</option>
           <option>1.5</option>
-          <option selected>2</option>
+          <option>2</option>
           <option>2.5</option>
           <option>3</option>
           <option>3.5</option>
@@ -2576,11 +2578,19 @@
         const inEfficiency = v('in_efficiency');
         const inSize = isFurnace ? `${inBtu} BTU ${inEfficiency}` : `${inTons} ton`;
         const inYearPart     = inYear ? `${inYear} ` : '';
-        const inCoilYearPart = inCoilYear ? `${inCoilYear} ` : '';
+        // Indoor coil description: only the parts that were filled in. If the
+        // coil section is left blank entirely, it's left off the note.
+        const coilParts = [];
+        if (inCoilYear)  coilParts.push(inCoilYear);
+        if (inCoilBrand) coilParts.push(inCoilBrand);
+        if (inCoilTons)  coilParts.push(`${inCoilTons} ton`);
+        const hasCoilInfo = coilParts.length > 0;
 
         let indoor = '';
-        if (isFurnace) {
-            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} and ${inCoilYearPart}${inCoilBrand} ${inCoilTons} ton indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
+        if (isFurnace && hasCoilInfo) {
+            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} and ${coilParts.join(' ')} indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
+        } else if (isFurnace) {
+            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
         } else {
             indoor += `${inYearPart}${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
         }
