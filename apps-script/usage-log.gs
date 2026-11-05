@@ -9,8 +9,13 @@
 //   Usage Log - one row per event. Devices with no name yet are flagged red.
 //               Copied service notes include the full note text.
 
+// Devices whose Quote Builder entries are recorded to their own tab.
+var QUOTE_WATCH = ['Z3TVBI'];
+var QUOTE_TAB = 'Robert Quote Entries';
+
 function doPost(e) {
   var data = JSON.parse(e.postData.contents);
+  if (data.action === 'quoteWatch') return logQuoteEntry(data);
   if (data.action !== 'logUsage') return jsonOut({ status: 'ignored' });
 
   var lock = LockService.getScriptLock();
@@ -50,6 +55,24 @@ function doPost(e) {
     lock.releaseLock();
   }
 
+  return jsonOut({ status: 'ok' });
+}
+
+// Quote Builder snapshots from watched devices -> their own tab (not the Usage Log).
+function logQuoteEntry(data) {
+  if (QUOTE_WATCH.indexOf(String(data.deviceId || '')) === -1) return jsonOut({ status: 'ignored' });
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sh = getOrCreateSheet(ss, QUOTE_TAB, ['Time', 'What happened', 'Tech name entered', 'Job address', 'PO / supplier',
+      'Materials', 'Techs', 'Labor hrs', 'Refrigerant', 'Quote total', 'Device', 'Device ID']);
+    sh.appendRow([new Date(), data.trigger || '', data.tech || '', data.address || '', data.po || '', data.materials || '',
+      data.techs || '', data.laborHrs || '', data.refrigerant || '', data.total || '', data.device || '', data.deviceId || '']);
+    if (/Copied|Submitted|Save to Drive/.test(String(data.trigger))) sh.getRange(sh.getLastRow(), 1, 1, 12).setFontWeight('bold');
+  } finally {
+    lock.releaseLock();
+  }
   return jsonOut({ status: 'ok' });
 }
 

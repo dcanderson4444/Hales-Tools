@@ -4537,6 +4537,61 @@
 
   document.getElementById('usage-device-code').textContent = getUsageDeviceId();
   logUsage('Opened site');
+
+  // Quote Builder entry log for specific devices only. Sends a snapshot of the
+  // quote form whenever a field is finished, the quote is copied/saved, or the
+  // page is left. Written to its own tab by the usage-log Apps Script.
+  (function () {
+    var QUOTE_WATCH = ['Z3TVBI'];
+    if (QUOTE_WATCH.indexOf(getUsageDeviceId()) === -1 || !USAGE_LOG_URL) return;
+
+    function val(id) { var el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
+    function txt(id) { var el = document.getElementById(id); return el ? el.textContent.trim() : ''; }
+    var lastSent = '';
+
+    function snapshot(trigger) {
+      var mats = (typeof parts !== 'undefined' ? parts : [])
+        .filter(function (p) { return p.name || p.cost; })
+        .map(function (p) { return (p.name || '?') + ' $' + (p.cost || '0'); }).join('; ');
+      var refSel = document.getElementById('ref-type');
+      var ref = refSel && refSel.selectedIndex > 0 ? refSel.options[refSel.selectedIndex].text + ' x ' + val('ref-lbs') + ' lb' : '';
+      var data = {
+        tech: val('tech-name'), address: val('job-address'), po: val('po-number'), materials: mats,
+        techs: val('techs'), laborHrs: val('labor-hrs'), refrigerant: ref, total: txt('b-final')
+      };
+      var key = JSON.stringify(data);
+      if (key === lastSent && trigger.indexOf('Field') === 0) return;   // nothing changed
+      lastSent = key;
+      data.action = 'quoteWatch'; data.trigger = trigger;
+      data.deviceId = getUsageDeviceId(); data.device = getUsageDeviceLabel();
+      fetch(USAGE_LOG_URL, { method: 'POST', keepalive: true, body: JSON.stringify(data) }).catch(function () {});
+    }
+
+    var tab = document.getElementById('tab-quotes');
+    if (tab) tab.addEventListener('change', function (e) {
+      var t = e.target; var label = t.id || t.placeholder || t.name || t.tagName;
+      snapshot('Field: ' + label);
+    }, true);
+
+    ['copyQuote', 'saveToDrive', 'confirmSave', 'resetQuote'].forEach(function (fn) {
+      var orig = window[fn]; if (typeof orig !== 'function') return;
+      var labels = { copyQuote: 'Copied quote', saveToDrive: 'Clicked Save to Drive', confirmSave: 'Submitted quote', resetQuote: 'Reset quote' };
+      window[fn] = function () {
+        if (!(fn === 'confirmSave' && !arguments[0])) snapshot(labels[fn]);
+        return orig.apply(this, arguments);
+      };
+    });
+
+    var origShow = window.showTab;
+    if (typeof origShow === 'function') window.showTab = function (name) {
+      if (name === 'quotes') snapshot('Opened Quote Builder');
+      return origShow.apply(this, arguments);
+    };
+
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden' && tab && tab.classList.contains('active')) snapshot('Left page');
+    });
+  })();
 </script>
 
 </body>
