@@ -814,7 +814,7 @@
       <div class="ins-text">Tap <strong>Clear Form</strong> to reset everything for the next call.</div>
     </div>
     <div class="ins-note">
-      <strong>Tips:</strong> Selecting <strong>Furnace</strong> as the unit type hides tonnage and shows BTU instead, and adds an indoor coil section. Selecting <strong>Straight AC</strong> as the outdoor type hides the defrost field. The blower capacitor and heat strips sections can be toggled on or off with the checkboxes.
+      <strong>Tips:</strong> Selecting <strong>Furnace</strong> as the unit type hides tonnage and shows BTU instead, and adds an indoor coil section. <strong>Dual Fuel</strong> works like Furnace indoors and locks the outdoor unit to Heat Pump; on heating calls the note covers both the furnace checks and the heat pump. Selecting <strong>Straight AC</strong> as the outdoor type hides the defrost field. The blower capacitor and heat strips sections can be toggled on or off with the checkboxes.
     </div>
   </div>
 
@@ -1023,6 +1023,7 @@
         <select id="in_type">
           <option value="air handler">Air Handler</option>
           <option value="furnace">Furnace</option>
+          <option value="dual fuel">Dual Fuel (Furnace + Heat Pump)</option>
         </select>
       </div>
     </div>
@@ -2209,15 +2210,49 @@
     }
     // Heating calls on a furnace don't involve the outdoor unit, so that
     // section is hidden and left out of the generated note.
+    // Dual fuel = gas furnace indoors + heat pump outdoors. Indoors it's
+    // treated exactly like a furnace; outdoors it's locked to heat pump.
+    function isFurnaceLike(type) {
+        return type === 'furnace' || type === 'dual fuel';
+    }
+    function isHeatingCall() {
+        return v('call_type').indexOf('heating') === 0;
+    }
     function isOutdoorHidden() {
-        return v('call_type').indexOf('heating') === 0 && v('in_type') === 'furnace';
+        return isHeatingCall() && v('in_type') === 'furnace';
+    }
+    // Furnace checks on any heating call with a furnace, including dual fuel
+    // (where the heat pump outdoor section stays visible alongside them).
+    function showFurnaceChecks() {
+        return isHeatingCall() && isFurnaceLike(v('in_type'));
     }
     function syncOutdoorVisibility() {
         const hidden = isOutdoorHidden();
         document.getElementById('split_outdoor_section').style.display = hidden ? 'none' : '';
         document.getElementById('split_system_sections').classList.toggle('single-column', hidden);
-        // Furnace checks apply to the same heating + furnace case
-        document.getElementById('in_furnace_checks').style.display = hidden ? '' : 'none';
+        document.getElementById('in_furnace_checks').style.display = showFurnaceChecks() ? '' : 'none';
+    }
+    // Lock the outdoor unit to heat pump for dual fuel; unlock otherwise.
+    function syncDualFuelOutdoor() {
+        const outType = document.getElementById('out_type');
+        const isDual = v('in_type') === 'dual fuel';
+        if (isDual && outType.value !== 'heat pump') {
+            outType.value = 'heat pump';
+            outType.dispatchEvent(new Event('change'));
+        }
+        outType.disabled = isDual;
+        syncRefModeDefault();
+    }
+    // Dual fuel heating calls default the refrigerant test mode to Heating.
+    // Once the tech picks a mode themselves, it's left alone.
+    let refModeTouched = false;
+    document.getElementById('out_ref_mode').addEventListener('change', function() {
+        refModeTouched = true;
+    });
+    function syncRefModeDefault() {
+        if (refModeTouched) return;
+        document.getElementById('out_ref_mode').value =
+            (v('in_type') === 'dual fuel' && isHeatingCall()) ? 'heating' : 'cooling';
     }
 
     // Indoor coil condition starts blank on heating calls (left off the note
@@ -2237,6 +2272,7 @@
         btn.addEventListener('click', function() {
             document.getElementById('call_type').value = btn.dataset.value;
             syncCoilConditionDefault();
+            syncRefModeDefault();
             syncCallTypeButtons();
             syncOutdoorVisibility();
             generateNote();
@@ -2436,7 +2472,7 @@
     });
 
     document.getElementById('in_type').addEventListener('change', function () {
-        const isFurnace = this.value === 'furnace';
+        const isFurnace = isFurnaceLike(this.value);
         document.getElementById('in_tons_field').style.display = isFurnace ? 'none' : '';
         document.getElementById('in_btu_field').style.display = isFurnace ? '' : 'none';
         document.getElementById('in_efficiency_field').style.display = isFurnace ? '' : 'none';
@@ -2446,6 +2482,7 @@
         if (isFurnace) {
             document.getElementById('in_heatstrips').checked = false;
         }
+        syncDualFuelOutdoor();
         syncOutdoorVisibility();
         generateNote();
     });
@@ -2585,7 +2622,9 @@
         const inTempSt      = v('in_temp_status');
         const inNotes       = v('in_notes');
 
-        const isFurnace = inType === 'furnace';
+        const isFurnace = isFurnaceLike(inType);
+        // The indoor unit of a dual fuel system is a furnace, so the note says so.
+        const inTypeText = isFurnace ? 'furnace' : inType;
         const inBtu = v('in_btu') === 'Other' ? (v('in_btu_other') || 'Other') : v('in_btu');
         const inCoilYear  = v('in_coil_year');
         const inCoilBrand = v('in_coil_brand') === 'Other' ? (v('in_coil_brand_other') || 'Other') : v('in_coil_brand');
@@ -2603,9 +2642,9 @@
 
         let indoor = '';
         if (isFurnace && hasCoilInfo) {
-            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} and ${coilParts.join(' ')} indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
+            indoor += `${inYearPart}${inBrand} ${inSize} ${inTypeText} and ${coilParts.join(' ')} indoor coil located in the ${inLocation} in ${inConfig} configuration. `;
         } else if (isFurnace) {
-            indoor += `${inYearPart}${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
+            indoor += `${inYearPart}${inBrand} ${inSize} ${inTypeText} located in the ${inLocation} in ${inConfig} configuration. `;
         } else {
             indoor += `${inYearPart}${inBrand} ${inSize} ${inType} located in the ${inLocation} in ${inConfig} configuration. `;
         }
@@ -2639,7 +2678,7 @@
             indoor += `PVC condensate drain line was flushed and treated with drain tablets. `;
         }
 
-        if (isOutdoorHidden()) {
+        if (showFurnaceChecks()) {
             if (chk('in_pressure_switch')) indoor += `Pressure switch tubing was removed and cleared. `;
             if (chk('in_flame_sensor'))    indoor += `Flame sensor was removed and cleaned. `;
             if (chk('in_heat_exchanger'))  indoor += `Heat exchanger was tested for cracks, and none were observed. `;
@@ -2754,7 +2793,7 @@
         // in_type/out_type change handlers have side effects (e.g. forcing checkbox
         // state) that aren't safe to replay via a synthetic event, so their
         // dependent field visibility is re-derived here instead.
-        const isFurnaceDefault = notesDefaults['in_type'] === 'furnace';
+        const isFurnaceDefault = isFurnaceLike(notesDefaults['in_type']);
         document.getElementById('in_tons_field').style.display = isFurnaceDefault ? 'none' : '';
         document.getElementById('in_btu_field').style.display = isFurnaceDefault ? '' : 'none';
         document.getElementById('in_efficiency_field').style.display = isFurnaceDefault ? '' : 'none';
@@ -2774,7 +2813,9 @@
         });
 
         inCoilTouched = false;
+        refModeTouched = false;
         syncCoilConditionDefault();
+        syncDualFuelOutdoor();
         syncCallTypeButtons();
         syncOutdoorVisibility();
         generateNote();
