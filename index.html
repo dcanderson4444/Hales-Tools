@@ -1508,15 +1508,19 @@
             </select>
           </div>
           <div class="field">
-            <label>Washable Filter Status</label>
+            <label>Washable Filter Condition</label>
             <select id="ms1_filter">
               <option value="clean">Clean</option>
               <option value="slightly dirty" selected>Slightly Dirty</option>
               <option value="dirty">Dirty</option>
               <option value="very dirty">Very Dirty</option>
               <option value="clogged">Clogged</option>
-              <option value="washed">Washed - Now Clean</option>
             </select>
+          </div>
+        </div>
+        <div class="field">
+          <div class="check-btns">
+            <label class="check-btn"><input type="checkbox" id="ms1_filter_washed">Were the filters washed out and cleaned?</label>
           </div>
         </div>
         <div class="field-row">
@@ -2359,15 +2363,19 @@
             </select>
           </div>
           <div class="field">
-            <label>Washable Filter Status</label>
+            <label>Washable Filter Condition</label>
             <select id="ms${i}_filter">
               <option value="clean">Clean</option>
               <option value="slightly dirty" selected>Slightly Dirty</option>
               <option value="dirty">Dirty</option>
               <option value="very dirty">Very Dirty</option>
               <option value="clogged">Clogged</option>
-              <option value="washed">Washed - Now Clean</option>
             </select>
+          </div>
+        </div>
+        <div class="field">
+          <div class="check-btns">
+            <label class="check-btn"><input type="checkbox" id="ms${i}_filter_washed">Were the filters washed out and cleaned?</label>
           </div>
         </div>
         <div class="field-row">
@@ -2555,16 +2563,27 @@
             const locationPart = location ? ` located in ${location}` : '';
 
             let unit = `${yearPart}${brand} ${btu} BTU ${type} unit${locationPart}. `;
-            unit += filter === 'washed'
-                ? `Washable filter was inspected, found dirty, and was washed and is now clean. `
-                : `Washable filter was inspected and is ${filter}. `;
+            const filterWashedEl = document.getElementById(`ms${i}_filter_washed`);
+            if (filterWashedEl && filterWashedEl.checked) {
+                unit += filter === 'clean'
+                    ? `Washable filters were inspected and found clean. Filters were washed out and reinstalled. `
+                    : `Washable filters were inspected and found ${filter}. Filters were washed out, cleaned, and reinstalled. `;
+            } else {
+                unit += filter === 'clean'
+                    ? `Washable filters were inspected and are clean. `
+                    : `Washable filters were inspected and are ${filter}. `;
+            }
             if (coil === 'chemically cleaned') {
                 unit += `Indoor coil was inspected, found dirty, and was chemically cleaned. `;
+            } else if (coil === 'dirty and needs to be cleaned') {
+                unit += `Indoor coil was inspected, found dirty, and needs to be chemically cleaned. `;
             } else if (coil !== 'not checked') {
                 unit += `Indoor coil was inspected and is ${coil}. `;
             }
             unit += blower === 'chemically cleaned'
                 ? `Blower wheel was inspected, found dirty, and was chemically cleaned. `
+                : blower === 'dirty and needs to be cleaned'
+                ? `Blower wheel was inspected, found dirty, and needs to be cleaned. `
                 : `Blower wheel was inspected and is ${blower}. `;
             if (drain === 'pump') {
                 unit += `Condensate pump was cleaned out, tested for operation, and treated with drain tablets. `;
